@@ -1,0 +1,1 @@
+`EventHandler` 是一个委托，通常用于定义事件。当你想要为一个类定义事件时，可以使用 `EventHandler` 或者泛型版本 `EventHandler<TEventArgs>`。如果需要在 `Invoke()` 中传递参数，可以定义自己的事件处理方法，并使用 `EventHandler<TEventArgs>`。

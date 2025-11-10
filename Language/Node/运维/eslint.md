@@ -1,0 +1,1 @@
+[ESLint](https://eslint.org/) 是一个插件化的 JavaScript 代码检查工具，可以识别并报告代码问题，提高代码风格一致性和避免错误。

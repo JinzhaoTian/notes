@@ -1,0 +1,1 @@
+[parse-server](https://github.com/parse-community/parse-server) 是一款开源的、基于nodejs的后端框架 ， 可以基于它进行产品的后端 restful api 的开发 ，用于提高中小型应用的开发效率。

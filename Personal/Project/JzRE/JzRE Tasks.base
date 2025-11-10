@@ -1,0 +1,109 @@
+filters:
+  and:
+    - formula.title_link.contains("JzRE")
+    - "!task.isEmpty()"
+formulas:
+  progress_percent: progress / 100
+  progress_text: if(formula.progress_percent > 0, (formula.progress_percent * 100).round(), "0") + "%"
+  progress_bar: |-
+    if(formula.progress_percent * 10 > 0, 
+       "▰".repeat(number(formula.progress_percent * 10))) 
+       + if((formula.progress_percent * 10).floor() < 10, 
+            "▱▱▱▱▱▱▱▱▱▱".slice(0, 10 - (formula.progress_percent * 10).floor()), 
+            "").toString()
+  title_link: link(file, if(title, title, file.basename))
+  priority_text: |-
+    if(priority== 5, 
+       "SUPER HIGH",
+       if(priority==4, 
+          "HIGH", 
+          if(priority==3, 
+             "NORMAL", 
+             if(priority==2, 
+                "LOW", 
+                if(priority==1, 
+                   "QUIT", 
+                   "NONE")
+                )
+            )
+         )
+       )
+  SortByStatus: |-
+    number(
+        if(status=="In Progress", 4, 
+        if(status=="Focus", 5, 
+        if(status=="To Do", 3, 
+        if(status=="On Hold", 1, 0
+        )))))
+properties:
+  note.project:
+    displayName: Project
+  note.status:
+    displayName: Status
+  formula.title_link:
+    displayName: Link
+  formula.progress_percent:
+    displayName: ProgressPercent
+  formula.progress_text:
+    displayName: ProgressText
+  formula.progress_bar:
+    displayName: ProgressBar
+  formula.priority_text:
+    displayName: Priority
+  note.task:
+    displayName: Tasks
+views:
+  - type: table
+    name: 全部任务
+    order:
+      - project
+      - task
+      - formula.title_link
+      - status
+      - formula.priority_text
+      - formula.progress_bar
+    sort:
+      - property: formula.SortByStatus
+        direction: DESC
+    columnSize:
+      note.project: 89
+      note.task: 183
+      formula.title_link: 128
+      note.status: 157
+      formula.priority_text: 179
+  - type: table
+    name: 进行中
+    order:
+      - project
+      - task
+      - formula.title_link
+      - status
+      - formula.progress_bar
+      - formula.progress_text
+    sort:
+      - property: formula.SortByStatus
+        direction: DESC
+      - property: formula.progress_percent
+        direction: DESC
+    limit: 5
+    columnSize:
+      note.project: 79
+      note.task: 180
+      formula.title_link: 111
+      note.status: 96
+      formula.progress_bar: 163
+  - type: cards
+    name: Gallery
+    filters:
+      and:
+        - progress >= 0
+    order:
+      - formula.title_link
+      - status
+      - formula.priority_text
+      - formula.progress_text
+      - formula.progress_bar
+    sort:
+      - property: formula.SortByStatus
+        direction: DESC
+    limit: 30

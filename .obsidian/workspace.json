@@ -1,0 +1,259 @@
+{
+  "main": {
+    "id": "a188cd67ac963710",
+    "type": "split",
+    "children": [
+      {
+        "id": "a1f250c033a3c7c0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "aa537052fe3baf85",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Personal/Interests/参考文献格式.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "参考文献格式"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ec1cf21e9a0e771a",
+    "type": "split",
+    "children": [
+      {
+        "id": "175d2b6dd4853244",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5531e54a75ac1a63",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": true
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "8883e268e8a904c7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "dto",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "1c98001bff6fa042",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 350.5
+  },
+  "right": {
+    "id": "646c828d45956a8f",
+    "type": "split",
+    "children": [
+      {
+        "id": "d8b8cb726ab6f01c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2dd2162bb2b913bd",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Personal/Interests/参考文献格式.md",
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "参考文献格式 的大纲"
+            }
+          },
+          {
+            "id": "8b1ba05cf58872b0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "127c7249251880ec",
+            "type": "leaf",
+            "state": {
+              "type": "footnotes",
+              "state": {
+                "file": "Personal/Interests/参考文献格式.md"
+              },
+              "icon": "lucide-file-signature",
+              "title": "脚注"
+            }
+          },
+          {
+            "id": "38e6cc460b90a23d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "f7c78a9bed898aea",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Personal/Interests/参考文献格式.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "参考文献格式 的反向链接列表"
+            }
+          },
+          {
+            "id": "3aafe2192439f9c2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Personal/Interests/参考文献格式.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "参考文献格式 的出链列表"
+            }
+          },
+          {
+            "id": "412fbc7e5ba482b2",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 6
+      }
+    ],
+    "direction": "horizontal",
+    "width": 421.5
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:创建新数据库": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "5531e54a75ac1a63",
+  "lastOpenFiles": [
+    "Personal/Interests/工程控制论.md",
+    "Personal/Interests/开源许可.md",
+    "Personal/Interview/C++ 面试题.md",
+    "Personal/Interview/Interview.md",
+    "Personal/Interview/Java 面试题.md",
+    "Personal/Interview/JD.md",
+    "Personal/Interview/Node 面试常见问题.md",
+    "Personal/Personal Setting/个人服务器.md",
+    "Personal/Personal Setting/Cursor.md",
+    "Personal/Personal Setting/Fail2Ban.md",
+    "Personal/Personal Setting/Gemini CLI.md",
+    "Personal/Personal Setting/infuse.md",
+    "Personal/Personal Setting/NAS.md",
+    "Personal/Personal Setting/Obsidian.md",
+    "Personal/Personal Setting/Syncthing.md",
+    "Personal/Personal Setting/Windows 电脑设置.md",
+    "Personal/Personal Setting/VPN.md",
+    "Personal/Personal Setting/Windows 文件处理.md",
+    "Personal/Project/sync.md",
+    "Personal/Project/JzRE.md",
+    "Personal/Project/JzRE-webgl.md",
+    "Personal/Project/JzMT.md",
+    "Algorithm/Mechine Learning/360面试.md",
+    "Computer Graphics/Unreal Engine/UE 渲染系统.md",
+    "Computer Graphics/Unreal Engine/UE .uproject.md",
+    "Computer Graphics/Unreal Engine/UE 反射系统.md",
+    "Language/CS/后端/imgs/Pasted image 20251104102956.png",
+    "Language/CS/后端/imgs/Pasted image 20251104102823.png",
+    "Language/CS/后端/imgs",
+    "Backend/消息队列/imgs/Pasted image 20251103162353.png",
+    "Backend/消息队列/imgs/Pasted image 20251103160700.png",
+    "Backend/消息队列/imgs/Pasted image 20251103160635.png",
+    "Backend/消息队列/imgs/Pasted image 20251103154953.png",
+    "Language/C++/语法/~syncthing~C++ Basic：面向对象.md.tmp",
+    "Language/C++/构建/~syncthing~CMake.md.tmp",
+    "Language/C++/~syncthing~C++ 11.md.tmp",
+    "Computer Graphics/Vulkan/~syncthing~Render Pass.md.tmp",
+    "Computer Graphics/Vulkan/~syncthing~未命名.md.tmp",
+    "Computer Graphics/GAMES104/imgs/Pasted image 20251024174424.png",
+    "Computer Graphics/GAMES104/imgs/Pasted image 20251024173001.png",
+    "Language/CS/运维",
+    "Computer Graphics/GAMES104/imgs/Pasted image 20251020232855.png",
+    "Computer Graphics/GAMES104/imgs/~syncthing~Pasted image 20251020232855.png.tmp",
+    "Computer Graphics/GAMES104/~syncthing~Lecture 4-7 Rendering on Game Engine.md.tmp",
+    "Computer Graphics/GAMES104/imgs/Pasted image 20251020231945.png",
+    "Computer Graphics/GAMES104/imgs/~syncthing~Pasted image 20251020231945.png.tmp"
+  ]
+}

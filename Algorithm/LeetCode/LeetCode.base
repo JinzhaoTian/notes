@@ -1,0 +1,27 @@
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+properties:
+  note.leetcode:
+    displayName: 题目
+  file.name:
+    displayName: 题解
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 表格
+    order:
+      - leetcode
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      note.leetcode: 169
+      file.name: 221
+      note.difficulties: 143

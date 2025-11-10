@@ -1,0 +1,1 @@
+Mesh Shader有非常大的灵活性以及理论上不输甚至超越Vertex Shader Pipeline的性能（当然具体得看硬件实现，目前nv和amd都是软件实现）。目前Mesh Shader的支持还不是十分广泛，对于n卡需要图灵以上的显卡架构，不过可以预见的是，未来渲染api和硬件的实现会越来越向gpu-driven的方向靠拢（比如dx12的workgraph），让cpu只负责一部分资源管理和任务提交。

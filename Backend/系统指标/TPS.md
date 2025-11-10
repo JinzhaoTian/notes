@@ -1,0 +1,1 @@
+TPS（Transactions Per Second）是指系统**每秒能处理的事务数量**。

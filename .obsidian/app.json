@@ -1,0 +1,10 @@
+{
+  "attachmentFolderPath": "./imgs",
+  "newFileLocation": "current",
+  "newLinkFormat": "relative",
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true,
+  "promptDelete": true,
+  "readableLineLength": true,
+  "propertiesInDocument": "visible"
+}
