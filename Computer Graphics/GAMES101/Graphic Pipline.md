@@ -216,7 +216,7 @@ GLM_FUNC_QUALIFIER mat<4, 4, T, Q> lookAt(vec<3, T, Q> const& eye, vec<3, T, Q> 
 
 ## Projection Transformation
 
-投影变换，有两种，一种是正交投影（orthographic projection），另一个是透视投影（perspective projection）。![[_imgs/overview-3.png]]
+投影变换，有两种，一种是正交投影（orthographic projection），另一个是透视投影（perspective projection）。![](_imgs/overview-3.png)
 
 **正交投影**，就是假设相机离得无限远，可以理解成平行投影，可以将物体等大小投影到屏幕上。实际操作通常是将摄像机所照射的**长方体**映射到规范立方体上面，实际操作可简化为两个步骤：
 - 将长方体中心移动到原点

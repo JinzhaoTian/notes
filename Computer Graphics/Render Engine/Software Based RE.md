@@ -918,5 +918,4 @@ int main() {
 
 ## 功能展示
 
-![[_imgs/Pasted image 20231204092815.png]]
-
+![](_imgs/Pasted%20image%2020231204092815.png)

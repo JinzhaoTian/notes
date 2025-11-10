@@ -1,13 +1,15 @@
-在 Unreal Engine 5（UE5）中，Renderer（渲染器）是引擎的核心子系统，负责将场景数据转化为最终的图像输出。它管理从几何处理、光照计算到后期效果的全流程渲染工作，其设计深度融合了现代图形 API（如 DirectX 12/ Vulkan ）和硬件特性（如硬件光追、异步计算）。
+在 Unreal Engine 中，Renderer 是引擎的核心子系统，负责将场景数据转化为最终的图像输出。它管理从几何处理、光照计算到后期效果的全流程渲染工作，其设计深度融合了现代图形 API（如 DirectX 12/ Vulkan ）和硬件特性（如硬件光追、异步计算）。
 
-## 渲染管线核心架构
+## 核心架构
 
-1. **延迟渲染管线（Deferred Shading Pipeline）**：UE5默认采用延迟渲染路径，通过多阶段分离几何与光照计算：
+1. **延迟渲染管线（Deferred Shading Pipeline，`FDeferredShadingRenderer`）**：UE 默认采用延迟渲染路径，通过多阶段分离几何与光照计算：
     - **BasePass**：将场景几何信息（位置、法线、材质属性）写入 GBuffer（多张渲染目标纹理），避免重复绘制
     - **LightingPass**：基于 GBuffer 计算直接光照（含阴影）和间接光照（如 Lumen ），结果累积到 SceneColor
     - **半透明与后处理**：半透明物体由远到近混合到离屏纹理，后处理阶段应用 Bloom、抗锯齿等效果
 
-2. **Render Dependency Graph（RDG）**
+2. **`MobileSceneRenderer`**：
+
+3. **Render Dependency Graph（RDG）**
     - **自动化资源管理**：自动裁剪无用渲染通道（Pass）和资源（如临时纹理），优化显存使用
     - **异步计算优化**：将计算密集型任务（如体素化、光线追踪）分发到 GPU 异步队列，提升并行效率
     - **调试工具支持**：通过`RDG Insight`可视化渲染流程，或使用`vis`命令实时查看中间渲染目标（如GBuffer）
