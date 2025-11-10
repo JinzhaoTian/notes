@@ -14,7 +14,7 @@ Kafka 所采用的就是发布/订阅模式，被称为一种高吞吐量、持�
 
 ### 架构
 
-![](imgs/Pasted%20image%2020230704135929.png)
+![](_imgs/Pasted%20image%2020230704135929.png)
 
 - Producer：消息和数据的生产者，主要负责生产消息到指定的Topic中。
 - Topic：同一个Topic包含一个或者多个Partition分区，数据被存储在多个Partition中。

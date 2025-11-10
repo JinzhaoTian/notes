@@ -4,7 +4,7 @@ BERT的全称是Bidirectional Encoder Representation from Transformers，即双�
 
 BERT模型的结构：
 
-![](imgs/BERT-image-1.png)
+![](_imgs/BERT-image-1.png)
 
 对比OpenAI GPT(Generative pre-trained transformer)，BERT是双向的Transformer block连接；就像单向RNN和双向RNN的区别，直觉上来讲效果会好一些。
 
@@ -14,7 +14,7 @@ BERT模型的结构：
 
 BERT的的Embedding由三种Embedding求和而成：
 
-![](imgs/BERT-image-2.png)
+![](_imgs/BERT-image-2.png)
 
 其中：
 

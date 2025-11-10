@@ -2,7 +2,7 @@
 ## Terminal
 
 Windows上Terminal的体验不是很好，我找了一个比较好的解决方案：PowerShell+ Oh My Posh，主题选为catppuccin_macchiato还是有一个比较好的体验的，接近于原生的Linux Bash。
-![[imgs/Pasted image 20230417111035.png]]
+![[_imgs/Pasted image 20230417111035.png]]
 
 
 ### PowerShell
@@ -18,7 +18,7 @@ winget uninstall Microsoft.PowerShell
 
 然后在PowerShell里面配置默认开启：
 
-![](imgs/Pasted%20image%2020230417113425.png)
+![](_imgs/Pasted%20image%2020230417113425.png)
 
 #### winget
 
@@ -58,7 +58,7 @@ oh-my-posh init pwsh | Invoke-Expression
 & ([ScriptBlock]::Create((oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\catppuccin_macchiato.omp.json" --print) -join "`n"))
 ```
 
-![](imgs/Pasted%20image%2020230417113101.png)
+![](_imgs/Pasted%20image%2020230417113101.png)
 
 
 有的主题需要字体库的支持才可以显示图标，因此还需要安装字体库，一般选用 Nerd Font 类型的字体库。根据官网上的说明，使用以下命令：
@@ -67,7 +67,7 @@ oh-my-posh init pwsh | Invoke-Expression
 oh-my-posh font install
 ```
 
-![](imgs/Pasted%20image%2020230417113949.png)
+![](_imgs/Pasted%20image%2020230417113949.png)
 
 选择一个喜欢的字体安装，或者去[Nerd Fonts 官网](https://www.nerdfonts.com/font-downloads) 直接下载一个字体，然后解压缩，全选，安装即可。
 

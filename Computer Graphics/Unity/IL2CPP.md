@@ -4,13 +4,13 @@ IL2CPP（**Intermediate Language to C++**）是 Unity 引擎中的一种脚本�
 
 其中 AOT 编译器将 IL（由 .Net 编译器输出的中间语言）转换为 C++ 源码，而运行时库则会提供诸如垃圾回收、反射和类型系统、线程/文件获取（独立于平台，与平台无关）、内部调用直接修改托管数据结构的原生代码的服务与抽象。
 
-![](imgs/Pasted%20image%2020240911171311.png)
+![](_imgs/Pasted%20image%2020240911171311.png)
 
 IL2CPP 是 Unity 多平台支持的重要工具，它能够将代码编译成适合不同平台（如 iOS、Android、Windows 等）的二进制文件。**IL2CPP 是 Unity 引擎的一个专有技术，属于 Unity Technologies 公司开发和维护的闭源软件**。
 
 ## AOT 编译器
 
-AOT 编辑器即 `il2cpp.exe`， ![](imgs/Pasted%20image%2020240911170135.png)
+AOT 编辑器即 `il2cpp.exe`， ![](_imgs/Pasted%20image%2020240911170135.png)
 `il2cpp.exe` 是由 C# 编写的受托管的可执行程序，它接受我们在 Unity 中通过 Mono 编译器生成的托管程序集，并生成指定平台下的 C++ 代码。
 
 

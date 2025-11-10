@@ -1,6 +1,6 @@
 OpenTelemetry（OTel）是一个开源的、厂商中立的可观测性框架，用于生成、收集和管理遥测数据（指标、日志和追踪）。
 
-![](imgs/Pasted%20image%2020250707223841.png)
+![](_imgs/Pasted%20image%2020250707223841.png)
 
 ## 核心概念
 
@@ -27,7 +27,7 @@ OpenTelemetry（OTel）是一个开源的、厂商中立的可观测性框架，
 
 ## 使用示例
 
-![](imgs/kQevjhzhXHQW_s4JpnQFSQ.png)
+![](_imgs/kQevjhzhXHQW_s4JpnQFSQ.png)
 
 
 ### 安装 OpenTelemetry SDK

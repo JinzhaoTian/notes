@@ -1,6 +1,6 @@
 Kubernetes 是一个开源的容器编排平台，用于自动化应用的部署、扩展和管理。它最初由Google开发，后来捐赠给Cloud Native Computing Foundation（CNCF）。如果想要在生产环境中大批量的使用容器，还离不开的容器的编排技术，Kubernetes 就是帮助用户管理容器化的应用程序，并简化其在多种环境（如本地服务器、云服务等）中的运行。
 
-![](imgs/Pasted%20image%2020240906112923.png)
+![](_imgs/Pasted%20image%2020240906112923.png)
 
 Kubernetes 是舵手的意思，我们把 Docker 比喻成一个个集装箱，而 Kubernetes 正是运输这些集装箱的舵手。
 

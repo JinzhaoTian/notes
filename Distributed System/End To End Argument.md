@@ -1,6 +1,6 @@
 End-to-End Argument 是计算机系统设计中的一项核心原则，最早由 Saltzer、Reed 和 Clark 在 1981 年的论文《[End-to-End Arguments in System Design](https://web.mit.edu/Saltzer/www/publications/endtoend/endtoend.pdf)》中提出。
 
-![](imgs/Pasted%20image%2020250715094749.png)
+![](_imgs/Pasted%20image%2020250715094749.png)
 
 它强调系统的某些功能（如可靠性、安全性等）**应当由通信的终端（End）而非中间层（如底层网络）来实现**，因为中间层的保证往往无法完全满足终端的需求。
 

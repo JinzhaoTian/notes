@@ -8,7 +8,7 @@ Nanite 的目的是让 UE 对于三角形的处理性能提升一个层次，使
 
 Nanite 的核心思想可以简单拆解为两大部分：顶点处理的优化和像素处理的优化。其中顶点处理的优化主要是 GPU Driven Pipeline 的思想；像素处理的优化，是在 Visibility Buffer 思想的基础上，结合软光栅化完成的。
 
-![](imgs/Pasted%20image%2020240822161232.png)
+![](_imgs/Pasted%20image%2020240822161232.png)
 
 > 参考：[UE5渲染技术简介：Nanite篇 ](https://segmentfault.com/a/1190000040251406)
 

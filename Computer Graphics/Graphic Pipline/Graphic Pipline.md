@@ -1,8 +1,8 @@
 图形管线（Graphic Pipline）：本质上是一种 object-order rendering，从物体 object 开始，经过一系列连续的操作，最终转化为图片上的像素。
 
-![](imgs/Pasted%20image%2020231214101949.png)
+![](_imgs/Pasted%20image%2020231214101949.png)
 
-![](imgs/Pasted%20image%2020231214101837.png)
+![](_imgs/Pasted%20image%2020231214101837.png)
 
 
 连续的操作如下：

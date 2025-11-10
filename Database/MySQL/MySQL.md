@@ -1,6 +1,6 @@
 
 
-![](imgs/Pasted%20image%2020230704135104.png)
+![](_imgs/Pasted%20image%2020230704135104.png)
 
 ### 架构
 
@@ -17,7 +17,7 @@
 
 ### 一条SQL语句在MySQL中如何执行的？
 
-![](imgs/Pasted%20image%2020230704135118.png)
+![](_imgs/Pasted%20image%2020230704135118.png)
 
 客户端请求 ---> 连接器（验证用户身份，给予权限） ---> 查询缓存（存在缓存则直接返回，不存在则执行后续操作） ---> 分析器（对SQL进行词法分析和语法分析操作） ---> 优化器（主要对执行的sql优化选择最优的执行方案方法） ---> 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口） ---> 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）
 
@@ -32,7 +32,7 @@
 
 常见的存储引擎就 InnoDB、MyISAM、Memory、NDB。**InnoDB 现在是 MySQL 默认的存储引擎**，支持事务、行级锁定和外键。
 
-![](imgs/Pasted%20image%2020230704135127.png)
+![](_imgs/Pasted%20image%2020230704135127.png)
 
 #### 物理文件结构
 
@@ -80,7 +80,7 @@
 
 InnoDB引擎还自带了一个日志模块redo log，**InnoDB引擎就是通过redo log来支持事务的**。
 - **redo log**：保证事务的持久性，undo log用来帮助事务回滚及MVCC的功能。MySQL 实例挂了或宕机了，重启时，InnoDB存储引擎会使用redo log恢复数据，保证数据的持久性与完整性。 **redo log是物理日志，记录页的物理修改操作**。
-![](imgs/Pasted%20image%2020230704135148.png)
+![](_imgs/Pasted%20image%2020230704135148.png)
 
 Space ID和Page Number是表空间id和数据页id，根据它们能唯一标示一个数据页，再然后的data就是对该数据页到底做了哪些修改。
 
@@ -128,7 +128,7 @@ MVCC 多版本并发控制的实现依赖于：隐藏字段、Read View、undo l
 
 MySQL的主从复制架构，支持一主多从，可以进行读写分离。
 
-![](imgs/Pasted%20image%2020230704135159.png)
+![](_imgs/Pasted%20image%2020230704135159.png)
 
 MySQL在执行增删改的时候，会记录binlog日志。slave 库上会起一个IO线程，这个线程会跟master节点建立一个TCP连接，请求master节点传送binlog日志给自己，这个时候master上有一个IO dump线程，会负责通过这个TCP连接，把binlog日志传输给slave的IO线程。
 
@@ -147,9 +147,9 @@ MySQL在执行增删改的时候，会记录binlog日志。slave 库上会起一
 分片方式：
 
 1. 硬编码实现数据分片
-![](imgs/Pasted%20image%2020230704135211.png)
+![](_imgs/Pasted%20image%2020230704135211.png)
 2. 映射表外部存储
-![](imgs/Pasted%20image%2020230704135222.png)
+![](_imgs/Pasted%20image%2020230704135222.png)
   
 
 分片面临的问题：

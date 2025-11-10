@@ -252,7 +252,7 @@ server {
 
 ## 基础架构
 
-![](imgs/Pasted%20image%2020250702113112.png)
+![](_imgs/Pasted%20image%2020250702113112.png)
 
 
 

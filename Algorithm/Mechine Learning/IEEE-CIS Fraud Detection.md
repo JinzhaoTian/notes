@@ -8,7 +8,7 @@
 
 ### transaction交易表
 
-![](imgs/FraudDetection-image-1.png)
+![](_imgs/FraudDetection-image-1.png)
 
 交易表是一个二维的特征表，行的标号是TransactionID，也就是交易号，有若干行。有393列，对应392种特征，以及一个isFraud，是label。各个特征的意义：
 
@@ -30,7 +30,7 @@
 
 ### identity身份表
 
-![](imgs/FraudDetection-image-2.png)
+![](_imgs/FraudDetection-image-2.png)
 
 该表中的变量是与交易相关的身份信息 - 网络连接信息（IP，ISP，代理等）和数字签名（UA /浏览器/操作系统/版本等）。它们由Vesta的欺诈保护系统和数字安全合作伙伴收集。字段名称被屏蔽，并且不会提供成对字典用于隐私保护和合同协议。
 

@@ -3,7 +3,7 @@
 > [!info] Visual Studio Code
 Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages and runtimes (such as C++, C#, Java, Python, PHP, Go, .NET). 
 
-![](imgs/Pasted%20image%2020240112153048.png)
+![](_imgs/Pasted%20image%2020240112153048.png)
 
 
 ## C++ 开发配置
@@ -64,13 +64,13 @@ Windows 下 Visual Studio 自带的 C/C++ 编译器。
 ### 安装 C/C++ 插件
 
 1. 安装 `C/C++`（Microsoft 官方扩展 `ms-vscode.cpptools`，提供智能提示、调试支持）
-![](imgs/Pasted%20image%2020250714102841.png)
+![](_imgs/Pasted%20image%2020250714102841.png)
 
 2. 安装 `CMake Tools`（Microsoft 官方扩展 `ms-vscode.cmake-tools`）
-![](imgs/Pasted%20image%2020250714110615.png)
+![](_imgs/Pasted%20image%2020250714110615.png)
 
 3. （可选）安装 `clang` （LLVM 官方扩展 `llvm-vs-code-extensions.vscode-clangd`）
-![](imgs/Pasted%20image%2020250717104324.png)
+![](_imgs/Pasted%20image%2020250717104324.png)
 
 
 

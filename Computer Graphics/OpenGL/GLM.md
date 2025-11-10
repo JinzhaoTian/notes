@@ -37,7 +37,7 @@ trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 ```c++
 glm::mat4 projection = glm::ortho(T left, T right, T bottom, T top, T zNear, T zFar);
 ```
-功能：在参数中给出左、右、上、下、近、远定义出类似立方体的平截头体，![](../../Render%20Engine/imgs/Pasted%20image%2020240725224742.png)
+功能：在参数中给出左、右、上、下、近、远定义出类似立方体的平截头体，![](../Render%20Engine/_imgs/Pasted%20image%2020240725224742.png)
 使用正交投影矩阵变换至裁剪空间之后处于这个平截头体内的所有坐标将不会被裁剪掉，任何出现在近平面之前或远平面之后的坐标都会被裁剪掉。
 
 
@@ -46,7 +46,7 @@ glm::mat4 projection = glm::ortho(T left, T right, T bottom, T top, T zNear, T z
 ```c++
 glm::mat4 projection = glm::perspective(T fovy, T aspect, T near, T far);
 ```
-功能：在参数中给出视野、宽高比、近、远平面定义出一个类似于没有锥尖的锥形平截头体![](../../Render%20Engine/imgs/Pasted%20image%2020240725225650.png)
+功能：在参数中给出视野、宽高比、近、远平面定义出一个类似于没有锥尖的锥形平截头体![](../Render%20Engine/_imgs/Pasted%20image%2020240725225650.png)
 任何在这个平截头体以外的东西最后都不会出现在裁剪空间体积内，并且将会受到裁剪。`fov` 即视野（Field of View），通常设置为 `45.0f` ；宽高比 `aspect` 由视口的宽除以高所得；近距离 `near` 一般设置为 `0.1f`，远距离 `far` 一般设置为 `100.0f`。
 
 

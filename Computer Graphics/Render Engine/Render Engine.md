@@ -1,24 +1,24 @@
-![](imgs/Pasted%20image%2020231224154530.png)
+![](_imgs/Pasted%20image%2020231224154530.png)
 
 现代引擎架构复杂，所需要的技术非常庞大。
 
 
 
-![](imgs/Pasted%20image%2020231224155345.png)
+![](_imgs/Pasted%20image%2020231224155345.png)
 
 不同级别的渲染引擎对比：
 - 轻量级的引擎作为输入数据和图形API之间的中间处理部分
 - 重量级的引擎则会包含图形API，并针对不同的系统平台进行额外处理
 
 Web引擎渲染流程：
-![](imgs/Pasted%20image%2020231224155004.png)
+![](_imgs/Pasted%20image%2020231224155004.png)
 
 常规的渲染流程：引擎会处理输入的数据，同时调用图形API（Opengl，vulkan等）配置渲染信息，图形API会针对不同的平台驱动进行调整，最后交给GPU硬件进行渲染
 - 数据信息 -> 引擎处理 -> 调用图形API渲染 -> 呈现到窗口容器
 
 
-![](imgs/Pasted%20image%2020231224161456.png)
+![](_imgs/Pasted%20image%2020231224161456.png)
 
 
 虚幻引擎实际架构：
-![](imgs/Pasted%20image%2020231224160154.png)
+![](_imgs/Pasted%20image%2020231224160154.png)

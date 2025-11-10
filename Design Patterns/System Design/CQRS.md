@@ -2,7 +2,7 @@ CQRS（命令查询职责分离，Command Query Responsibility Segregation）是
 - **命令(Command)**：改变系统状态的操作（写操作），如创建、更新、删除
 - **查询(Query)**：读取系统状态的操作（读操作），不改变任何数据
 
-![](../System%20Design/imgs/Pasted%20image%2020250704160409.png)
+![](_imgs/Pasted%20image%2020250704160409.png)
 
 
 CQRS 增加了系统复杂性，不适用于简单 CRUD 应用。实施时需要权衡利弊，考虑维护成本，常与事件溯源（[Event Sourcing](Event%20Sourcing.md)）模式结合使用，但两者是可独立应用的架构模式。

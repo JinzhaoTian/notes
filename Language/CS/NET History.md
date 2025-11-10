@@ -63,7 +63,7 @@
 
 .NET Standard 是针对多个 .NET 实现推出的一套正式的 .NET API 规范。
 
-![](imgs/Pasted%20image%2020240312101406.png)
+![](_imgs/Pasted%20image%2020240312101406.png)
 
-![](imgs/Pasted%20image%2020240312101423.png)
+![](_imgs/Pasted%20image%2020240312101423.png)
 

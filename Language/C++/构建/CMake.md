@@ -3,7 +3,7 @@ CMake 是一个跨平台的自动化构建工具，用于管理软件编译过�
 > [!info]
 > ***Write once, run everywhere*** .
 
-![](imgs/Pasted%20image%2020250716170846.png)
+![](_imgs/Pasted%20image%2020250716170846.png)
 
 ## 核心功能
 
@@ -819,7 +819,7 @@ target_link_libraries(subproject PRIVATE module1)
 #### Windows
 
 Windows 上，打开 CMake 可以看到一个 GUI ，
-![](imgs/Pasted%20image%2020240103172645.png)
+![](../_imgs/Pasted%20image%2020240103172645.png)
 
 CMake 需要一个源代码目录和一个存放编译结果的目标文件目录，在设置完源代码目录和目标目录之后，点击 Configure(设置) 按钮，让 CMake 读取设置和源代码。
 

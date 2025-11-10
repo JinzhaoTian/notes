@@ -99,7 +99,7 @@ priority: 3
 
 1. [Tiptap](https://tiptap.dev/docs) ：支持富文本和 Markdown，基于 ProseMirror，易于集成 Tailwind CSS，提供丰富的扩展（如表格、代码块、Markdown 支持等）。
    
-   但是官方说不太支持 Markdown，![](imgs/Pasted%20image%2020241116130335.png)如果是要以 Markdown 文本作为输入输出格式，建议用别的。
+   但是官方说不太支持 Markdown，![](_imgs/Pasted%20image%2020241116130335.png)如果是要以 Markdown 文本作为输入输出格式，建议用别的。
 
 2. [CodeMirror](../../Language/Node/前端开发/CodeMirror.md) ：注重 Markdown 语法高亮，适合轻量级需求，可以通过 Tailwind CSS 定制编辑器的外观。
 3. [Lexical](https://lexical.dev/docs/intro) ：性能高、架构现代化，适合构建复杂 Markdown 编辑器。内置支持 Tailwind CSS，通过插件化架构添加 Markdown 支持。![](../../Language/Node/前端开发/imgs/Pasted%20image%2020241119174811.png)

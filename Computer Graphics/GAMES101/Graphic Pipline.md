@@ -6,7 +6,7 @@ for (T in triangles)
 ```
 
 
-![](imgs/Pasted%20image%2020231225171238.png)
+![](_imgs/Pasted%20image%2020231225171238.png)
 
 
 
@@ -23,7 +23,7 @@ for (T in triangles)
 
 # Before Rasterization
 
-![](imgs/Pasted%20image%2020231225211619.png)
+![](_imgs/Pasted%20image%2020231225211619.png)
 
 ## Camera Transformation
 
@@ -35,7 +35,7 @@ for (T in triangles)
 - the view-up vector  $\mathbf{t}$ ：这个up方向并不需要与look-at方向垂直，实际上这个方向只是为了划分左右半边
 
 依据以上信息，建立的 $uvw$ 坐标系，可以分成左手系和右手系，
-![](imgs/Pasted%20image%2020231225222035.png)
+![](_imgs/Pasted%20image%2020231225222035.png)
 
 对于**右手系**的单位正交基，可以表示为，
 $$
@@ -47,7 +47,7 @@ $$
 $$
 > 两个三维中的向量叉乘跟在哪个坐标系是无关的，因为向量方向的判断在右手坐标系中用右手，左手坐标系中使用左手。
 
-![](imgs/Pasted%20image%2020231228152808.png)
+![](_imgs/Pasted%20image%2020231228152808.png)
 
 坐标变换的过程，就是 camera transformation 推导过程，生成相机变换矩阵 $M_{cam}$ ，即
 
@@ -216,7 +216,7 @@ GLM_FUNC_QUALIFIER mat<4, 4, T, Q> lookAt(vec<3, T, Q> const& eye, vec<3, T, Q> 
 
 ## Projection Transformation
 
-投影变换，有两种，一种是正交投影（orthographic projection），另一个是透视投影（perspective projection）。![[imgs/overview-3.png]]
+投影变换，有两种，一种是正交投影（orthographic projection），另一个是透视投影（perspective projection）。![[_imgs/overview-3.png]]
 
 **正交投影**，就是假设相机离得无限远，可以理解成平行投影，可以将物体等大小投影到屏幕上。实际操作通常是将摄像机所照射的**长方体**映射到规范立方体上面，实际操作可简化为两个步骤：
 - 将长方体中心移动到原点
@@ -269,7 +269,7 @@ GLM_FUNC_QUALIFIER mat<4, 4, T, Q> lookAt(vec<3, T, Q> const& eye, vec<3, T, Q> 
  $$
 
 
-![](imgs/Pasted%20image%2020231228172459.png)
+![](_imgs/Pasted%20image%2020231228172459.png)
 
 注：**视场角（Field-of-View，fov）**，在透视投影的实现中常常会用到。
 
@@ -645,7 +645,7 @@ for x = x0 to x1 do
 ## Aliasing
 
 走样（aliasing），其类型有一下几种：
-![](imgs/rasterization-1.png)
+![](_imgs/rasterization-1.png)
 产生的原因就是信号变化的太快，但是采样的频率却很低。
 
 
@@ -661,22 +661,22 @@ $$
 		- \frac{2A\cos(3tw)}{3\pi}  + \frac{2A\cos(5tw)}{5\pi}\\
 		- \frac{2A\cos(7tw)}{7\pi} + \cdots
 $$
-![](imgs/rasterization-2.png)
+![](_imgs/rasterization-2.png)
 
 
 然后是**傅立叶变换**，一种线性积分变换，用于函数（应用上称作“信号”）在时域和频域之间的变换，通过傅立叶变换可以将函数分解成不同的频率的函数。
-![](imgs/rasterization-3.png)
+![](_imgs/rasterization-3.png)
 
 
 最后回归到了采样（sampling）问题，设置同一种采样频率，那么对于不同频率的函数，采样出来的点是不一样的。
-![](imgs/rasterization-4.png)
+![](_imgs/rasterization-4.png)
 
 某些频率函数采样出来的点不能很好的还原最初的函数，采用同样的间隔进行采样，发现频率越高采样越不准确，所以**更高频率的函数需要更密集的采样点**。
 
 可以通过频率的定义走样：
 
 当用同样的方法去采样蓝色和黑色两个不同频率的函数，得到的结果是一样的，我们无法区分，这就叫走样。
-![](imgs/rasterization-5.png)
+![](_imgs/rasterization-5.png)
 简单来说，就是像变成了另一个东西。
 
 
@@ -689,7 +689,7 @@ $$
 - 低频信息：变化比较少的信息
 - 高频信息：体现在物体边缘（边缘两侧色彩区别大，变化），高频表示细节。
 
-![](imgs/rasterization-6.png)
+![](_imgs/rasterization-6.png)
 
 常见的滤波有：
 - 高通滤波：只有高频信号可以通过，低频信号去掉了。高频信息可以表示图像内容的边界。
@@ -711,7 +711,7 @@ $$
 
 简单的 $1 \times 1$ 的 Box Function（Box Filter）就是一个卷积核（低通滤波器）。
 
-![](imgs/rasterization-7.png)
+![](_imgs/rasterization-7.png)
 如果将这个box变大，频域上会变小，因为之前我们用 $3 \times 3$ 的卷积核对图像进行滤波，从而模糊图像，那如果不用 $3 \times 3$ 的，用 $21 \times 21$ 的，或者更大的，对于周围任何像素，都取它周围那么大区域平均起来，只能留下更低的频率。
 所以用越大的box，得到的图像肯定会越来越模糊，或者反过来说，用一个超级小的box，就相当于没有做滤波，将所有的频率都留了下来。
 
@@ -719,7 +719,7 @@ $$
 #### Sampling
 
 采样，就是重复频域上的内容。
-![](imgs/rasterization-8.png)
+![](_imgs/rasterization-8.png)
 如下图（左边时域，右边频域），假设我们想要对a函数进行采样，也就是将其变成很多离散的点，相当于a函数乘上c函数（冲击函数：只在固定位置上有值，而在其他地方没有值，或者值为0）。
 
 因为左边时域上的乘积等于右边频域上的卷积，所以b卷积d等于f，我们会发现频域上的操作实际上是把原始的函数的频谱复制粘贴了很多个，所以采样就是在重复原始信号的频谱。
@@ -729,7 +729,7 @@ $$
 
 **注意**：过大的采样间隔会导致输出频谱周期间隔较小，信号频谱出现重叠，导致信号被破坏。（在信号处理上面，为避免冲突要求采样频率超过信号频谱最大频率的2倍）
 **理解**：要回到频率的定义上面，$f = \frac{1}{T}$ ，采样间隔过大，就会导致周期 $T$ 变大，那么对应的频率 $f$ 的值就变小，在频域上面表现的就离的更近了。
-![](imgs/rasterization-9.png)
+![](_imgs/rasterization-9.png)
 
 所以走样在频率的角度上来说，就是频率的频谱在经过采样后发生混叠。
 
@@ -742,15 +742,15 @@ $$
 说白了，就是先对图像进行处理，处理后再采样的话，就会让显示的更好。
 
 反走样，要**先滤波，再采样**。既然锯齿化等发生在边缘，也就是高频的部分，那么就把高频的部分过滤掉，就可以把图像更好的展现出来了。所以这种方法也叫低通滤波，或者叫模糊（Blur）。
-![](imgs/rasterization-10.png)
+![](_imgs/rasterization-10.png)
 不能先采样后滤波，这样造成的显示效果不好（混叠还是会混叠）。
 
 反采样的实际应用方法：
 
 **方法一**：平均法，对于每个像素，三角形的覆盖情况如下图所示，对于任何一个像素，都对三角形覆盖（黑色表示覆盖面积）的面积求个平均，也就是将像素内部的值平均起来了。
-![](imgs/rasterization-11.png)
+![](_imgs/rasterization-11.png)
 **方法二**：近似方法（MultiSampling Anti-Aliasing，MSAA），计算出每个像素的覆盖率，用更多的采样点进行反走样，它是对反走样的近似，并不能严格意义上解决反走样的问题。
-![](imgs/rasterization-12.png)
+![](_imgs/rasterization-12.png)
 MSAA的开销是增加了计算量，从工业的角度，人们并不是把一个像素规则的划分为4X4个点，而是会用更加有效的图案去分布这些点，邻近的点还会被相邻的像素所复用（复用会减少计算量）。
 
 缺点：

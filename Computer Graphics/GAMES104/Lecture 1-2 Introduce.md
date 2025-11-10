@@ -13,5 +13,5 @@ GAMES104 课程将介绍现代游戏引擎所涉及的系统架构、技术点�
 
 ## Runtime Game Engine Architecture
 
-![](imgs/Pasted%20image%2020251011143549.png)
+![](_imgs/Pasted%20image%2020251011143549.png)
 

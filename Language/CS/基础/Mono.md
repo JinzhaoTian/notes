@@ -1,6 +1,6 @@
 Mono 是一个开源的跨平台开发框架，主要用于运行和开发基于 .NET 的应用程序，由 Xamarin 开发，旨在让开发者可以在非 Windows 系统（如 Linux、macOS 等）上运行 .NET 应用。Mono 现在是 .NET Foundation 的一部分。
 
-![](imgs/Pasted%20image%2020240912100802.png)
+![](_imgs/Pasted%20image%2020240912100802.png)
 
 主要特性：
 1. **跨平台支持**：Mono 允许开发者编写一次代码，然后可以在多个平台上运行，包括 Windows、Linux、macOS、Android、iOS 等。

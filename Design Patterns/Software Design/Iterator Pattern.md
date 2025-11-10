@@ -1,4 +1,4 @@
-![](../imgs/DesignPattern-Iterator.png)
+![](../_imgs/DesignPattern-Iterator.png)
 
 #### 原理
 

@@ -19,7 +19,7 @@ LLVM 使用 BSD 开源许可。
 
 传统的编译器架构分为前端（Frontend），优化器（Optimizer），后端（Backend）架构：
 
-![](imgs/Pasted%20image%2020250717174555.png)
+![](_imgs/Pasted%20image%2020250717174555.png)
 
 - 前端（Frontend）：词法分析、语法分析、语义分析、生成中间代码。
 - 优化器（Optimizer）：中间代码优化。
@@ -28,7 +28,7 @@ LLVM 使用 BSD 开源许可。
 
 LLVM 将架构进行扩展，
 
-![](imgs/Pasted%20image%2020250717174729.png)
+![](_imgs/Pasted%20image%2020250717174729.png)
 
 不同的前端后端使用统一的中间代码 LLVM IR（ LLVM Intermediate Representation），将优化阶段变成了一个通用的阶段，它针对的是统一的 LLVM IR，不论是支持新的编程语言，还是支持新的硬件设备，都不需要对优化阶段做修改。如果需要支持一种新的编程语言，那么只需要实现一个新的前端。如果需要支持一种新的硬件设备，那么只需要实现一个新的后端。
 

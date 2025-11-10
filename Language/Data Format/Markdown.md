@@ -4,7 +4,7 @@
 ## 渲染逻辑
 
 Markdown 渲染逻辑主要包括以下几个步骤：
-![](imgs/Pasted%20image%2020250706205730.png)
+![](_imgs/Pasted%20image%2020250706205730.png)
 
 1. **解析输入**：首先，读取输入的 Markdown 文本。Markdown 文本是纯文本格式，使用特定的标记来表示格式（例如，`#` 表示标题，`*` 表示无序列表）。
 2. **构建语法树**：将输入的 Markdown 文本转换为语法树（Abstract Syntax Tree, AST）。这个过程涉及识别 Markdown 的不同元素（如标题、段落、列表、链接等）并构建相应的树形结构。

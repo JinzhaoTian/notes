@@ -2,13 +2,13 @@
 
 ## Challenges
 
-1. **挑战一**：**游戏的画面是十分复杂的**，一帧画面可能会出现成千上万个游戏对象。![](imgs/Pasted%20image%2020251013102730.png)
-2. **挑战二**：**需要深度适配当代的硬件（不同的电脑配置）**![](imgs/Pasted%20image%2020251013102857.png)
-3. **挑战三**：**追求稳定的帧率，面对大场景和小场景，高分辨率低分辨率，都能有同样的帧率**，因此绘制算法要在一个固定的时间里面。同样，也**追求尽可能高的帧率**，给的时间越来越小，要求越来越高。![](imgs/Pasted%20image%2020251013103154.png)
-4. **挑战四**：**CPU 带宽限制，一般只能吃掉 $10\%$ ~ $20\%$，剩下的都是给到 Gameplay 系统**。![](imgs/Pasted%20image%2020251013103624.png)
+1. **挑战一**：**游戏的画面是十分复杂的**，一帧画面可能会出现成千上万个游戏对象。![](_imgs/Pasted%20image%2020251013102730.png)
+2. **挑战二**：**需要深度适配当代的硬件（不同的电脑配置）**![](_imgs/Pasted%20image%2020251013102857.png)
+3. **挑战三**：**追求稳定的帧率，面对大场景和小场景，高分辨率低分辨率，都能有同样的帧率**，因此绘制算法要在一个固定的时间里面。同样，也**追求尽可能高的帧率**，给的时间越来越小，要求越来越高。![](_imgs/Pasted%20image%2020251013103154.png)
+4. **挑战四**：**CPU 带宽限制，一般只能吃掉 $10\%$ ~ $20\%$，剩下的都是给到 Gameplay 系统**。![](_imgs/Pasted%20image%2020251013103624.png)
 ## Outline of Rendering
 
-![](imgs/Pasted%20image%2020251013144440.png)
+![](_imgs/Pasted%20image%2020251013144440.png)
 
 游戏引擎并不只是渲染引擎，但是渲染是游戏中的一个重要环节。游戏引擎中的渲染和计算机图形学的渲染侧重点是不同的：
 1. **计算机图形学中的渲染**：
@@ -31,11 +31,11 @@
 
 现代游戏渲染是通过 CPU + GPU 合作处理模式，CPU 准备好数据渲染数据后将其提交到 GPU，GPU 设置好渲染状态后开始处理 CPU 所提交的数据。
 
-![](imgs/Pasted%20image%2020251017214557.png)
+![](_imgs/Pasted%20image%2020251017214557.png)
 
 #### 渲染中的计算
 
-![](imgs/Pasted%20image%2020251017214507.png)
+![](_imgs/Pasted%20image%2020251017214507.png)
 
 1. **投影和光栅化**：主要是关于矩阵的计算
 	- 透视投影
@@ -56,7 +56,7 @@
 
 硬件底层为了加速运算，集成了指令并行的机制：
 
-![](imgs/Pasted%20image%2020251017220853.png)
+![](_imgs/Pasted%20image%2020251017220853.png)
 
 1. **SIMD**：单指令多数据，比如处理一个 vector4 的加法，在计算时，将 $x$，$y$，$z$，$w$ 同时进行加法运算，即一个指令完成四个加法运算，即 $x$，$y$，$z$，$w$ 的加法运算。
 2. **SIMT**：单指令多线程，其核心是将 core 做的足够小，从而能够内置很多个core，这样在执行 $c=a+b$ 这条指令时，各个 core 上都执行这条指令，但是我们每个 core 上的 $a$ 和 $b$ 的数据是不同的。
@@ -70,7 +70,7 @@
 
 以 Fermi 架构举例（第一个完整的 GPU 计算架构），
 
-![](imgs/Pasted%20image%2020251017224850.png)
+![](_imgs/Pasted%20image%2020251017224850.png)
 
 GPU 中放置了很多个内核，但又将其分成了一组一组的形式，一组内核称为 GPC（Graphics Progressing Cluster，图形处理集群）。在 GPC 中可以看到很多的 SM（Streaming Multiprocessor），SM 中存在很多小的内核，这些内核是指令的直接执行者，如果是 N 卡这些核叫做 CUDA（Compute Unified Device Architecture，统一计算设备架构），给 SM 一条指令，CUDA 核们就开始工作。
 
@@ -81,13 +81,13 @@ GPU 中放置了很多个内核，但又将其分成了一组一组的形式，�
 
 现代 CPU 的架构是冯诺依曼架构（数据与计算分离），这种架构的问题就是计算需要准备好数据，因为找数据是特别慢的，数据在不同 Units 之间搬来搬去也是特别慢的。
 
-![](imgs/Pasted%20image%2020251020214736.png)
+![](_imgs/Pasted%20image%2020251020214736.png)
 
 CPU 和 GPU 可以看做是独立的机器，两个机器之间的数据传递成本很高。如果进行一个计算，先让 CPU 将数据传到 GPU 中进行计算，等 GPU 计算完后 CPU 再将结果读取回来，再基于这个结果进行判断，之后再告诉 CPU 如何绘制，这个过程叫数据的 back-force。
 
 ##### Cache
 
-![](imgs/Pasted%20image%2020251020221550.png)
+![](_imgs/Pasted%20image%2020251020221550.png)
 
 
 #### Renderable
@@ -105,7 +105,7 @@ CPU 和 GPU 可以看做是独立的机器，两个机器之间的数据传递�
 	- **三角面片**：每三个顶点可以形成一个三角面片
 		- Triangle List：不对顶点数据进行处理，因此 $n$ 个三角形需要 $n \times 3$ 个顶点数据。
 		- Triangle Strip：顶点列表中，连续三个顶点表示一个三角面，这样就省去了索引数据，并且对缓存友好。
-		- Triangle Fan![](imgs/Pasted%20image%2020251020221648.png)
+		- Triangle Fan![](_imgs/Pasted%20image%2020251020221648.png)
 > [!tip] 要在顶点上存储法向量方向
 > 因为如果通过临近三角形的法向量来求三角形上顶点法向量方向的话，当你在渲染像正方形这样的物体时，会发现折线部分上的顶点法向量方向是错误的。
 
@@ -119,21 +119,21 @@ CPU 和 GPU 可以看做是独立的机器，两个机器之间的数据传递�
 
 #### Render Objects in the Engine
 
-1. **Coordinate System and Transformation**：模型是基于自己的坐标系，需要讲这些转换到屏幕空间坐标。![](imgs/Pasted%20image%2020251020224929.png)
+1. **Coordinate System and Transformation**：模型是基于自己的坐标系，需要讲这些转换到屏幕空间坐标。![](_imgs/Pasted%20image%2020251020224929.png)
 2. **Object with Many Materials**：一个物体可能不同部分会有不同的材质，GPU 作为一个状态机，只会保留最后材质所提交的状态进行渲染。
-	- **Submesh**：对于存在多个材质的对象，会根据材质对 mesh 进行切分为不同的 submesh，每个 submesh 有对应的材质、纹理、shader，并且把 vertex 和 triangle 放在一个大的 buffer 里进行管理，至此一个完整的复杂对象渲染就处理完成了。![](imgs/Pasted%20image%2020251020225429.png)
-	- **缺点**：如果我们需要绘制大量这样的复杂 GameObject，如果每个单位都独立存储一份完整的渲染数据，这样的开销太过巨大。![](imgs/Pasted%20image%2020251020225638.png)
-3. **Resource Pool**：这些单位的 Mesh、材质、纹理都有重复部分，因此较好的数据组织方式是对渲染资源数据创建资源池。![](imgs/Pasted%20image%2020251020230105.png)
+	- **Submesh**：对于存在多个材质的对象，会根据材质对 mesh 进行切分为不同的 submesh，每个 submesh 有对应的材质、纹理、shader，并且把 vertex 和 triangle 放在一个大的 buffer 里进行管理，至此一个完整的复杂对象渲染就处理完成了。![](_imgs/Pasted%20image%2020251020225429.png)
+	- **缺点**：如果我们需要绘制大量这样的复杂 GameObject，如果每个单位都独立存储一份完整的渲染数据，这样的开销太过巨大。![](_imgs/Pasted%20image%2020251020225638.png)
+3. **Resource Pool**：这些单位的 Mesh、材质、纹理都有重复部分，因此较好的数据组织方式是对渲染资源数据创建资源池。![](_imgs/Pasted%20image%2020251020230105.png)
 4. **Instance**：实例化，
 
 5. **Sort by Material**：将场景中的物体按照材质进行排序，将相同材质物体一起计算更新，从而只需要设置一次材质，大大减少了 GPU 设置渲染状态的耗时从而提升了速度。
 
 6. **Visibility Culling**：对于一个拥有很多 GameObject 的游戏场景，不能将每个角色都绘制出来，这样硬件的负荷大，因此需要 visibility culling，它是引擎的渲染模块中的一个基础底层系统。
-	- **根据视锥体进行剔除**：给每个物体定义一个包围盒或者包围球，这样问题就简化为如何判断包围盒或者包围球和视锥体的内外关系。![](imgs/Pasted%20image%2020251020231023.png)
-	- **根据场景划分进行剔除**：通过对场景中的 GameObject 进行划分管理，比如经典的四叉树、BVH 划分等，预先剔除摄像机覆盖范围外的对象。![](imgs/Pasted%20image%2020251020230952.png)
-		- **PVS（Potential Visibility Set）**：将一个大的游戏场景划分为一系列的子场景，如图，相邻的子场景之间设置 portal（也就是真实世界中的门），当你站在一个子场景时，通过 portal（门或窗）只能看见有限的子场景。![](imgs/Pasted%20image%2020251020231337.png)
+	- **根据视锥体进行剔除**：给每个物体定义一个包围盒或者包围球，这样问题就简化为如何判断包围盒或者包围球和视锥体的内外关系。![](_imgs/Pasted%20image%2020251020231023.png)
+	- **根据场景划分进行剔除**：通过对场景中的 GameObject 进行划分管理，比如经典的四叉树、BVH 划分等，预先剔除摄像机覆盖范围外的对象。![](_imgs/Pasted%20image%2020251020230952.png)
+		- **PVS（Potential Visibility Set）**：将一个大的游戏场景划分为一系列的子场景，如图，相邻的子场景之间设置 portal（也就是真实世界中的门），当你站在一个子场景时，通过 portal（门或窗）只能看见有限的子场景。![](_imgs/Pasted%20image%2020251020231337.png)
 	- **在 GPU 中剔除**：通过 GPU 进行 Culling 操作，比如 early-Z。
-		- 利用了 GPU 高效的并行化能力，用比较低的成本形成一群遮挡物的深度图，然后通过比较从而节省掉不必要的计算过程，对于大型场景很有用。![](imgs/Pasted%20image%2020251020231620.png)
+		- 利用了 GPU 高效的并行化能力，用比较低的成本形成一群遮挡物的深度图，然后通过比较从而节省掉不必要的计算过程，对于大型场景很有用。![](_imgs/Pasted%20image%2020251020231620.png)
 		- **Early-Z（z-buffer）**：在绘制对象时，靠前的物体会挡住靠后的物体，在进行真正绘制之前，Camera 会对空间对象生成一张深度图（z-buffer）。在之后绘制对象时，就可以判断像素的深度是否符合要求，以此来判断是否进行绘制。
 
 7. **Texture Compression**：纹理压缩，可以节省数据传输的带宽。
@@ -142,17 +142,17 @@ CPU 和 GPU 可以看做是独立的机器，两个机器之间的数据传递�
 		- 以 DXTC 举例，对于每个划分的小块，取得其中最亮和最暗的像素点，那么我们就可以通过插值处理从而求得二者中间一系列的颜色。
 
 8. **Authoring Tools of Modeling**：
-	- Polymodeling![](imgs/Pasted%20image%2020251020232000.png)
-	- Sculpting![](imgs/Pasted%20image%2020251020231945.png)
-	- Scanning![](imgs/Pasted%20image%2020251020231933.png)
-	- Procedural Modeling![](imgs/Pasted%20image%2020251020231922.png)
+	- Polymodeling![](_imgs/Pasted%20image%2020251020232000.png)
+	- Sculpting![](_imgs/Pasted%20image%2020251020231945.png)
+	- Scanning![](_imgs/Pasted%20image%2020251020231933.png)
+	- Procedural Modeling![](_imgs/Pasted%20image%2020251020231922.png)
 
 > [!info] 新概念的渲染管线
 > 随着建模工具的不断进步，我们得到的模型也变得更加细节具体，数据量也不断增大，游戏和影视有很大的重合部分，但由于游戏的实时渲染以及硬件存储要求，通常一个模型的面片数不会超过 1 万，而影视级的模型通常是千万级的。
 
 9. **Cluster-Based Mesh Pipeline**：将模型分成多个 Cluster（每个 Cluster有 32\64个 triangle），根据这些 Cluster 与摄像机的远近来展示不同的细节。
 	- 现代 GPU 已经可以基于数据动态地生成几何细节（曲面细分 Tessellation），而不是像原先的管线将 mesh 数据上传。
-	- 因此当将每个 Cluster 大小确定好后，由于它的计算都是高效一致的，以相同的 Cluster 结构让 GPU 来并行处理时，提高了效率。![](imgs/Pasted%20image%2020251020232855.png)
+	- 因此当将每个 Cluster 大小确定好后，由于它的计算都是高效一致的，以相同的 Cluster 结构让 GPU 来并行处理时，提高了效率。![](_imgs/Pasted%20image%2020251020232855.png)
 
 
 ### Lighting，Materials and Shaders
@@ -201,7 +201,7 @@ $$
 
 #### Pre-computed Global Illumination
 
-![](imgs/Pasted%20image%2020251024174424.png)
+![](_imgs/Pasted%20image%2020251024174424.png)
 
 实时计算全局光照太过困难，因此可以预先计算全局光照的结果，以空间换时间。对于场景中，其实大部分物体都是静止不动的，比如假设场景中 $90 \%$ 的物体是静止不动的，而且设置好了场景中的光源角度，其实就可以通过预计算来提前算出来全局光照。
 
@@ -231,7 +231,7 @@ Spherical Harmonics（球谐函数）是一系列基函数，系列中的每个�
 Rendering pipeline is the management order of all rendering operation execution and
 resource allocation.
 
-![](imgs/Pasted%20image%2020251024173001.png)
+![](_imgs/Pasted%20image%2020251024173001.png)
 
 
 

@@ -1,6 +1,6 @@
 Filebeat 是一个轻量级的日志数据收集器，属于 Elastic Stack（ELK Stack）的一部分，由 Elastic 公司开发。它专门用于转发和集中日志数据。
 
-![](imgs/Pasted%20image%2020250707224721.png)
+![](_imgs/Pasted%20image%2020250707224721.png)
 
 ## 主要功能
 

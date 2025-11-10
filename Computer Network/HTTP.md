@@ -23,7 +23,7 @@ HTTP（HyperText Transfer Protocol，超文本传输协议）为客户和服务�
 
 ### 握手过程
 
-![](imgs/Pasted%20image%2020230704134721.png)
+![](_imgs/Pasted%20image%2020230704134721.png)
   
 
   

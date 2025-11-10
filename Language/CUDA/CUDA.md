@@ -11,11 +11,11 @@ CUDA（Compute Unified Device Architecture）是由NVIDIA开发的一种并行�
 
 ## 架构
 
-![](imgs/Pasted%20image%2020240203173052.png)
+![](_imgs/Pasted%20image%2020240203173052.png)
 
 CUDA 编程模型是一个异构模型，需要 CPU 和 GPU 协同工作。在 CUDA 中，**host** 和 **device** 是两个重要的概念，我们用 host 指代 CPU 及其内存，而用 device 指代 GPU 及其内存。CUDA 程序中既包含 host 程序，又包含 device 程序，它们分别在 CPU 和 GPU 上运行。同时，host 与 device 之间可以进行通信，这样它们之间可以进行数据拷贝。
 
-![](imgs/Pasted%20image%2020240203173708.png)
+![](_imgs/Pasted%20image%2020240203173708.png)
 
 典型的 CUDA 程序的执行流程如下：
 1. 分配 host 内存，并进行数据初始化；

@@ -1,7 +1,7 @@
 
 教程：[Ray Tracing in One Weekend Series](https://raytracing.github.io/)
 
-![](imgs/Pasted%20image%2020231211104305.png)
+![](_imgs/Pasted%20image%2020231211104305.png)
 
 ## 软光追
 

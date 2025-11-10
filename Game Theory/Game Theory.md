@@ -64,7 +64,7 @@
 - **帕累托最优**（**Pareto Optimality**）
 
 ## Overview
-![](imgs/Pasted%20image%2020250110103240.png)
+![](_imgs/Pasted%20image%2020250110103240.png)
 #### 策略博弈
 
 一个策略博弈（Strategic Games）包含，

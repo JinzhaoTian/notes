@@ -175,7 +175,7 @@ for i in {1..20}; do cp thsample_test.tar 01/thsample_test-$i.tar; done
 
 这时候就要贴一个经典的图了：
 
-![](imgs/LinuxCommand-image-1.png)
+![](_imgs/LinuxCommand-image-1.png)
 
 把文件的权限想成二进制位，三个一组，共有三组，分别代表文件所有者（u，user），文件所属组用户（g，group）和其他用户（o，other），一组是rwx读写和执行，rwx出现就代表1，出现（-）就代表0。
 
@@ -185,7 +185,7 @@ for i in {1..20}; do cp thsample_test.tar 01/thsample_test-$i.tar; done
 
 举个例子就是，下面这样：
 
-![](imgs/LinuxCommand-image-2.png)
+![](_imgs/LinuxCommand-image-2.png)
 
 第一个文件最前面的部分是 `-rw-rw-r--`，分组一下就是 `-\rw-\rw-\r--`，一点点翻译就是：普通文件，文件所有者的权限是读r和写w，文件所属组用户权限是读r和写w，其他用户的权限是读r，权限代表的数字就是 $ rw- = 110_{2} = 6_{10}  $ 。
 

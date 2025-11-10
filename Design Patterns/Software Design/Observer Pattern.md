@@ -1,4 +1,4 @@
-![](../imgs/DesignPattern-Observer.png)
+![](../_imgs/DesignPattern-Observer.png)
 
 #### 原理
 

@@ -7,7 +7,7 @@
 
 ## OUTLINE
 
-![](imgs/Pasted%20image%2020240329171612.png)
+![](_imgs/Pasted%20image%2020240329171612.png)
 
 1. [基础架构](基础架构.md)：单线程，基于内存，I/O 多路复用
 	- [Hash Slot](Hash%20Slot.md)

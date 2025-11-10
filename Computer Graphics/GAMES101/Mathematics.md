@@ -117,7 +117,7 @@
 		y
 	\end{array} \right]
   $$
-  ![](imgs/overview-2.png)
+  ![](_imgs/overview-2.png)
 
 #### 齐次坐标
 
@@ -326,7 +326,7 @@ R_z(\gamma) = \left( \begin{array}{cccc}
 	0 & 0 & 0 & 1
 \end{array} \right)
 $$
-上式中，似乎 $R_y$ 和其他两个不一样，是因为从 $z$ 叉乘到 $x$ 才是得到 $y$ ，所以是反的，有一个循环对称的性质。![](imgs/Pasted%20image%2020240805104500.png)
+上式中，似乎 $R_y$ 和其他两个不一样，是因为从 $z$ 叉乘到 $x$ 才是得到 $y$ ，所以是反的，有一个循环对称的性质。![](_imgs/Pasted%20image%2020240805104500.png)
 用简单的旋转描述复杂的旋转：
 $$
 R_{xyz}(\alpha, \beta, \gamma) = R_x(\alpha)R_y(\beta)R_z(\gamma)

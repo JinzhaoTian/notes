@@ -1,4 +1,4 @@
-![](imgs/Pasted%20image%2020240515093458.png)
+![](_imgs/Pasted%20image%2020240515093458.png)
 OpenCV（Open Source Computer Vision Library）是一个开源的计算机视觉和机器学习软件库。它由一系列的C函数和少量C++类构成，同时提供Python、Java和MATLAB等语言的接口，实现了图像处理和计算机视觉方面的很多通用算法。
 
 

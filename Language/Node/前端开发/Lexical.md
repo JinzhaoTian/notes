@@ -12,10 +12,10 @@
 
 ## 原理
 
-![](../../../Frontend/imgs/Pasted%20image%2020241119101513.png)
+![](../../../Frontend/_imgs/Pasted%20image%2020241119101513.png)
 
 
-![](../../../Frontend/imgs/Pasted%20image%2020241119101604.png)
+![](../../../Frontend/_imgs/Pasted%20image%2020241119101604.png)
 
 ### 核心概念
 
@@ -420,7 +420,7 @@ const editorConfig = {
 
 Node Transforms 是响应 EditorState 变化的最有效的机制，Transforms 会在变化传递到 DOM 之前按照顺序执行，即使有多个 Transform 也将只会产生一次 DOM reconciliation （Lexical 生命周期中最昂贵的操作）。
 
-![](../../../Frontend/imgs/Pasted%20image%2020241127095045.png)
+![](../../../Frontend/_imgs/Pasted%20image%2020241127095045.png)
 
 
 **触发**：
@@ -590,7 +590,7 @@ function Editor() {
 
 ##### 插件
 
-![](../../../Frontend/imgs/Pasted%20image%2020241119104658.png)
+![](../../../Frontend/_imgs/Pasted%20image%2020241119104658.png)
 
 Lexical 没有为其插件定义任何特定接口，最简单的插件是一个接受 `LexicalEditor` 实例并返回清理函数的函数。通过访问 `LexicalEditor`，插件可以通过 `Commands`，`Transforms`，`Nodes` 或其他 API 扩展编辑器。
 

@@ -16,7 +16,7 @@ NAS（Network Attached Storage，网络附加存储）是一种将存储设备�
 
 ### TrueNAS Scale
 
-![](imgs/Pasted%20image%2020240604112326.png)
+![](_imgs/Pasted%20image%2020240604112326.png)
 
 TrueNAS Open Storage 软件的三个版本，由 TrueNAS CORE、TrueNAS Enterprise 和 TrueNAS SCALE 组成。
 
@@ -97,7 +97,7 @@ virt-install \
 
 ## Unraid
 
-![](imgs/Pasted%20image%2020240810113101.png)
+![](_imgs/Pasted%20image%2020240810113101.png)
 
 Unraid 不是免费的，它的收费模式是按照系统内的存储设备数量（不包含引导U盘）分为 Basic, Plus, Pro 三种，一次性买断制，价格分别为 59, 89, 129 （美元）。
 

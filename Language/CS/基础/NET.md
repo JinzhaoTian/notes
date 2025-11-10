@@ -1,12 +1,12 @@
 .NET 是由微软开发的一个跨平台、开源的开发框架，用于构建各种类型的应用程序（如 Web、桌面、移动、云服务等）。
 
-![](imgs/Pasted%20image%2020240312104327.png)
+![](_imgs/Pasted%20image%2020240312104327.png)
 
 .NET Core 是一个可以用来构建现代、可伸缩和高性能的跨平台软件应用程序的通用开发框架，可用于为 Windows、Linux 和 macOS 构建软件应用程序。.NET Core 是最通用的框架，可用于构建各种软件，包括Web应用程序、移动应用程序、桌面应用程序、云服务、微服务、API、游戏和物联网应用程序。
 
 .NET Core 并不局限于单一的编程语言，它支持 C#、VB.NET、F#、XAML 和 TypeScript，这些编程语言都是开源的，由独立的社区管理。
 
-![](imgs/Pasted%20image%2020240312100346.png)
+![](_imgs/Pasted%20image%2020240312100346.png)
 
 `.NET Core 3.1` 是 .NET Core 的最后一个版本，`.NET 5`（2020年） 开始，微软统一了 .NET Framework 和 .NET Core，形成 "`.NET`"（无 "Core" 后缀），成为未来所有 .NET 应用的统一平台。
 

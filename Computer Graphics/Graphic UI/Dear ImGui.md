@@ -11,7 +11,7 @@ Officially maintained backends/bindings (in repository):
 - **Platforms**: GLFW, SDL2/SDL3, Win32, Glut, OSX, Android.
 - **Frameworks**: Allegro5, Emscripten.
 
-![](imgs/Pasted%20image%2020231220175835.png)
+![](_imgs/Pasted%20image%2020231220175835.png)
 
 
 ## Getting Started

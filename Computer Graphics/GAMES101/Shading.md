@@ -25,7 +25,7 @@ L = L_a + L_d + L_s
 $$
 
 有两个理论非常重要：
-![](imgs/shading-1.png)
+![](_imgs/shading-1.png)
 
 ## Diffuse Term
 
@@ -119,7 +119,7 @@ L_a = k_aI_a
 $$
 
 
-![](imgs/shading-2.png)
+![](_imgs/shading-2.png)
 
 
 综上所述，**Blinn-Phong Reflection Model（Blinn-Phong反射模型）公式**：
@@ -148,7 +148,7 @@ vec3 ambient = ambientStrength * lightColor;
 # Shading Frequencies
 
 着色频率，这三个球有完全相同的几何形状，为什么着色后的结果各不相同呢？这就涉及到着色频率，就是着色应用在哪些点上。
-![](imgs/shading-3.png)
+![](_imgs/shading-3.png)
 
 有三种着色的方式：
 - Flat Shading：应用在表面，逐面着色；
@@ -171,7 +171,7 @@ vec3 ambient = ambientStrength * lightColor;
 插值是一种通过已知的、离散的数据点，在范围内推求新数据点的过程或方法。在图形学中，有很多操作是在三角形的顶点上完成或计算的，我们希望在三角形内部得到一个平滑的过渡，所以当知道顶点的属性的时候，我希望在三角形内部的任何一个点得到一个值，并且是一个顶点到一个顶点平滑的过渡，我就需要插值。
 
 利用重心坐标，就可以数学化表达插值：
-![](imgs/shading-4.png)
+![](_imgs/shading-4.png)
 首先，在三角形所在平面的任意一个点 $(x, y)$ 都可以用三顶点 $(\alpha, \beta, \gamma)$ 的线性组合来表示，如果在三角形内部，那么系数非负。重心坐标就是三个系数相等，均为 $\frac{1}{3}$ 时的坐标$(x', y')$。
 
 重心坐标不能保证投影后不变，所以三维的要在三维中找到重心坐标后再做插值，而不能投影后做插值。
@@ -183,7 +183,7 @@ vec3 ambient = ambientStrength * lightColor;
 
 渲染管线，指的是一系列操作的流程，这个流程具体来说就是将一堆具有三维几何信息的数据点最终转换到二维屏幕空间的像素。
 
-![](imgs/shading-5.png)
+![](_imgs/shading-5.png)
 分为如下几个步骤：
 
 - 顶点处理（Vertex Processing）：将世界坐标系下未超出观察空间的顶点进行MVP变化，最终得到投影到二维平面的坐标信息（同时为了Zbuffer保留深度z值）。
@@ -202,7 +202,7 @@ vec3 ambient = ambientStrength * lightColor;
 
 **任何3D物体的表面都是2D的，所以纹理就是一张图**。纹理映射：把这张图蒙在一个3D物体上。
 
-![](imgs/shading-6.png)
+![](_imgs/shading-6.png)
 
 纹理映射，我们看到球上面不同的位置有不同的颜色，这些不同颜色地方，共用同一个着色模型，只是它们本身的漫反射系数kd发生了改变，也就是我们希望有一种方法能够定义，对于一个物体它上面的任何一个点它们的属性。
 
@@ -211,7 +211,7 @@ vec3 ambient = ambientStrength * lightColor;
 ## Texture Coordinates
 
 为了数学化表示纹理映射，首先应该建立纹理坐标（Texture Coordinates）。纹理坐标，或者说uv坐标，是一个二维坐标，其中 $u$、$v$ 的范围都是 $(0, 1)$ 。
-![](imgs/shading-7.png)
+![](_imgs/shading-7.png)
 红色表示在 $u$ 方向很大，绿色表示在 $v$ 方向上很大，整个这张图就形成了不同的颜色，那不同的颜色就表示不同的 $uv$，也就是纹理上的不同坐标。
 
 有些纹理可以不断的重复，如何使纹理**无缝衔接**也是一门学问。

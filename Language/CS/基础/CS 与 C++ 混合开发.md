@@ -347,7 +347,7 @@ extern "C" {
 
 
 2. 编译成 `*.dll` 文件
-	- 在Visual Studio中，选择 `项目 -> 属性` ，然后在配置类型中设置为动态链接库(.dll)![](imgs/Pasted%20image%2020230921143540.png)
+	- 在Visual Studio中，选择 `项目 -> 属性` ，然后在配置类型中设置为动态链接库(.dll)![](_imgs/Pasted%20image%2020230921143540.png)
 	- 同时对于不同的编译模式Debug、Release都需要分别配置，对应的编译平台 x86、x64 都需要设置完毕。
 
 

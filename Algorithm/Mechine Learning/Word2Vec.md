@@ -12,7 +12,7 @@ Distributed representation可以解决One-Hot编码存在的问题，它的思�
 
 Word2Vec 的训练模型本质上是只具有一个隐含层的神经元网络：
 
-![](imgs/Word2Vec-image-1.png)
+![](_imgs/Word2Vec-image-1.png)
 
 它的输入是采用One-Hot编码的词汇表向量，它的输出也是One-Hot编码的词汇表向量。使用所有的样本，训练这个神经元网络，等到收敛之后，**从输入层到隐含层的那些权重**，便是每一个词的采用Distributed Representation的词向量。
 
@@ -22,7 +22,7 @@ Word2Vec 的训练模型本质上是只具有一个隐含层的神经元网络�
 
 Google的Mikolov在关于Word2Vec的论文中提出了CBOW和Skip-gram两种模型，CBOW适合于数据集较小的情况，而Skip-Gram在大型语料中表现更好。
 
-![](imgs/Word2Vec-image-2.png)
+![](_imgs/Word2Vec-image-2.png)
 
 假如我们有一个句子“There is an apple on the table”作为训练数据，CBOW的输入为（is,an,on,the），输出为apple。而Skip-gram的输入为apple，输出为（is,an,on,the）。
 
@@ -30,7 +30,7 @@ Google的Mikolov在关于Word2Vec的论文中提出了CBOW和Skip-gram两种模�
 
 ## CBoW
 
-![](imgs/Word2Vec-image-3.png)
+![](_imgs/Word2Vec-image-3.png)
 
 1. 输入层：上下文单词的One-Hot编码词向量，V为词汇表单词个数，C为上下文单词个数。以上文那句话为例，这里C=4，所以模型的输入是（is,an,on,the）4个单词的One-Hot编码词向量。
 2. 初始化**一个**权重矩阵$W_{V \times N}$，然后用所有输入的One-Hot编码词向量左乘该矩阵,得到维数为N的向量 $\omega_1 \omega_2,...,\omega_c$ ，这里的N由自己根据任务需要设置。
@@ -42,7 +42,7 @@ Google的Mikolov在关于Word2Vec的论文中提出了CBOW和Skip-gram两种模�
 
 ## Skip-Gram
 
-![](imgs/Word2Vec-image-4.png)
+![](_imgs/Word2Vec-image-4.png)
 
 Skip-Gram是给定input word来预测上下文，其模型结构如上图所示。它的做法是：
 

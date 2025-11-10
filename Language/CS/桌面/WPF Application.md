@@ -52,7 +52,7 @@ namespace SDKSample
 
 WPF 应用程序的生命周期，是由 `Application` 类引发的若干事件进行标记，以明白应用程序何时启动、何时激活、何时停用以及何时关闭。
 
-![](imgs/Pasted%20image%2020250107153034.png)
+![](_imgs/Pasted%20image%2020250107153034.png)
 
 #### Starting an Application
 
@@ -208,7 +208,7 @@ namespace SDKSample
 
 与任何类一样，窗口的生命周期从首次实例化时开始，之后被打开、激活和停用，最终关闭。
 
-![](imgs/Pasted%20image%2020250107153226.png)
+![](_imgs/Pasted%20image%2020250107153226.png)
 
 #### Opening a Window
 

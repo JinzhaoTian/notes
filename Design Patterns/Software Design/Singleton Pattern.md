@@ -1,4 +1,4 @@
-![](../imgs/DesignPattern-Singleton.png)
+![](../_imgs/DesignPattern-Singleton.png)
 
 > [!info] **什么时候应该用Singleton？**
 > 实际上，很多程序，尤其是 Web 程序，大部分服务类都应该被视作 Singleton，如果全部按Singleton 的写法写，会非常麻烦，所以，通常是通过约定让框架来实例化这些类，保证只有一个实例，调用方自觉**通过框架获取实例**而不是 `new` 操作符。

@@ -76,7 +76,7 @@ $$
 
 贝塞尔曲线（Bezier Curves）完全由其控制点决定其形状,　$n$ 个控制点对应着 $n-1$ 阶的贝塞尔曲线，并且可以通过递归的方式来绘制。
 
-![](imgs/geometry-1.png)
+![](_imgs/geometry-1.png)
 
 一般的，数学化表达是：
 
@@ -111,7 +111,7 @@ $$
 $$
 P(u,v) = \sum^m_{i = 0}\sum^n_{j = 0}P_{ij}B^n_j(u)B^m_i(v)
 $$
-![](imgs/Pasted%20image%2020230907104326.png)
+![](_imgs/Pasted%20image%2020230907104326.png)
 
 
 

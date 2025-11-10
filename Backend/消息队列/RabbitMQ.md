@@ -1,6 +1,6 @@
 RabbitMQ 是一个开源的、实现了 [AMQP](AMQP.md) 的完整可复用企业消息系统，主要用于在分布式系统中**异步传递消息**，能在不同应用程序或组件之间可靠地传输数据，有效实现系统解耦、流量削峰等重要功能。并且支持多种开发语言，Java、C#、Python、Node.js、C/C++ 等。
 
-![](imgs/Pasted%20image%2020240715174602.png)
+![](_imgs/Pasted%20image%2020240715174602.png)
 
 ## 安装
 
@@ -41,7 +41,7 @@ sudo rabbitmq-plugins enable rabbitmq_management
 
 RabbitMQ 服务端代码是使用并发式语言 Erlang 编写的，安装 Rabbit MQ 的前提是安装 Erlang。
 
-1. **RabbitMQ 与 Erlang/OTP 的版本对照表**：![](imgs/Pasted%20image%2020251103154953.png)
+1. **RabbitMQ 与 Erlang/OTP 的版本对照表**：![](_imgs/Pasted%20image%2020251103154953.png)
 
 2. **[安装 Erlang](../../Language/Erlang.md#安装)**
 
@@ -49,8 +49,8 @@ RabbitMQ 服务端代码是使用并发式语言 Erlang 编写的，安装 Rabbi
 	- 下载地址：[Installing on Windows | RabbitMQ](https://www.rabbitmq.com/docs/install-windows)
 	- 点击安装
 	- **启动服务**
-	- 打开主页：[http://127.0.0.1:15672/](http://127.0.0.1:15672/)，默认账号：guest，默认密码：guest![](imgs/Pasted%20image%2020251103160700.png)![](imgs/Pasted%20image%2020251103160635.png)
-	- **创建用户**：![](imgs/Pasted%20image%2020251103162353.png)
+	- 打开主页：[http://127.0.0.1:15672/](http://127.0.0.1:15672/)，默认账号：guest，默认密码：guest![](_imgs/Pasted%20image%2020251103160700.png)![](_imgs/Pasted%20image%2020251103160635.png)
+	- **创建用户**：![](_imgs/Pasted%20image%2020251103162353.png)
 
 
 

@@ -22,7 +22,7 @@ DevOps 涉及到不同阶段的工具，常见的包括：
 
 CI/CD（Continuous Integration and Continuous Delivery/Deployment，持续集成与持续交付/部署），旨在通过自动化来加速软件交付的流程，提升代码的质量，并减少软件发布的风险。它是作为一个面向开发和运营团队的解决方案，主要针对在集成新代码时所引发的问题。
 
-![](imgs/Pasted%20image%2020230704140219.png)
+![](_imgs/Pasted%20image%2020230704140219.png)
 
 CI/CD 主要包括以下两个部分：
 1. **持续集成（Continuous Integration，CI）**：
@@ -41,6 +41,6 @@ CI/CD 可让持续自动化和持续监控贯穿于应用的整个生命周期�
 
 DevOps 是一个非常棒的指导思想，而 CI/CD 是整个 DevOps 流程中最重要的部分。Docker 的出现解决了 CI/CD 流程中的各种问题，Docker 交付的镜像不仅包含应用程序，也包含了应用程序的运行环境，这很好地解决了开发和线上环境不一致问题。同时 Docker 的出现也极大地提升了 CI/CD 的构建效率，我们仅仅需要编写一个 Dockerfile 并将 Dockerfile 提交到我们的代码仓库即可快速构建出我们的应用，最后，当我们构建好 Docker 镜像后 Docker 可以帮助我们快速发布及更新应用。
 
-![](imgs/b6e2ea29e8edf42b93bfa9b647f51aff.jpg)
+![](_imgs/b6e2ea29e8edf42b93bfa9b647f51aff.jpg)
 
 **技术栈**：Docker，GitHub，Jenkins，K8s

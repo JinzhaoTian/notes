@@ -58,7 +58,7 @@ OpenGL 的对象可以理解为 OpenGL 驱动内部管理的一种资源（Resou
 	    - **统一缓冲区对象（UBO）**：绑定到 `GL_UNIFORM_BUFFER`，用于在着色器之间高效地共享大块的只读数据（如变换矩阵、光源参数）。
 	    - **着色器存储缓冲区对象（SSBO）**：绑定到 `GL_SHADER_STORAGE_BUFFER`，功能比UBO更强大，允许着色器对其进行读写操作，常用于通用计算（GPGPU）。
 
-![](imgs/Pasted%20image%2020240817112644.png)
+![](_imgs/Pasted%20image%2020240817112644.png)
 
 2. **顶点数组对象（Vertex Array Object，VAO）**：VAO 是 OpenGL 对象状态的记录器或容器。
 	- **作用**：它记录了当 VBO 和 EBO 被绑定时，你设置的顶点属性指针（Vertex Attribute Pointer） 状态，简单来说，它记录了如何从 VBO 中解释出顶点数据。

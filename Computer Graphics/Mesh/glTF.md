@@ -16,7 +16,7 @@ GLTF文件通常使用`.gltf`（文本格式）或`.glb`（二进制格式）作
 
 ## [基础结构](https://github.com/KhronosGroup/glTF-Tutorials/blob/main/gltfTutorial/README.md) 
 
-![](imgs/Pasted%20image%2020240708153342.png)
+![](_imgs/Pasted%20image%2020240708153342.png)
 
 ```gltf
 {
@@ -97,7 +97,7 @@ scene 是一个对象数组，定义这个 gltf 中有多少场景，每个场�
 
 ### nodes
 
-![](imgs/Pasted%20image%2020240709135723.png)
+![](_imgs/Pasted%20image%2020240709135723.png)
 
 nodes 是一个对象数组，包含所有的节点数据，是构成 Scene Graph 的核心数据。
 
@@ -115,14 +115,14 @@ root                 R                    R
 meshes 是一个对象数组，mesh 对象实际的集合数据由 primitive 对象的 attributes 对象数据和 indices 对象数组通过引用 accessor 对象给出。
 
 
-![](imgs/Pasted%20image%2020250701165102.png)
+![](_imgs/Pasted%20image%2020250701165102.png)
 
 ### materials
 
 
 
 
-![](imgs/Pasted%20image%2020250701165150.png)
+![](_imgs/Pasted%20image%2020250701165150.png)
 
 
 ### textures

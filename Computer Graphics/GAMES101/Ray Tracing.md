@@ -9,7 +9,7 @@ for (P in pixels)
 [Ray Tracing](../Ray%20Tracing/Ray%20Tracing.md) 和光栅化是两种不同的成像方式。光栅化最大的问题是不能很好的解决全局效果，对于 Soft Shadows（软阴影）、Glossy Reflection （光泽反射）还有 Indirect illumination（间接光照）也没有很好的解决。
 光栅化是一种快速近似，但是质量比较低的算法。光栅化可以做到实时，光线追踪只能离线计算。
 
-![](imgs/raytracing-1.png)
+![](_imgs/raytracing-1.png)
 
 **光线追踪基本思路**：因为光路是可逆的，那么就让光线从眼睛出发，沿屏幕每个像素投射出去，判断与场景物体的交点，然后计算该交点的受光照情况。形成一个屏幕图像就需要投射出屏幕分辨率个光线出去，这种计算量无疑是巨大的，但是图像质量极高。
 
@@ -43,7 +43,7 @@ shadow mapping的缺点：
 - 从视点向成像平面上的每一个像素都进行一次光线投射。
 - 光线的每次投射都需要判断与物体的交点，而且投射到交点后还可能产生反射、折射，那么就往相应的方向继续进行新的投射，直到投射在漫反射表面（diffuse surface）上。
 - 最后，将每个交点的受光照情况（使用Blinn Phong算法）以一定权重综合起来，得到的颜色即是该像素的颜色。
-![](imgs/raytracing-2.png)
+![](_imgs/raytracing-2.png)
 **注意**：
 - 为了减少递归次数，可以额外给予一定的递归终止条件（如允许的最大反射或折射次数为10）。
 - 光线在每次反射和折射之后都有能量损耗的（由系数决定），因此经过多次投射后的光线贡献的能量就越小。
@@ -83,7 +83,7 @@ $$
 
 Uniform Grids (均匀划分)，把空间均匀划分成若干相等大小的格子，记录每个格子内是否存在物体表面，然后光线穿过场景，判断沿途的格子是否存在物体表面：若存在，判断是否与物体表面相交；若不存在，则继续穿过场景。
 
-![](imgs/raytracing-3.png)
+![](_imgs/raytracing-3.png)
 
 **存在问题**：
 - 按照什么粒度划分，太大太小都不行。
@@ -96,7 +96,7 @@ Uniform Grids (均匀划分)，把空间均匀划分成若干相等大小的格�
 - 二叉树形状
 - 所有的物体，存储在叶子节点上
 
-![](imgs/raytracing-4.png)
+![](_imgs/raytracing-4.png)
 
 光线穿过空间，依次和每一层节点求交，若和某个节点不相交，那么光线就不会和以这个节点为根节点的子树上的所有节点相交；如果和某个节点相交，那么就需要继续判断是否和其左右子节点相交，直到遍历到叶子节点和光线相交，进而判断叶子节点里的物体和光线是否相交即可。
 
@@ -104,7 +104,7 @@ Uniform Grids (均匀划分)，把空间均匀划分成若干相等大小的格�
 
 Bounding Volume Hierarchy （BVH），在图形学中得到了非常广泛的应用，不管是实时的光线追踪，还是离线的结构。
 
-![](imgs/raytracing-5.png)
+![](_imgs/raytracing-5.png)
 
 BVH是按照物体进行分割的，尽可能是一个物体不被多个AABB包围，方法如下：
 - 找到一个包围核
@@ -141,7 +141,7 @@ BRDF(Bidirectional Reflectance Distribution Function)，译作双向反射分布
 $$
 L_r(p, w_r) = \int_{\Omega^+}f_r(w_i \rightarrow w_r)L_i(p, w_i)\cos \theta_i \mathrm{d}w_i
 $$
-![](imgs/raytracing-6.png)
+![](_imgs/raytracing-6.png)
 
 **The Rendering Equation**：
 $$
@@ -172,7 +172,7 @@ Whitted-style光线追踪存在两个问题：
 - 当这条光线打到diffuse（漫反射）的物体上，这条光线就停了
 
 上面两个总结不一定是对的，如下面这两个模型，应用Whitted-style光线追踪模型，就是不对的：
-![](imgs/raytracing-7.png)
+![](_imgs/raytracing-7.png)
 
 
 
@@ -201,7 +201,7 @@ $$
 
 **路径追踪**的算法描述，就是：
 
-![](imgs/raytracing-8.png)
+![](_imgs/raytracing-8.png)
 
 **存在问题**：
 - 原本的计算方式会造成指数爆炸，这种方式是简化近似的；
@@ -209,7 +209,7 @@ $$
 
 **光线生成**的算法描述：
 
-![](imgs/raytracing-9.png)
+![](_imgs/raytracing-9.png)
 
 
 
@@ -224,7 +224,7 @@ E = P \cdot (\frac{L_r}{P}) + (1 - P) \cdot 0 = L_r
 $$
 对应的算法描述，可以实现为：
 
-![](imgs/raytracing-10.png)
+![](_imgs/raytracing-10.png)
 
 
 
@@ -235,7 +235,7 @@ Path Tracing 里直接光照部分有一个效率问题：ray 打在光源上的
 
 于是转换了采样思路，从对半球上的采样转变成对光源面上的采样。
 
-![](imgs/raytracing-11.png)
+![](_imgs/raytracing-11.png)
 
 用数学化表达就是：
 
@@ -245,7 +245,7 @@ L_o(p, w_o) &= \int_{\Omega^+}L_i(p, w_i)f_r(p, w_i, w_o)\cos \theta \mathrm{d}w
 \end{aligned}$$
 此时的 $pdf = 1/A$ ，伪代码描述就是：
 
-![](imgs/raytracing-12.png)
+![](_imgs/raytracing-12.png)
 
 点光源很不好处理，所以真的需要点光源的场景可以做成一个很小的面光源。
 

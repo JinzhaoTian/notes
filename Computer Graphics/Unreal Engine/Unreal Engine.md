@@ -1,4 +1,4 @@
-![](imgs/Pasted%20image%2020240715151056.png)
+![](_imgs/Pasted%20image%2020240715151056.png)
 
 > [!info]
 >设计就是权衡的艺术。

@@ -4,25 +4,41 @@
     "type": "split",
     "children": [
       {
-        "id": "a1f250c033a3c7c0",
+        "id": "20dd3756eecb5a5e",
         "type": "tabs",
         "children": [
           {
-            "id": "aa537052fe3baf85",
+            "id": "ee7f7f49a0480d98",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Personal/Interests/参考文献格式.md",
+                "file": "Algorithm/Image Processing/SIFT.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "参考文献格式"
+              "title": "SIFT"
+            }
+          },
+          {
+            "id": "898355322a8d04c9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Database/Database/SQL.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "SQL"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -95,13 +111,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Personal/Interests/参考文献格式.md",
+                "file": "Database/Database/SQL.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "参考文献格式 的大纲"
+              "title": "SQL 的大纲"
             }
           },
           {
@@ -125,7 +141,7 @@
             "state": {
               "type": "footnotes",
               "state": {
-                "file": "Personal/Interests/参考文献格式.md"
+                "file": "Database/Database/SQL.md"
               },
               "icon": "lucide-file-signature",
               "title": "脚注"
@@ -151,7 +167,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Personal/Interests/参考文献格式.md",
+                "file": "Database/Database/SQL.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -161,7 +177,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "参考文献格式 的反向链接列表"
+              "title": "SQL 的反向链接列表"
             }
           },
           {
@@ -170,12 +186,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Personal/Interests/参考文献格式.md",
+                "file": "Database/Database/SQL.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "参考文献格式 的出链列表"
+              "title": "SQL 的出链列表"
             }
           },
           {
@@ -189,7 +205,7 @@
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -207,53 +223,53 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "5531e54a75ac1a63",
+  "active": "898355322a8d04c9",
   "lastOpenFiles": [
-    "Personal/Interests/工程控制论.md",
-    "Personal/Interests/开源许可.md",
-    "Personal/Interview/C++ 面试题.md",
-    "Personal/Interview/Interview.md",
-    "Personal/Interview/Java 面试题.md",
-    "Personal/Interview/JD.md",
-    "Personal/Interview/Node 面试常见问题.md",
-    "Personal/Personal Setting/个人服务器.md",
-    "Personal/Personal Setting/Cursor.md",
-    "Personal/Personal Setting/Fail2Ban.md",
-    "Personal/Personal Setting/Gemini CLI.md",
-    "Personal/Personal Setting/infuse.md",
-    "Personal/Personal Setting/NAS.md",
-    "Personal/Personal Setting/Obsidian.md",
-    "Personal/Personal Setting/Syncthing.md",
-    "Personal/Personal Setting/Windows 电脑设置.md",
-    "Personal/Personal Setting/VPN.md",
-    "Personal/Personal Setting/Windows 文件处理.md",
-    "Personal/Project/sync.md",
-    "Personal/Project/JzRE.md",
-    "Personal/Project/JzRE-webgl.md",
-    "Personal/Project/JzMT.md",
-    "Algorithm/Mechine Learning/360面试.md",
-    "Computer Graphics/Unreal Engine/UE 渲染系统.md",
-    "Computer Graphics/Unreal Engine/UE .uproject.md",
-    "Computer Graphics/Unreal Engine/UE 反射系统.md",
-    "Language/CS/后端/imgs/Pasted image 20251104102956.png",
-    "Language/CS/后端/imgs/Pasted image 20251104102823.png",
-    "Language/CS/后端/imgs",
-    "Backend/消息队列/imgs/Pasted image 20251103162353.png",
-    "Backend/消息队列/imgs/Pasted image 20251103160700.png",
-    "Backend/消息队列/imgs/Pasted image 20251103160635.png",
-    "Backend/消息队列/imgs/Pasted image 20251103154953.png",
-    "Language/C++/语法/~syncthing~C++ Basic：面向对象.md.tmp",
-    "Language/C++/构建/~syncthing~CMake.md.tmp",
-    "Language/C++/~syncthing~C++ 11.md.tmp",
-    "Computer Graphics/Vulkan/~syncthing~Render Pass.md.tmp",
-    "Computer Graphics/Vulkan/~syncthing~未命名.md.tmp",
-    "Computer Graphics/GAMES104/imgs/Pasted image 20251024174424.png",
-    "Computer Graphics/GAMES104/imgs/Pasted image 20251024173001.png",
-    "Language/CS/运维",
-    "Computer Graphics/GAMES104/imgs/Pasted image 20251020232855.png",
-    "Computer Graphics/GAMES104/imgs/~syncthing~Pasted image 20251020232855.png.tmp",
-    "Computer Graphics/GAMES104/~syncthing~Lecture 4-7 Rendering on Game Engine.md.tmp",
-    "Computer Graphics/GAMES104/imgs/Pasted image 20251020231945.png",
-    "Computer Graphics/GAMES104/imgs/~syncthing~Pasted image 20251020231945.png.tmp"
+    "Database/Database/ORM.md",
+    "Database/Database/ODBC.md",
+    "Database/Database/Migrations.md",
+    "Database/Database/索引.md",
+    "Database/Database/数据类型存储方式.md",
+    "Database/Database/数据库设计.md",
+    "Database/Database/数据库基础.md",
+    "Database/Database/事务.md",
+    "Computer Graphics/Computer Graphics.md",
+    "Algorithm/Image Processing/SIFT.md",
+    "Algorithm/Image Processing/ORB.md",
+    "Algorithm/Image Processing/ICP.md",
+    "Algorithm/Basic Algorithm/算法与数据结构.md",
+    "Algorithm/Basic Algorithm/剑指Offer.md",
+    "Algorithm/Basic Algorithm/Data Structure/图.md",
+    "Algorithm/Basic Algorithm/Data Structure/树与二叉树.md",
+    "Algorithm/Basic Algorithm/Data Structure/哈希表.md",
+    "Algorithm/Image Processing/_imgs/Pasted image 20240515111930.png",
+    "Algorithm/Autonomous Driving/_imgs/Pasted image 20241009160429.png",
+    "Algorithm/Autonomous Driving/Autonomous Driving.md",
+    "Algorithm/Autonomous Driving/Apollo CyberRT.md",
+    "Algorithm/Autonomous Driving/AimRT.md",
+    "Algorithm/Autonomous Driving/SLAM.md",
+    "Algorithm/Autonomous Driving/ROS.md",
+    "Algorithm/Autonomous Driving/Occupancy Network.md",
+    "Algorithm/Autonomous Driving/CARLA.md",
+    "Algorithm/Autonomous Driving/Autoware.md",
+    "Algorithm/Autonomous Driving/_imgs/Pasted image 20241008144146.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs/Pasted image 20230704135729.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs/Pasted image 20230704135700.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs/Pasted image 20230704135626.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs/Pasted image 20230704135632.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs/Pasted image 20230704135609.png",
+    "Computer Graphics/Game Engine/游戏后端/_imgs",
+    "Computer Graphics/Game Engine/物理引擎/_imgs/Pasted image 20240914102544.png",
+    "Computer Graphics/Game Engine/物理引擎/_imgs",
+    "Computer Graphics/Game Engine/_imgs/Pasted image 20250805142042.png",
+    "Computer Graphics/Game Engine/_imgs",
+    "Backend/_imgs",
+    "Backend/API Design/_imgs",
+    "Backend/消息队列/_imgs",
+    "Backend/架构设计/_imgs",
+    "Backend/分布式中间件/_imgs",
+    "Algorithm/Autonomous Driving/_imgs",
+    "Algorithm/Basic Algorithm/Data Structure/_imgs",
+    "Personal/Interests/参考文献格式.md"
   ]
 }

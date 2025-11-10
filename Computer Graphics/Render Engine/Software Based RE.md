@@ -918,5 +918,5 @@ int main() {
 
 ## 功能展示
 
-![[imgs/Pasted image 20231204092815.png]]
+![[_imgs/Pasted image 20231204092815.png]]
 

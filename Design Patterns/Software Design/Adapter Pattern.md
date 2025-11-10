@@ -1,4 +1,4 @@
-![](../imgs/DesignPattern-Adapter.png)
+![](../_imgs/DesignPattern-Adapter.png)
 #### 原理
 
 适配器模式，将某个类的接口转换成客户端期望的另一个接口表示。适配器模式可以消除由于接口不匹配所造成的类兼容性问题。

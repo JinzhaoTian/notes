@@ -2,7 +2,7 @@ Event Sourcing（事件溯源）是一种数据持久化模式，它通过记录
 
 **核心思想**：**系统的状态由一系列事件（Event）的累积决定**，而不是直接存储当前状态。
 
-![](../System%20Design/imgs/Pasted%20image%2020250704160224.png)
+![](_imgs/Pasted%20image%2020250704160224.png)
 
 
 ## **核心概念**

@@ -118,7 +118,7 @@ int read_a_packet(int fd, char* buffer)
 
 `<sys/socket.h>`
 
-![](imgs/Pasted%20image%2020230704134654.png)
+![](_imgs/Pasted%20image%2020230704134654.png)
  
  **`sockaddr`**：socket 地址结构体
 ```C++
@@ -159,7 +159,7 @@ struct sockaddr_in
 8. **`close(...)`**：用于关闭 socket ，并终止 TCP 连接。
 
 #### 简单 CS 模型
-![](imgs/Pasted%20image%2020230704134708.png)
+![](_imgs/Pasted%20image%2020230704134708.png)
 
 
 ##### 服务端

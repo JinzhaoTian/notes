@@ -1,4 +1,4 @@
-![](imgs/Pasted%20image%2020240401151333.png)
+![](_imgs/Pasted%20image%2020240401151333.png)
 
 [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) 是一个守护进程管理工具，帮助您管理和守护您的应用程序。
 

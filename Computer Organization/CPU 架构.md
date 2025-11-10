@@ -9,7 +9,7 @@
 - MIPS
 	- 龙芯
 
-![](imgs/Pasted%20image%2020240628152403.png)
+![](_imgs/Pasted%20image%2020240628152403.png)
 
 ## 指令集
 

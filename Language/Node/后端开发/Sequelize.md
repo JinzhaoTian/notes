@@ -647,7 +647,7 @@ module.exports = {
 ## 相关命令
 
 1. 帮助命令：`npx sequelize-cli --help`
-![](imgs/Pasted%20image%2020240321114528.png)
+![](_imgs/Pasted%20image%2020240321114528.png)
 
 2. 创建数据库：`npx sequelize-cli db:create`
 3. 销毁数据库：`npx sequelize-cli db:drop`

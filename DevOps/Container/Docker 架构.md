@@ -90,7 +90,7 @@ Cgroups 是一种 Linux 内核功能，可以限制和隔离进程的资源使�
 
 Docker 使用客户端服务器架构。
 
-![](imgs/Docker-image-2.png)
+![](_imgs/Docker-image-2.png)
 
 ### Docker daemon
 

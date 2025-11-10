@@ -17,7 +17,7 @@ Spark 特点如下：
 
 Spark力图整合机器学习（MLib）、图算法（GraphX）、流式计算（Spark Streaming）和数据仓库（Spark SQL）等领域，通过计算引擎Spark，弹性分布式数据集（RDD），架构出一个新的大数据应用平台。
 
-![](imgs/Spark-img-1.jpg)
+![](_imgs/Spark-img-1.jpg)
 
 Spark生态圈以HDFS、S3、Techyon为底层存储引擎，以Yarn、Mesos和Standlone作为资源调度引擎；使用Spark，可以实现MapReduce应用；基于Spark，Spark SQL可以实现即席查询，Spark Streaming可以处理实时应用，MLib可以实现机器学习算法，GraphX可以实现图计算，Spark R可以实现复杂数学计算。
 
@@ -77,7 +77,7 @@ SparkContext是spark功能的主要入口，它代表与spark集群的连接，�
 
 SparkContext在spark应用中起到了master的作用，掌控了所有Spark的生命活动，统筹全局，除了具体的任务在executor中执行，其他的任务调度、提交、监控、RDD管理等关键活动均由SparkContext主体来完成。
 
-![](imgs/Spark-img-2.jpg)
+![](_imgs/Spark-img-2.jpg)
 
 ### SparkSession
 

@@ -38,7 +38,7 @@ public partial class KdTree<T>
 ```
 
 其中，`where` 修饰的语法代表接口约束，有若干种接口约束类型。
-![](imgs/Pasted%20image%2020230801171219.png)
+![](_imgs/Pasted%20image%2020230801171219.png)
 
 
 ### 扩展方法

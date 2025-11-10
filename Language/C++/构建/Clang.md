@@ -1,6 +1,6 @@
 Clang 是 [LLVM](../../Compile%20Principle/LLVM.md) 项目的一个子项目，基于 LLVM 架构的 C / C++ / Objective-C 编译器**前端**。
 
-![](imgs/Pasted%20image%2020240711235544.png)
+![](../_imgs/Pasted%20image%2020240711235544.png)
 
 
 相比于 GCC，Clang 具有如下优点：

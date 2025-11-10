@@ -28,7 +28,7 @@ dotnet add package SharpGLTF.Toolkit --version 1.0.4
 
 [glTF](../../../Computer%20Graphics/Mesh/glTF.md) 有一些关键概念如：Model、Scene、Node、Mesh 等。
 
-![](../../../Computer%20Graphics/Mesh/imgs/Pasted%20image%2020240708153342.png)
+![](../../../Computer%20Graphics/Mesh/_imgs/Pasted%20image%2020240708153342.png)
 
 #### 创建模型
 

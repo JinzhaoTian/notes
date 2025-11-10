@@ -2,7 +2,7 @@
 ## （标准）工厂方法
 
 
-![](../imgs/DesignPattern-FactoryMethod.png)
+![](../_imgs/DesignPattern-FactoryMethod.png)
 
 #### 原理
 
@@ -90,7 +90,7 @@ class WinComputerFactory : public ComputerFactory {
 
 ## （简单）工厂方法
 
-![](../imgs/DesignPattern-SimpleFactoryMethod.png)
+![](../_imgs/DesignPattern-SimpleFactoryMethod.png)
 
 #### 原理
 

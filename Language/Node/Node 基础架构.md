@@ -17,11 +17,11 @@ Node.js 不再为每个请求开启一个新的线程，而是**所有请求都�
 
 ##### 浏览器事件循环
 
-![](imgs/Pasted%20image%2020250623164658.png)
+![](_imgs/Pasted%20image%2020250623164658.png)
 
 ##### Node 事件循环
 
-![](imgs/Pasted%20image%2020250623164636.png)
+![](_imgs/Pasted%20image%2020250623164636.png)
 ##### 微任务和宏任务
 
 - **宏任务**（ macrotask，也叫 **tasks** ）， 一些异步任务的回调会依次进入**宏任务队列**（ macro task queue），等待后续被调用，这些异步任务包括：

@@ -468,7 +468,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 horovodrun -np 4 -H localhost:4 --verbose python ma
 
 要解决这些问题，我们需要一个更为基础的 API，**汇总记录不同 GPU 上生成的准确率、损失函数等指标信息**。这个 API 就是 `torch.distributed.all_reduce`。
 
-![](imgs/PyTorchDistributedTrain-image-1.jpg)
+![](_imgs/PyTorchDistributedTrain-image-1.jpg)
 
 图2：all_reduce 示意图
 

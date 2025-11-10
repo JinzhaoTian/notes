@@ -9,7 +9,7 @@ VS Code 内置了对 Node.js 运行时的调试支持，可以调试 JavaScript�
 
 最好是创建启动配置文件 `launch.json`，这样可以配置和保存调试设置详细信息。 
 
-![](imgs/Pasted%20image%2020240112154735.png)
+![](_imgs/Pasted%20image%2020240112154735.png)
 
 
 #### 调试模式
@@ -75,7 +75,7 @@ VS Code 本身不支持远程调试，但是对于 Node.js 调试器的远程�
 
 工作区或文件夹特定任务是从工作区的 `.vscode` 文件夹中的 `tasks.json` 文件配置的。
 
-![](imgs/Pasted%20image%2020240112165444.png)
+![](_imgs/Pasted%20image%2020240112165444.png)
 
 
 

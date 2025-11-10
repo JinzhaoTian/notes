@@ -1,4 +1,4 @@
-![](../imgs/DesignPattern-AbstractFactory.png)
+![](../_imgs/DesignPattern-AbstractFactory.png)
 #### 原理
 
 抽象工厂模式，为一个产品族提供了统一的创建接口。当需要这个产品族的某一系列的时候，可以从抽象工厂中选出相应的系列创建一个具体的工厂类，而无需指定它们的具体类。

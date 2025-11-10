@@ -3,7 +3,7 @@
 ## 分析
 
 通常的实现是使用 Hash Map + Double Linked List配合来实现。最好是不使用库函数，自己来实现Hash Map和Double Linked List。
-![](../../../Operation%20System/imgs/Pasted%20image%2020230704140147.png)
+![](../../../Operation%20System/_imgs/Pasted%20image%2020230704140147.png)
 
   
 

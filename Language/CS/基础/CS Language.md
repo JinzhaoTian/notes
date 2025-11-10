@@ -26,7 +26,7 @@ namespace Simple                              // 声明新的命名空间
 ### 1.1 预定义数据类型
 
 C#有16种预定义数据类型，其中**简单类型**13种，包括bool、char（Unicode字符）、sbyte、byte、short、ushort、int、uint、long、ulong等，以及decimal（高精度小数类型）、float、double。
-![](imgs/Pasted%20image%2020230809222248.png)
+![](_imgs/Pasted%20image%2020230809222248.png)
 
 **非简单类型**有：
 - object：所有其他类型的基类。
@@ -44,7 +44,7 @@ C#有16种预定义数据类型，其中**简单类型**13种，包括bool、cha
 
 ### 1.3 值类型和引用类型
 
-![](imgs/Pasted%20image%2020230809223835.png)
+![](_imgs/Pasted%20image%2020230809223835.png)
 要注意的是char、float、double竟然是引用类型。
 
 
@@ -493,7 +493,7 @@ CIL被编译成本机代码后，CLR负责对其进行管理，有两个重要�
 .NET平台支持C#、C++、Visual Basic、Jscript、COBOL 等编程语言，.NET Core可以运行在Windows、Linux、macOS上。
 
 
-运行命令 `dotnet --info` 查看 SDK 版本和运行时版本：![](imgs/Pasted%20image%2020230921112625.png)
+运行命令 `dotnet --info` 查看 SDK 版本和运行时版本：![](_imgs/Pasted%20image%2020230921112625.png)
 
 
 
@@ -521,7 +521,7 @@ extern "C" {
 
 
 2. 编译成 `*.dll` 文件
-	- 在Visual Studio中，选择 `项目 -> 属性` ，然后在配置类型中设置为动态链接库(.dll)![](imgs/Pasted%20image%2020230921143540.png)
+	- 在Visual Studio中，选择 `项目 -> 属性` ，然后在配置类型中设置为动态链接库(.dll)![](_imgs/Pasted%20image%2020230921143540.png)
 	- 同时对于不同的编译模式Debug、Release都需要分别配置，对应的编译平台 x86、x64 都需要设置完毕。
 
 

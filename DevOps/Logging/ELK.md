@@ -16,7 +16,7 @@ ELK 是一个流行的开源日志管理解决方案，由三个核心组件组�
 - **Beats**：轻量级数据采集器（如 [Filebeat](Filebeat.md)、Metricbeat）
 - **X-Pack**：商业插件（安全、监控、警报等）
 
-![](imgs/stack-components-diagram.png)
+![](_imgs/stack-components-diagram.png)
 
 
 ## 使用示例

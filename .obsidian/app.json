@@ -1,5 +1,5 @@
 {
-  "attachmentFolderPath": "./.imgs",
+  "attachmentFolderPath": "./_imgs",
   "newFileLocation": "current",
   "newLinkFormat": "relative",
   "alwaysUpdateLinks": true,

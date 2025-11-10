@@ -1,7 +1,7 @@
 
 使用shadowsocks连接
 
-![](imgs/Pasted%20image%2020240719230812.png)
+![](_imgs/Pasted%20image%2020240719230812.png)
 
 
 加密：chacha20

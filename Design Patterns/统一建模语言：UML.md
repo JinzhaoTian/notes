@@ -10,7 +10,7 @@ UML 图是模型中信息的图形表达方式，但是UML模型独立于UML图�
 
 ## 关系
 
-![](imgs/DesignPattern-Relations.png)
+![](_imgs/DesignPattern-Relations.png)
 
 
 有如下几种关系：
@@ -35,7 +35,7 @@ UML 图是模型中信息的图形表达方式，但是UML模型独立于UML图�
 
 # UML Diagram
 
-![](imgs/Pasted%20image%2020240102113026.png)
+![](_imgs/Pasted%20image%2020240102113026.png)
 
 
 

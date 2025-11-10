@@ -20,7 +20,7 @@
 
 ### 事件循环
 
-![](../../Operation%20System/imgs/Pasted%20image%2020250623164453.png)
+![](../../Operation%20System/_imgs/Pasted%20image%2020250623164453.png)
 
 libuv 的[事件循环（Event Loop）](../../Operation%20System/异步编程.md#事件循环)是一个**单线程循环**，基于 [Reactor](../IO%20设计模式.md#Reactor) 模式，并采用 [IO 多路复用](../IO%20多路复用.md)技术来监听文件描述符（File Descriptors，fd）、定时器（Timers）和任务队列（Callbacks）等 I/O 事件，并按优先级执行。
 

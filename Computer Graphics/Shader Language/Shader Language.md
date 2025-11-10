@@ -3,7 +3,7 @@ Shader内置函数：[Intrinsic Functions - Win32 apps | Microsoft Learn](https:
 
 着色器（Shader）是一段运行在 GPU 中的程序，这段程序由开发者编写，所以说为开发者提供了很大的灵活度和可掌控度。
 
-![](../Graphic%20Pipline/imgs/Pasted%20image%2020231214101837.png)
+![](../Graphic%20Pipline/_imgs/Pasted%20image%2020231214101837.png)
 
 现在 OpenGL 主要有三种着色器：顶点着色器、几何着色器、片段着色器，其中顶点着色器和片段·着色器为开发者必须提供，几何着色器为可选提供。
 

@@ -1,5 +1,5 @@
 
-![](imgs/Pasted%20image%2020230704135235.png)
+![](_imgs/Pasted%20image%2020230704135235.png)
 
 PostgreSQL是以加州大学伯克利分校计算机系开发的POSTGRES， 版本 4.2为基础的**对象关系型数据库管理系统（ORDBMS）**。POSTGRES 领先的许多概念在很久以后才出现在一些商业数据库系统中。PostgreSQL是最初的伯克利代码的开源继承者。它支持大部分 SQL 标准并且提供了许多现代特性：
 
@@ -86,9 +86,9 @@ PostgreSQL使用一种客户端/服务器的模型。一次PostgreSQL会话由�
 
 1. 下载，官网：[PostgreSQL: The world's most advanced open source database](https://www.postgresql.org/)
 2. 对于 Windows 上的安装，下载安装程序exe之后，双击打开
-![](imgs/Pasted%20image%2020240126164051.png)
-![](imgs/Pasted%20image%2020240126164102.png)
-![](imgs/Pasted%20image%2020240126164116.png)
+![](_imgs/Pasted%20image%2020240126164051.png)
+![](_imgs/Pasted%20image%2020240126164102.png)
+![](_imgs/Pasted%20image%2020240126164116.png)
 
 
 

@@ -53,7 +53,7 @@
 sudo fdisk -l
 ```
 
-![](imgs/Pasted%20image%2020250526174018.png)
+![](_imgs/Pasted%20image%2020250526174018.png)
 
 
 2. **查看磁盘和分区结构**
@@ -62,7 +62,7 @@ sudo fdisk -l
 lsblk
 ```
 
-![](imgs/Pasted%20image%2020250527160051.png)
+![](_imgs/Pasted%20image%2020250527160051.png)
 
 
 
@@ -73,7 +73,7 @@ lsblk
 sudo vgdisplay
 ```
 
-![](imgs/Pasted%20image%2020250526174557.png)
+![](_imgs/Pasted%20image%2020250526174557.png)
 
 
 3. **查看 Logical volume**
@@ -81,7 +81,7 @@ sudo vgdisplay
 sudo lvdisplay
 ```
 
-![](imgs/Pasted%20image%2020250526174819.png)
+![](_imgs/Pasted%20image%2020250526174819.png)
 
 
 ### 硬盘分区
@@ -99,7 +99,7 @@ sudo gdisk /dev/sda   # 使用gdisk（适用于GPT分区表）
     - `w`：保存并退出。
     - `q`：不保存退出。
 
-![](imgs/Pasted%20image%2020250527164515.png)
+![](_imgs/Pasted%20image%2020250527164515.png)
 
 - **新建分区流**：
 	- 输入 `p` 查看当前分区表，确认 `/dev/sda3`（或对应 LVM 分区）的起始扇区（Start）。

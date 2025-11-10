@@ -1,6 +1,6 @@
 GitLab CI 是 [GitLab](../Code%20Version/GitLab.md) 提供内置的 CI/CD 管道功能，开发者可以通过 `.gitlab-ci.yml` 配置文件定义自动化构建、测试和部署流程。当有代码提交时，GitLab 自动执行这些流程。
 
-![](imgs/Pasted%20image%2020240918151929.png)
+![](_imgs/Pasted%20image%2020240918151929.png)
 
 在 GitLab CI 中 必须设置 Runner 才能运行 CI/CD 流水线的任务。
 

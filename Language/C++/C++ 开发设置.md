@@ -5,20 +5,20 @@
 
 在Windows下，一般比较好的编译器就是 [MinGW-w64](https://www.mingw-w64.org/) ，但是**不推荐在官网下载**，可以去 [Github](https://github.com/niXman/mingw-builds-binaries/releases) 下载。
 
-![](imgs/Pasted%20image%2020240116171452.png)
+![](_imgs/Pasted%20image%2020240116171452.png)
 下载后解压到一个目录下，然后**在系统环境中添加这个Path**。
 
 ### C/C++ 插件
 
 1. 安装 C/C++ IntelliSense
 
-![](imgs/Pasted%20image%2020240116221102.png)
+![](_imgs/Pasted%20image%2020240116221102.png)
 
 
 
 ### 配置 C/C++ 环境
 
-![](imgs/Pasted%20image%2020240116224545.png)
+![](_imgs/Pasted%20image%2020240116224545.png)
 
 需要配置：
 1. 编译器路径

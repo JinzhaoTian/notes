@@ -47,7 +47,7 @@ Lamport 提出的 Paxos 算法包括两个部分：
 
 在 Basic Paxos 中，集群中各个节点为了达成共识，需要进行两阶段的协商，即准备阶段（Prepare Phase）和接受阶段（Accept Phase）。
 
-![](imgs/Pasted%20image%2020250626135329.png)
+![](_imgs/Pasted%20image%2020250626135329.png)
 #### Prepare Phase
 
 1. Proposer 选择一个提案编号 n，向所有或多数 Acceptor 发送 Prepare（n）请求
@@ -84,7 +84,7 @@ Basic Paxos 算法只适用于对单个值情形，不适用于多个值情形�
 
 为了解决以上问题，Multi Paxos 引入了领导者（Leader）和优化了 Basic Paxos 的执行过程。
 
-![](imgs/Pasted%20image%2020250626135242.png)
+![](_imgs/Pasted%20image%2020250626135242.png)
 
 
 
