@@ -2,7 +2,7 @@
 ## Terminal
 
 Windows上Terminal的体验不是很好，我找了一个比较好的解决方案：PowerShell+ Oh My Posh，主题选为catppuccin_macchiato还是有一个比较好的体验的，接近于原生的Linux Bash。
-![](_imgs/Pasted%20image%2020230417111035.png)
+![[_imgs/Pasted image 20230417111035.png]]
 
 
 ### PowerShell
