@@ -15,7 +15,7 @@ QuickJS 是由 Fabrice Bellard 开发的一个小巧、可嵌入的 JavaScript �
     - **低内存占用**：在启动和运行时消耗的内存非常少，这对于嵌入式设备和物联网应用至关重要。
 
 2. **符合 ECMAScript 标准**
-    - 它支持最新的 ECMAScript 规范，兼容性非常好。它几乎完整支持 **ES2020** 特性，包括模块、异步编程（Promise, async/await）、类、生成器、箭头函数等。这意味着很多现代的 JavaScript 代码无需修改或只需少量修改就可以在 QuickJS 中运行。
+    - 它支持最新的 ECMAScript 规范，兼容性非常好。它几乎完整支持 **ES2023** 特性，包括模块、异步编程（Promise, async/await）、类、生成器、箭头函数等。这意味着很多现代的 JavaScript 代码无需修改或只需少量修改就可以在 QuickJS 中运行。
 
 3. **可编译为独立的可执行文件**    
     - QuickJS 提供了一个编译器（`qjsc`），可以将 JavaScript 代码预先编译成可执行文件或 C 语言源文件。这带来了两个好处：
@@ -27,3 +27,27 @@ QuickJS 是由 Fabrice Bellard 开发的一个小巧、可嵌入的 JavaScript �
 
 5. **数学计算能力**
     - 它内置了对扩展精度整数的支持，可以进行高精度的数学计算。
+
+
+## 应用场景
+
+1. **嵌入式系统和 IoT**：在内存和存储空间有限的设备上运行 JavaScript 逻辑。
+2. **应用程序的脚本引擎**：许多桌面或移动应用（如游戏、图形软件）需要让用户编写脚本来扩展功能，QuickJS 是一个理想的嵌入选择。
+3. **命令行工具**：可以编译 JS 脚本为独立的可执行文件，用于制作跨平台的 CLI 工具。
+4. **教育与研究**：由于其代码简洁、模块清晰，是学习 JavaScript 引擎工作原理的绝佳材料。
+5. **区块链/智能合约**：在一些区块链平台中，需要轻量级且安全的脚本执行环境。
+
+
+
+## 安装
+
+1. **安装 CMake**：QuickJS 使用 CMake 作为构建系统
+2. **安装 QuickJS**：
+	- 获取源码：`git clone https://github.com/bellard/quickjs`
+	- 进入项目目录，使用 make 进行编译安装：`cd quickjs & sudo make install /usr/local`
+
+
+
+## 引入
+
+腾讯开源 [PuerTS](https://github.com/Tencent/puerts) 为 Unity、Unreal 和任何支持 .NET 的项目提供 TypeScript 支持。
