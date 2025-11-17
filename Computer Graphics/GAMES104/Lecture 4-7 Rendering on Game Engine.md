@@ -121,38 +121,82 @@ CPU 和 GPU 可以看做是独立的机器，两个机器之间的数据传递�
 
 1. **Coordinate System and Transformation**：模型是基于自己的坐标系，需要讲这些转换到屏幕空间坐标。![](_imgs/Pasted%20image%2020251020224929.png)
 2. **Object with Many Materials**：一个物体可能不同部分会有不同的材质，GPU 作为一个状态机，只会保留最后材质所提交的状态进行渲染。
-	- **Submesh**：对于存在多个材质的对象，会根据材质对 mesh 进行切分为不同的 submesh，每个 submesh 有对应的材质、纹理、shader，并且把 vertex 和 triangle 放在一个大的 buffer 里进行管理，至此一个完整的复杂对象渲染就处理完成了。![](_imgs/Pasted%20image%2020251020225429.png)
+	- **Submesh**：对于存在多个材质的对象，会根据材质对 mesh 进行切分为不同的 submesh，每个 submesh 有对应的 Material、Texture、Shader，并且把 Vertex 和 Triangle 放在一个大的 buffer 里进行管理，至此一个完整的复杂对象渲染就处理完成了。![](_imgs/Pasted%20image%2020251020225429.png)
 	- **缺点**：如果我们需要绘制大量这样的复杂 GameObject，如果每个单位都独立存储一份完整的渲染数据，这样的开销太过巨大。![](_imgs/Pasted%20image%2020251020225638.png)
-3. **Resource Pool**：这些单位的 Mesh、材质、纹理都有重复部分，因此较好的数据组织方式是对渲染资源数据创建资源池。![](_imgs/Pasted%20image%2020251020230105.png)
-4. **Instance**：实例化，
+3. **Resource Pool**：这些 GameObject 的 Mesh、Material、Texture 都有重复部分，因此较好的数据组织方式是对渲染资源数据创建资源池，相同的 Mesh、Material、Texture 等保证不会重复存储。![](_imgs/Pasted%20image%2020251020230105.png)
+4. **Instance**：每个 GameObject 使用 Resource Pool 中的 Handle 来索引实际的 Mesh、Material、Texture、Shader 等数据。此概念也可以进一步引申为游戏引擎中的**实例化**概念，将实际 GameObject 的定义和实例分离。![](_imgs/Pasted%20image%2020251116115402.png)
 
 5. **Sort by Material**：将场景中的物体按照材质进行排序，将相同材质物体一起计算更新，从而只需要设置一次材质，大大减少了 GPU 设置渲染状态的耗时从而提升了速度。
 
-6. **Visibility Culling**：对于一个拥有很多 GameObject 的游戏场景，不能将每个角色都绘制出来，这样硬件的负荷大，因此需要 visibility culling，它是引擎的渲染模块中的一个基础底层系统。
-	- **根据视锥体进行剔除**：给每个物体定义一个包围盒或者包围球，这样问题就简化为如何判断包围盒或者包围球和视锥体的内外关系。![](_imgs/Pasted%20image%2020251020231023.png)
-	- **根据场景划分进行剔除**：通过对场景中的 GameObject 进行划分管理，比如经典的四叉树、BVH 划分等，预先剔除摄像机覆盖范围外的对象。![](_imgs/Pasted%20image%2020251020230952.png)
-		- **PVS（Potential Visibility Set）**：将一个大的游戏场景划分为一系列的子场景，如图，相邻的子场景之间设置 portal（也就是真实世界中的门），当你站在一个子场景时，通过 portal（门或窗）只能看见有限的子场景。![](_imgs/Pasted%20image%2020251020231337.png)
-	- **在 GPU 中剔除**：通过 GPU 进行 Culling 操作，比如 early-Z。
-		- 利用了 GPU 高效的并行化能力，用比较低的成本形成一群遮挡物的深度图，然后通过比较从而节省掉不必要的计算过程，对于大型场景很有用。![](_imgs/Pasted%20image%2020251020231620.png)
-		- **Early-Z（z-buffer）**：在绘制对象时，靠前的物体会挡住靠后的物体，在进行真正绘制之前，Camera 会对空间对象生成一张深度图（z-buffer）。在之后绘制对象时，就可以判断像素的深度是否符合要求，以此来判断是否进行绘制。
+> [!tip] GPU Batch Rendering
+> 游戏场景中，很多物体都是重复的，在一次绘制中设置 VB、IB 也是很浪费的。在使用 Compute Shader 时可以一次 Draw Call 把成千上百个 GameObject 一次绘制出来，这就是 GPU Batch Rendering 思想。
 
-7. **Texture Compression**：纹理压缩，可以节省数据传输的带宽。
-	- 日常使用的图片压缩格式（如 PNG、JPEG 等），有很好的压缩或显示效果，但在游戏引擎中无法直接使用这些压缩算法，因为无法快速随机访问像素。
-	- **Block Compression**：在游戏引擎中，一般将纹理划分为多个小块然后进行压缩。
-		- 以 DXTC 举例，对于每个划分的小块，取得其中最亮和最暗的像素点，那么我们就可以通过插值处理从而求得二者中间一系列的颜色。
+> [!tip]
+> 现代的游戏引擎架构中，会尽可能的把绘制运算交给 GPU 而不是 CPU 。
 
-8. **Authoring Tools of Modeling**：
-	- Polymodeling![](_imgs/Pasted%20image%2020251020232000.png)
-	- Sculpting![](_imgs/Pasted%20image%2020251020231945.png)
-	- Scanning![](_imgs/Pasted%20image%2020251020231933.png)
-	- Procedural Modeling![](_imgs/Pasted%20image%2020251020231922.png)
+
+#### Visibility Culling
+
+对于一个拥有很多 GameObject 的游戏场景，不能将每个角色都绘制出来，这样硬件的负荷大，因此需要 visibility culling，它是引擎的渲染模块中的一个基础底层系统。
+
+1. **根据视锥体进行剔除**：给每个物体定义一个包围盒或者包围球，这样问题就简化为如何判断包围盒或者包围球和视锥体的内外关系。![](_imgs/Pasted%20image%2020251020231023.png)
+2. **根据场景划分进行剔除**：通过对场景中的 GameObject 进行划分管理，比如经典的四叉树、BVH 划分等，预先剔除摄像机覆盖范围外的对象。![](_imgs/Pasted%20image%2020251020230952.png)
+	- **PVS（Potential Visibility Set）**：将一个大的游戏场景划分为一系列的子场景，如图，相邻的子场景之间设置 Portal（对应真实世界中的门或窗），当你站在一个子场景时，通过 Portal 只能看见有限的子场景。![](_imgs/Pasted%20image%2020251020231337.png)
+
+3. **在 GPU 中剔除**：通过 GPU 进行 Culling 操作，比如 early-Z。
+	- 利用了 GPU 高效的并行化能力，用比较低的成本形成一群遮挡物的深度图，然后通过比较从而节省掉不必要的计算过程，对于大型场景很有用。![](_imgs/Pasted%20image%2020251020231620.png)
+	- **Early-Z（z-buffer）**：在绘制对象时，靠前的物体会挡住靠后的物体，在进行真正绘制之前，Camera 会对空间对象生成一张深度图（z-buffer）。在之后绘制对象时，就可以判断像素的深度是否符合要求，以此来判断是否进行绘制。
+
+#### Texture Compression
+
+纹理压缩，可以节省数据传输的带宽。
+- 日常使用的图片压缩格式（如 PNG、JPEG 等），有很好的压缩或显示效果，但在游戏引擎中无法直接使用这些压缩算法，因为无法快速随机访问像素。
+- **Block Compression**：在游戏引擎中，一般将纹理划分为多个小块然后进行压缩。
+	- 以 DXTC 举例，对于每个划分的小块，取得其中最亮和最暗的像素点，那么我们就可以通过插值处理从而求得二者中间一系列的颜色。
+	- **常见算法**：
+		- PC：BC7、DXTC
+		- Mobile：ASTC
+
+#### Authoring Tools of Modeling
+
+1. Polymodeling![](_imgs/Pasted%20image%2020251020232000.png)
+2. Sculpting![](_imgs/Pasted%20image%2020251020231945.png)
+3. Scanning![](_imgs/Pasted%20image%2020251020231933.png)
+4. Procedural Modeling![](_imgs/Pasted%20image%2020251020231922.png)
+
+#### Rendering Pipeline
 
 > [!info] 新概念的渲染管线
 > 随着建模工具的不断进步，我们得到的模型也变得更加细节具体，数据量也不断增大，游戏和影视有很大的重合部分，但由于游戏的实时渲染以及硬件存储要求，通常一个模型的面片数不会超过 1 万，而影视级的模型通常是千万级的。
 
-9. **Cluster-Based Mesh Pipeline**：将模型分成多个 Cluster（每个 Cluster有 32\64个 triangle），根据这些 Cluster 与摄像机的远近来展示不同的细节。
-	- 现代 GPU 已经可以基于数据动态地生成几何细节（曲面细分 Tessellation），而不是像原先的管线将 mesh 数据上传。
-	- 因此当将每个 Cluster 大小确定好后，由于它的计算都是高效一致的，以相同的 Cluster 结构让 GPU 来并行处理时，提高了效率。![](_imgs/Pasted%20image%2020251020232855.png)
+有个重要的发展方向是 **Cluster-Based Mesh Pipeline**，将模型分成多个 Cluster（每个 Cluster有 32\64个 triangle），根据这些 Cluster 与摄像机的远近来展示不同的细节。
+
+> [!info] Meshlet
+> Meshlet 是现代图形学中用于高效渲染复杂 3D 模型的一种核心技术，它通过将大型 Mesh 分割成更小、更易于管理的块（即 Meshlet），并结合新一代硬件特性（如 Mesh Shader），极大地提升了渲染性能。
+
+现代 GPU 已经可以基于数据动态地生成几何细节（曲面细分 Tessellation），而不是像原先的管线将 mesh 数据上传，因此当将每个 Cluster 大小确定好后，由于它的计算都是高效一致的，以相同的 Cluster 结构让 GPU 来并行处理时，提高了效率。![](_imgs/Pasted%20image%2020251020232855.png)
+
+1. **传统管线流程**：
+```mermaid
+graph LR
+    A[顶点输入] --> B[顶点着色器]
+    B --> C[图元组装]
+    C --> D[光栅化]
+    D --> E[像素着色器]
+```
+2. **Mesh Shader 管线流程**：
+```mermaid
+graph LR
+    A[任务着色器 <br />（可选）] --> B[网格着色器]
+    B --> C[光栅化]
+    C --> D[像素着色器]
+```
+
+> [!info] [Unreal Engine 5 的 Nanite](../Unreal%20Engine/UE5%20Nanite.md)
+> 
+> 1. 无缝边界的层次化 LOD Clusters
+> 2. 无需硬件特殊支持，而是通过 GPU 上的持久线程（计算着色器）在预计算的 BVH 树上实现分层集群剔除，替代任务着色器方案。
+
 
 
 ### Lighting，Materials and Shaders

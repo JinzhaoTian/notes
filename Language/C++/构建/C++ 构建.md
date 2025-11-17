@@ -17,7 +17,7 @@ CMake 是一个工程文件生成工具，允许开发者编写一种平台无�
 
 它使用可读的高级构建语言，支持多种编程语言编写的项目，并且能够为多个平台进行构建。Bazel 支持构建包含多个仓库、大量开发人员的大型代码库。
 
-## [MSBuild](../../DevOps/Build/MSBuild.md)
+## [MSBuild](../../../DevOps/Build/MSBuild.md)
 
 MSBuild（Microsoft Build Engine）是用于构建 .NET 和 C++ 项目的平台和工具。它用于自动化构建过程，包括编译源代码、创建可执行文件或库、生成资源文件、运行单元测试、创建安装包等。
 
