@@ -38,7 +38,7 @@
 
 ### `GenerateProjectFiles.[bat|sh|command]`
 
-`GenerateProjectFiles.[bat|sh|command]` 是 Unreal Engine 在 **macOS** 系统中的一个关键脚本文件，其核心作用是为引擎的源代码生成所需的 IDE 项目文件（例如 Visual Studio 的 `.sln` 文件， Xcode 的 `.xcodeproj` 文件）。
+`GenerateProjectFiles.[bat|sh|command]` 是 Unreal Engine 一个关键脚本文件，其核心作用是为引擎的源代码生成所需的 IDE 项目文件（例如 Visual Studio 的 `.sln` 文件， Xcode 的 `.xcodeproj` 文件）。
 
 当获取了 Unreal Engine 的源代码后，需要运行这个脚本，它会分析引擎内各个模块的依赖关系，创建出一个结构正确、能够顺利编译和调试的 IDE 项目，然后在 IDE 里编译。
 
