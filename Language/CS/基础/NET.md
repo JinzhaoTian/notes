@@ -81,3 +81,11 @@ dotnet package remove Newtonsoft.Json
 
 
 
+## 安装
+
+### macOS
+
+1. 使用 homebrew
+```bash
+brew install dotnet-sdk
+```

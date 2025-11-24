@@ -147,4 +147,17 @@ brew ls --full package_name
 ```bash
 brew link package_name
 ```
-Homebrew 默认会将软件安装到它的 Cellar 目录（例如 `/usr/local/Cellar` 或 `/opt/homebrew/Cellar`），但为了能在终端直接使用这些软件，需要在系统路径（如 `/usr/local/bin`）中创建指向它们的符号链接。
+
+
+## 目录结构
+
+Homebrew 通过一套精巧的目录结构和符号链接来管理软件：
+1. `/opt/homebrew/Cellar/`：所有通过 Homebrew 安装的软件，其具体的文件都存放在这里，并按"软件名@版本/版本号"的方式组织。
+2. `/opt/homebrew/bin/`：存放了指向 Cellar 或 opt 目录中真实可执行文件的符号链接（你可以理解为快捷方式）。
+3. `/opt/homebrew/opt/`：这里存放着指向 Cellar 中某个软件当前激活版本的符号链接，为其他软件或依赖提供了一个固定不变的访问路径。
+
+使用 Homebrew 安装的软件，一般都是在 `/opt/homebrew/bin/` 中存放符号链接（即设置好环境变量），方便调用，可以用以下命令建立或者切换版本：
+```bash
+brew link [--overwrite] package_name
+```
+

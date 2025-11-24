@@ -33,3 +33,19 @@
 	- 在 Xcode 的 scheme 列表中，**首先需要单独编译 `ShaderCompileWorker` 目标**。这个工具负责着色器的离线编译，必须优先构建。
 	- `ShaderCompileWorker` 编译成功后，再将目标切换为 `UE5Editor`（如果你需要编译编辑器）或你游戏的项目进行编译。整个编译过程非常耗时，且对硬件要求高，请确保 Mac 有良好的散热。
 
+## 脚本解析
+
+
+### `GenerateProjectFiles.[bat|sh|command]`
+
+`GenerateProjectFiles.[bat|sh|command]` 是 Unreal Engine 在 **macOS** 系统中的一个关键脚本文件，其核心作用是为引擎的源代码生成所需的 IDE 项目文件（例如 Visual Studio 的 `.sln` 文件， Xcode 的 `.xcodeproj` 文件）。
+
+当获取了 Unreal Engine 的源代码后，需要运行这个脚本，它会分析引擎内各个模块的依赖关系，创建出一个结构正确、能够顺利编译和调试的 IDE 项目，然后在 IDE 里编译。
+
+#### 工作流程
+
+1. **定位与分析**：脚本会遍历引擎目录，读取每个模块的 `.build.cs` 文件
+2. **处理依赖**：确定所有模块之间的依赖关系、所需的库文件、包含路径等编译信息
+3. **生成项目**：根据分析结果，生成与你系统上安装的开发环境相匹配的项目文件。
+
+
