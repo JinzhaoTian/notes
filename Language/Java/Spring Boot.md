@@ -1,6 +1,6 @@
 Spring Boot 是一个用于简化 Spring 应用初始搭建和开发过程的框架，是一个项目脚手架，解决如何快速启动一个完整应用（包含 Web 、数据、安全等）的问题，整合了如 Spring Data、Spring Security、Spring Cloud 等**垂直领域的专业工具项目**。
 
-现代开发中，90% 的场景会以 **Spring Boot 为底座**，按需添加其他模块。
+现代开发中，90% 的场景会**以 Spring Boot 为底座**，按需添加其他模块。
 
 ## 使用
 
