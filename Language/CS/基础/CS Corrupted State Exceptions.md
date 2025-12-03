@@ -25,5 +25,36 @@
 此时的处理策略有两种：
 ### （临时方案）启用旧版兼容策略
 
-1. 设置环境变量 `COMPlus_legacyCorruptedStateExceptionsPolicy=1`，让 CLR 回退到旧版异常处理行为。
+设置环境变量 `COMPlus_legacyCorruptedStateExceptionsPolicy=1`，让 CLR 回退到旧版异常处理行为：
+
+```bash
+set COMPlus_legacyCorruptedStateExceptionsPolicy=1
+dotnet YourApp.dll
+```
+
+```xml
+<PropertyGroup>
+  <StartupEnvironmentVariables>
+    <StartupEnvironmentVariable Name="COMPlus_legacyCorruptedStateExceptionsPolicy" Value="1" />
+  </StartupEnvironmentVariables>
+</PropertyGroup>
+```
+
+**优点**：
+1. 配置简单，可暂时让 `catch` 块捕获 `AccessViolationException`
+
+**缺点**：
+1. 严重安全风险：内存可能已损坏，程序后续行为不可预测，可能掩盖严重漏洞。
+2. 不推荐用于生产环境。
+
+
+
+### （推荐方案）进程隔离架构
+
+将可能抛出 `AccessViolationException` 的高风险操作（调用 Xbim 等非托管库）放入独立的子进程中执行，主进程通过进程间通信 (IPC) 获取结果。
+
+1. **创建一个独立的工作进程控制台应用**，专门负责调用高风险的非托管库。
+2. 在主进程（如您的 ASP.NET Core 应用）中使用进程间通信（IPC），如命名管道、gRPC、TCP或简单的标准输入/输出，向工作进程发送请求并接收结果。
+3. **在工作进程中**，可以尝试使用 `try-catch`。如果 CSE 发生，工作进程会崩溃退出，但主进程可以通过 IPC 通道的异常或退出码检测到失败，并采取相应措施（如记录日志、返回错误信息给用户、重试或启动新的工作进程），而自身保持稳定。
+
 
