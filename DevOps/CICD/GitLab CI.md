@@ -4,7 +4,7 @@ GitLab CI 是 [GitLab](../Code%20Version/GitLab.md) 提供内置的 CI/CD 管道
 
 在 GitLab CI 中 必须设置 Runner 才能运行 CI/CD 流水线的任务。
 
-### 配置文件
+## 配置文件
 
 ```yaml
 stages:
@@ -44,7 +44,7 @@ test-job:
     - build-job
 ```
 
-#### 关键字
+### 关键字
 
 1. `stages` ：定义了流水线中的各个阶段，阶段是任务（jobs）执行的顺序单元，通常包含诸如构建、测试和部署等步骤。
 	- 任务按阶段顺序依次执行，前一个阶段成功后才会执行下一个阶段。
@@ -65,12 +65,45 @@ test-job:
 
 
 
-### GitLab Runner
+## GitLab Runner
 
 GitLab Runner 是 GitLab CI/CD 中用于执行任务的应用程序，是 GitLab CI/CD 流水线的核心组件，负责在不同环境中运行在 `.gitlab-ci.yml` 文件中定义的构建、测试、部署等任务，没有 Runner，GitLab 无法执行任何任务。
 
-#### 使用
+### 使用
 
 1. **安装 GitLab Runner**：可以在各种操作系统上安装 GitLab Runner，包括 Linux、macOS 和 Windows，参考[文档](https://docs.gitlab.com/runner/install/)。
 2. **注册 GitLab Runner**：安装完 Runner 后，需要在 Runner 所在的服务器上运行注册命令，并提供 GitLab 实例的 URL 和项目或组的注册令牌。执行 `gitlab-runner register` 命令时，会让你选择执行器并设置标签。
 3. **使用标签**：当你在 `.gitlab-ci.yml` 文件中定义任务时，可以使用 `tags` 字段指定使用哪些 Runner。每个 Runner 注册时可以定义一些标签，GitLab 会根据标签匹配合适的 Runner 来执行任务。
+
+### 安装
+
+#### Windows
+
+1. **创建**一个本地目录，如 `C:\GitLab-Runner`
+2. **下载**二进制包（[64-bit](https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/binaries/gitlab-runner-windows-amd64.exe) 或者 [32-bit](https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/binaries/gitlab-runner-windows-386.exe)）到这个本地目录，假设已经将这个 exe 重命名为 `gitlab-runner.exe`
+	- **确保本地目录与 `gitlab-runner.exe` 有写权限**
+3. **注册** GitLab Runner：
+```bash
+cd C:\GitLab-Runner
+.\gitlab-runner.exe register
+```
+- 输入：
+	- 输入 GitLab instance URL，如果项目地址是 `gitlab.example.com/yourname/yourproject`，此时应该输入 `https://gitlab.example.com`
+	- 输入 GitLab Runner 的 authentication token
+	- 输入 GitLab Runner 的描述
+	- 输入 job tags，以逗号 `,` 隔开
+	- 输入 GitLab Runner 的 optional maintenance note
+	- 输入 executor 的类型
+4. 将 GitLab Runner 作为一个服务进行**安装**并**启动**
+```bash
+cd C:\GitLab-Runner
+.\gitlab-runner.exe install
+.\gitlab-runner.exe start
+```
+
+其中，在 GitLab 里可以直接创建 Runner：
+![](_imgs/Pasted%20image%2020251205163527.png)
+![](_imgs/Pasted%20image%2020251205163548.png)
+![](_imgs/Pasted%20image%2020251205163735.png)
+
+按照说明在目标机器上运行即可。
