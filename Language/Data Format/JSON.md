@@ -10,18 +10,16 @@ JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，�
     - 数组（`[]`，有序列表）
     - 对象（`{}`，键值对的集合）
     - `null`（空值）
-3. **独立于语言**：虽然源自JavaScript，但几乎所有编程语言都支持JSON解析和生成。
+3. **独立于语言**：虽然源自 JavaScript，但几乎所有编程语言都支持 JSON 解析和生成。
 
 
-### 示例：
-
-### JSONSchema
+## JSONSchema
 
 > 参考：[官网](http://json-schema.org/)
 
-Json Schema定义了一套词汇和规则，这套词汇和规则用来定义Json元数据，且元数据也是通过Json数据形式表达的。Json元数据定义了Json数据需要满足的规范，规范包括成员、结构、类型、约束等。
+JSON Schema定义了一套词汇和规则，这套词汇和规则用来定义 JSON 元数据，且元数据也是通过 JSON 数据形式表达的。JSON 元数据定义了 JSON 数据需要满足的规范，规范包括成员、结构、类型、约束等。
 
-对于api来说，需要定义什么样的请求合法，即什么样的Json对于api来说是合法的输入。这个规范可以通过Json Schema来描述，对应的Json Schema如下：
+对于 API 来说，需要定义什么样的请求合法，即什么样的 JSON 对于 API 来说是合法的输入。这个规范可以通过 JSON Schema 来描述，对应的 JSON Schema 如下：
 
 ```json
 { 
@@ -44,7 +42,7 @@ Json Schema定义了一套词汇和规则，这套词汇和规则用来定义Jso
 
 ### 类型关键字
 
-`type`关键字，这个关键字定义了Json数据需要满足的类型要求。如：`{"type" : "object"}`，`{"type" : "string"}`，
+`type`关键字，这个关键字定义了 JSON 数据需要满足的类型要求。如：`{"type" : "object"}`，`{"type" : "string"}`，
 
 `{"type" : "number"}`，`{"type" : "integer"}`，`{"type" : "array"}`，`{"type" : "boolean"}`，`{"type" : "null"}`。
 

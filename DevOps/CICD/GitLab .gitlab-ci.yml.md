@@ -1,3 +1,6 @@
+`.gitlab-ci.yml` 是 GitLab CI/CD 的配置文件，用于定义项目的持续集成（CI）/持续部署（CD）流水线，它告诉 GitLab Runner 在何时、如何构建、测试和部署你的代码。
+
+## 示例
 
 ```yaml
 stages:
@@ -120,3 +123,56 @@ build-job:
 > 如分支受保护，那么设置的分支流水线变量也要受保护；如果暂时不想保护分支，需要取消变量 `"Protect variable` 的选项，这样变量对所有分支的流水线都可见，手动触发时也会被直接传入。
 
 
+## 多 `.gitlab-ci.yml` 配置
+
+GitLab 默认情况下使用的是仓库根目录下的 `.gitlab-ci.yml`，但 GitLab 提供了几种方式来使用多个配置文件：
+1. **使用 `include` 关键字**（最常用）
+```yaml
+include:
+  - local: '/templates/.gitlab-ci-template.yml'
+  - project: 'my-group/my-project'
+    file: '/templates/.gitlab-ci-java.yml'
+  - remote: 'https://example.com/ci-config.yml'
+  - template: 'Auto-DevOps.gitlab-ci.yml'
+```
+
+2. **项目级流水线配置**：可以在项目设置中指定自定义配置文件路径，`settings` -> `CI/CD` -> `pipeline`。
+
+3. **组合多个配置**：通过 `include` 可以组合多个配置文件
+```yaml
+# 主 .gitlab-ci.yml
+include:
+  - local: '.gitlab-ci-build.yml'
+  - local: '.gitlab-ci-test.yml'
+  - local: '.gitlab-ci-deploy.yml'
+
+# 定义全局设置或覆盖
+variables:
+  DEPLOY_ENVIRONMENT: production
+```
+
+4. **继承和覆盖**：子配置文件可以继承和覆盖配置
+```yaml
+# 基础模板
+.build-template:
+  script:
+    - echo "Building..."
+    - mvn package
+
+# 主配置文件
+include:
+  - local: '.gitlab-ci-build.yml'
+
+java-build:
+  extends: .build-template
+  variables:
+    MAVEN_OPTS: "-DskipTests=true"
+```
+
+
+### 最佳实践建议
+
+1. **主配置文件保持简洁**：使用 `include` 引入具体配置
+2. **按功能拆分**：构建、测试、部署分开配置
+3. **使用模板项目**：跨项目复用 CI/CD 配置
+4. **版本控制模板**：通过 `ref` 参数指定模板版本
