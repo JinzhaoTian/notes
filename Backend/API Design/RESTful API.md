@@ -123,6 +123,65 @@ RESTful API 则要求在 URL 上都以名词的方式出现，从几种请求方
 针对不同操作，服务器向用户返回数据，而各个团队或公司封装的返回实体类也不同，但都返回JSON 格式数据给客户端。
 
 
+## 批量查询接口设计
+
+1. **使用查询参数**（推荐）
+```http
+GET /api/resources?ids=id1,id2,id3&fields=name,email&page=1&size=50
+```
+- **参数说明**：
+	- `ids`：逗号分隔的 ID 列表
+	- `status`：过滤条件
+	- `fields`：响应字段选择（减少数据传输）
+	- `sort`：排序（`-`表示降序）
+	- `page`/`size`：分页控制
+- **响应格式**：
+```json
+{
+  "data": [
+    {"id": 101, "name": "张三", "email": "zhang@example.com"},
+    {"id": 102, "name": "李四", "email": "li@example.com"}
+  ],
+  "pagination": {
+    "page": 2,
+    "size": 20,
+    "total": 150,
+    "total_pages": 8
+  },
+  "meta": {
+    "requested_ids": [101, 102, 103, 105],
+    "returned_ids": [101, 102],
+    "missing_ids": [103, 105]
+  }
+}
+```
+
+2. **使用 POST 查询**：当查询条件非常复杂，超过 URL 长度限制时使用。
+```http
+POST /api/users/_search
+Content-Type: application/json
+
+{
+  "ids": ["101", "102", "103"],
+  "filters": {
+    "status": "active",
+    "age": {"gte": 18, "lte": 30}
+  },
+  "fields": ["id", "name", "email"],
+  "sort": [{"field": "created_at", "order": "desc"}],
+  "page": 1,
+  "size": 50
+}
+```
+
+3. **批量单独端点**（特定场景）
+```http
+GET /api/batch/users?ids=id1,id2,id3
+```
+
+
+
+
 # RESTful API 缺点
 
 RESTful 服务有几个关键限制，使**它难以成为现代基于微服务的应用程序的消息传递协议**：

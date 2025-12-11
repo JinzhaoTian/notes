@@ -3,7 +3,7 @@
 
 #### `New-Object`
 
-用于创建 .NET Framework 或 COM 对象实例的 `cmdlet`，允许开发者通过指定类型名称或 COM 对象的 ProgID 来实例化对象。
+用于创建 .NET Framework 或 [COM](COM.md) 对象实例的 `cmdlet`，允许开发者通过指定类型名称或 COM 对象的 ProgID 来实例化对象。
 ```powershell
 New-Object
     [-TypeName] <String>
