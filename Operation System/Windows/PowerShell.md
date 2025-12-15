@@ -95,3 +95,7 @@ Remove-PSSession
     [-Confirm]
     [<CommonParameters>]
 ```
+
+
+#### `Install-Module`
+
