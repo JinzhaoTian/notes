@@ -1,4 +1,4 @@
-在 Windows 上，可以使用微软提供的一整套自动化解决方案。
+在 Windows 上，可以使用微软提供的一整套自动化解决方案完成 CI/CD，相关技术栈有 [GitLab CI](GitLab%20CI.md)，[PowerShell](../../Operation%20System/Windows/PowerShell.md)，[IIS](../../Language/CS/运维/IIS.md)，[WinRM](../../Operation%20System/Windows/WinRM.md) 等。
 
 ## 核心配置
 
