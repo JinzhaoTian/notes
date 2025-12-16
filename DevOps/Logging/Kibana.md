@@ -24,3 +24,20 @@ Kibana 是 Elastic Stack（原 ELK Stack，包括 Elasticsearch、Logstash、Ki
 
 6. **告警与通知**
     - 通过 **Kibana Alerting** 设置规则，在数据达到阈值时触发告警（如发送邮件或 Slack 通知）。
+
+
+## 安装
+
+1. **下载**：从 [Kibana 官网](https://www.elastic.co/downloads/kibana) 下载最新版本
+2. **配置**：从文件 `config/kibana.yml` 中配置
+```yaml
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://localhost:9200"]
+elasticsearch.username: "kibana_system" # 使用Kibana系统用户
+elasticsearch.password: "your_kibana_password"
+i18n.locale: "zh-CN" # 可选：中文界面
+```
+3. **启动**：
+	- Linux/macOS：运行 `bin/kibana`
+	- Windows：运行 `bin\kibana.bat`

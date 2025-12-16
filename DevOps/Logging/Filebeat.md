@@ -29,3 +29,40 @@ Filebeat 通过以下步骤工作：
 - 内置支持压缩和加密传输
 - 可处理日志轮转和文件重命名
 - 提供负载平衡和重试机制
+
+
+## 安装
+
+1. **下载**：从[Filebeat官网](https://www.elastic.co/downloads/beats/filebeat)下载最新版本
+2. **配置**：在文件 `filebeat.yml` 中配置
+```yaml
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - D:\YourAppPath\Logs\*.json # 指向你的 .NET 应用日志目录
+  json.keys_under_root: true # JSON日志处理
+  json.add_error_key: true
+  tags: ["api"] # 添加标签便于筛选
+
+output.elasticsearch:
+  hosts: ["localhost:9200"]
+  username: "elastic" # 替换为你的用户名
+  password: "your_password" # 替换为你的密码
+  indices:
+    - index: "api-logs-%{+yyyy.MM.dd}" # 按日期分索引
+
+setup.kibana:
+  host: "localhost:5601"
+```
+3. **启动**：
+	- Windows：以管理员身份运行 PowerShell 并执行：
+```powershell
+cd "C:\Program Files\Filebeat"
+.\filebeat.exe -c filebeat.yml setup # 加载索引模板等
+.\filebeat.exe -c filebeat.yml # 启动Filebeat
+# 或安装为Windows服务（推荐）：
+.\filebeat.exe install service -c filebeat.yml
+Start-Service filebeat
+```
+

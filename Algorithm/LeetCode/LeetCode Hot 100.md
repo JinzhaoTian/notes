@@ -70,9 +70,9 @@ LRU 缓存
 最长有效括号
 下一个排列
 把二叉搜索树转换为累加树
-合并 K 个升序链表
+合并 K 个升序链表[LeetCode 23. Merge k Sorted Lists](题解/LeetCode%2023.%20Merge%20k%20Sorted%20Lists.md)
 和为 K 的子数组
-合并两个有序链表
+合并两个有序链表[LeetCode 21. Merge Two Sorted Lists](题解/LeetCode%2021.%20Merge%20Two%20Sorted%20Lists.md)
 有效的括号
 删除链表的倒数第 N 个结点
 电话号码的字母组合
