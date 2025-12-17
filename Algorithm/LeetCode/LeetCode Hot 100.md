@@ -70,9 +70,9 @@ LRU 缓存
 最长有效括号
 下一个排列
 把二叉搜索树转换为累加树
-合并 K 个升序链表[LeetCode 23. Merge k Sorted Lists](题解/LeetCode%2023.%20Merge%20k%20Sorted%20Lists.md)
+2. [LeetCode 23. Merge k Sorted Lists](题解/LeetCode%2023.%20Merge%20k%20Sorted%20Lists.md)
 和为 K 的子数组
-合并两个有序链表[LeetCode 21. Merge Two Sorted Lists](题解/LeetCode%2021.%20Merge%20Two%20Sorted%20Lists.md)
+3. [LeetCode 21. Merge Two Sorted Lists](题解/LeetCode%2021.%20Merge%20Two%20Sorted%20Lists.md)
 有效的括号
 删除链表的倒数第 N 个结点
 电话号码的字母组合
@@ -96,14 +96,13 @@ LRU 缓存
 二叉树的中序遍历
 最大矩形
 柱状图中最大的矩形
-
 子集
 最小覆盖子串
 颜色分类
 编辑距离
 爬楼梯
 最短无序连续子数组
-最小路径和
+4. [LeetCode 64. Minimum Path Sum](题解/LeetCode%2064.%20Minimum%20Path%20Sum.md)
 不同路径
 合并区间
 跳跃游戏

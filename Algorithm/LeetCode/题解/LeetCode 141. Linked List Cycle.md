@@ -1,15 +1,47 @@
-[141. Linked List Cycle](https://leetcode-cn.com/problems/linked-list-cycle/)
+---
+leetcode: LeetCode 141. Linked List Cycle
+difficulties: EASY
+link: https://leetcode-cn.com/problems/linked-list-cycle
+tags:
+  - LeetCode
+---
+
+## 题目
+
+给你一个链表的头节点 `head` ，判断链表中是否有环。
+
+如果链表中有某个节点，可以通过连续跟踪 `next` 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 `pos` 来表示链表尾连接到链表中的位置（索引从 0 开始）。**注意：`pos` 不作为参数进行传递** 。仅仅是为了标识链表的实际情况。
+
+_如果链表中存在环_ ，则返回 `true` 。 否则，返回 `false` 。
 
 
-Python:
 
+
+## 题解
+
+
+### C++
+
+```cpp
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode *p1 = head, *p2 = head;
+        while(p1 && p2){
+            if(!p2->next || !p2->next->next) break;
+            p1 = p1->next;
+            p2 = p2->next->next;
+            if(p1 == p2) return true;
+        }
+        return false;
+    }
+};
 ```
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
 
+
+### Python
+
+```python
 class Solution:
     def hasCycle(self, head: Optional[ListNode]) -> bool:
         p1 = head
@@ -26,28 +58,3 @@ class Solution:
         return False
 ```
 
-C++:
-
-```
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    bool hasCycle(ListNode *head) {
-        ListNode *p1 = head, *p2 = head;
-        while(p1 && p2){
-            if(!p2->next || !p2->next->next) break;
-            p1 = p1->next;
-            p2 = p2->next->next;
-            if(p1 == p2) return true;
-        }
-        return false;
-    }
-};
-```

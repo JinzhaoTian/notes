@@ -48,6 +48,11 @@ Python：
 1. [LeetCode 1654. Minimum Jumps to Reach Home](题解/LeetCode%201654.%20Minimum%20Jumps%20to%20Reach%20Home.md)
 
 
+## 6. 快慢指针
+
+无向图中找环的一个经典算法：快慢指针
+
+1. [LeetCode 141. Linked List Cycle](题解/LeetCode%20141.%20Linked%20List%20Cycle.md)
 
 
 # 基础数据结构
