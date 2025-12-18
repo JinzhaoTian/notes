@@ -12,7 +12,7 @@ properties:
     displayName: 链接
 views:
   - type: table
-    name: 表格
+    name: 题库
     order:
       - leetcode
       - file.name
