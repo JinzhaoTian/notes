@@ -1,24 +1,47 @@
-[215. Kth Largest Element in an Array](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+---
+leetcode: LeetCode 215. Kth Largest Element in an Array
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/kth-largest-element-in-an-array
+tags:
+  - LeetCode
+  - 二分查找
+---
 
+## 题目
+
+给定整数数组 `nums` 和整数 `k`，请返回数组中第 `k` 个最大的元素。
+
+你必须设计并实现时间复杂度为 `O(n)` 的算法解决此问题。
+
+## 分析
 
 寻找第k个最大的元素，这个题目早就听说过了，但是一直对于解法怎么写不是很清楚。
 
 **思路一**：最简单的想法就是，先对所有的元素进行排序，然后返回倒数第k个元素就好，如果使用的排序算法性能比较好，时间复杂度就可以达到O(nlogn)。
 
-Python:
+但是深入思考一下，还有可以做到时间复杂度更低的算法。
 
-```
+**思路二**：基于快速排序的思想。快排的每次partition都会返回pivot的确定位置，查看这个位置是不是所要求的位置。
+
+
+**思路三**：基于堆排序。
+
+
+
+## 题解
+
+### Python
+
+1. 排序
+```python
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         nums.sort()
         return nums[len(nums) - k]
 ```
 
-但是深入思考一下，还有可以做到时间复杂度更低的算法。
-
-**思路二**：基于快速排序的思想。快排的每次partition都会返回pivot的确定位置，查看这个位置是不是所要求的位置。
-
-```
+2. 快速排序
+```python
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         def partition(nums, left, right):
@@ -49,9 +72,8 @@ class Solution:
  
 ```
 
-**思路三**：基于堆排序。调用Python的API，很方便，但是总感觉有点...
-
-```
+3. 堆排序：调用Python的API，很方便，但是总感觉有点...
+```python
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         n = len(nums)
