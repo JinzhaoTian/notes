@@ -30,6 +30,65 @@ tags:
 
 ## 题解
 
+### C++
+
+1. 快速排序：（正常写会超时）
+```cpp
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n = nums.size();
+        return quickSelect(nums, 0, n - 1, n - k);
+    }
+
+    int quickSelect(vector<int>& nums, int l, int r, int k) {
+        if (l == r)
+            return nums[k];
+        int partition = nums[l], i = l, j = r;
+        while (i < j){
+            while (i < j && nums[j] >= partition)
+                j--;
+            nums[i] = nums[j];
+            while (i < j && nums[i] <= partition)
+                i++;
+            nums[j] = nums[i];
+        }
+        nums[i] = partition;
+        if (k <= j)
+            return quickSelect(nums, l, j, k);
+        else
+            return quickSelect(nums, j + 1, r, k);
+    }
+};
+```
+
+官方优化版：
+```cpp
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n = nums.size();
+        return quickSelect(nums, 0, n - 1, n - k);
+    }
+
+    int quickSelect(vector<int>& nums, int l, int r, int k) {
+        if (l == r)
+            return nums[k];
+        int partition = nums[l], i = l - 1, j = r + 1;
+        while (i < j){
+            do i++; while (nums[i] < partition);
+            do j--; while (nums[j] > partition);
+            if (i < j)
+                swap(nums[i], nums[j]);
+        }
+        if (k <= j)
+            return quickSelect(nums, l, j, k);
+        else
+            return quickSelect(nums, j + 1, r, k);
+    }
+};
+```
+
 ### Python
 
 1. 排序
