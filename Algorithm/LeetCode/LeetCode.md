@@ -15,8 +15,6 @@
 
 谈起动态规划，就不得不提到最长公共子序列。
 
-Python：
-
 2. [LeetCode 44. Wildcard Matching](题解/LeetCode%2044.%20Wildcard%20Matching.md)
 
 
