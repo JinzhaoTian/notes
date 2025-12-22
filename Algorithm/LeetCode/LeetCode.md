@@ -45,36 +45,187 @@ views:
 ## 2. 二分查找
 
 
+
+
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("二分查找")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 二分查找
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
 ## 3. 排序
 
-> 排序算法接触了很多，排序算法是最经典的算法知识。因为其实现代码短，应该广，在面试中经常会问到排序算法及其相关的问题。一般在面试中最常考的是快速排序和归并排序等基本的排序算法，复习一下，总共有：冒泡排序、选择排序、插入排序、**归并排序**、**快速排序**、**堆排序**、希尔排序、计数排序、**桶排序**、基数排序。
+排序算法接触了很多，排序算法是最经典的算法知识。因为其实现代码短，应该广，在面试中经常会问到排序算法及其相关的问题。一般在面试中最常考的是快速排序和归并排序等基本的排序算法，复习一下，总共有：冒泡排序、选择排序、插入排序、**归并排序**、**快速排序**、**堆排序**、希尔排序、计数排序、**桶排序**、基数排序。
 
-1. [LeetCode 215. Kth Largest Element in an Array](题解/LeetCode%20215.%20Kth%20Largest%20Element%20in%20an%20Array.md)
 
-2. [LeetCode 347. Top K Frequent Elements](题解/LeetCode%20347.%20Top%20K%20Frequent%20Elements.md)
+### 关联题目
 
-3. [LeetCode 451. Sort Characters By Frequency](题解/LeetCode%20451.%20Sort%20Characters%20By%20Frequency.md)
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("排序")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 排序
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
 
-4. [LeetCode 75. Sort Colors](题解/LeetCode%2075.%20Sort%20Colors.md)
+```
+
 
 
 ## 4. 贪心思想
 
-> 贪心法的核心思想是每次都选取局部最优的结果，最终形成全局最优。这种思想简单，易于实现，但是并不是所有具有最优子结构的问题都能用贪心，还可能会是动态规划。
+贪心法的核心思想是每次都选取局部最优的结果，最终形成全局最优。这种思想简单，易于实现，但是并不是所有具有最优子结构的问题都能用贪心，还可能会是动态规划。
 
-1. [LeetCode 455. Assign Cookies](题解/LeetCode%20455.%20Assign%20Cookies.md)
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("贪心")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 贪心
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
 
 
 ## 5. 搜索
 
-1. [LeetCode 1654. Minimum Jumps to Reach Home](题解/LeetCode%201654.%20Minimum%20Jumps%20to%20Reach%20Home.md)
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("搜索")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 搜索
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
 
 
 ## 6. 快慢指针
 
 无向图中找环的一个经典算法：快慢指针
 
-1. [LeetCode 141. Linked List Cycle](题解/LeetCode%20141.%20Linked%20List%20Cycle.md)
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("快慢指针")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 快慢指针
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
 
 
 # 基础数据结构
@@ -82,21 +233,75 @@ views:
 
 ## 1. 链表
 
-1. [LeetCode 206. Reverse Linked List](题解/LeetCode%20206.%20Reverse%20Linked%20List.md)
-2. [剑指 Offer 35. 复杂链表的复制](https://leetcode-cn.com/problems/fu-za-lian-biao-de-fu-zhi-lcof/)
-
 这个链表不仅包括一个next指针，还包括一个random指针随机指向链表中的一个节点。所以深拷贝的时候就不能顺序遍历，可以使用的方法是：
 
 1. 方法一：先遍历一遍，借助hashmap，把新节点创造出来，然后再遍历一遍，把next指针和random指针连上。时间复杂度O(n)，空间O(n)。
 2. 方法二：拼接+拆分。时间复杂度O(n)，空间O(1)。
 
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("链表")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 链表
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
 ## 2. 树
 
-1. [LeetCode 449. Serialize and Deserialize BST](题解/LeetCode%20449.%20Serialize%20and%20Deserialize%20BST.md)
 
-2. [LeetCode 102. Binary Tree Level Order Traversal](题解/LeetCode%20102.%20Binary%20Tree%20Level%20Order%20Traversal.md)
+### 关联题目
 
-3. [LeetCode 96. Unique Binary Search Trees](题解/LeetCode%2096.%20Unique%20Binary%20Search%20Trees.md)
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("二叉树", "树")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 树
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
 
 
 ## 3. 栈
@@ -140,7 +345,7 @@ class Solution:
 
 ## 2. 双指针
 
-> 双指针主要用于遍历数组，两个指针指向不同的元素，从而协同完成任务。双指针法可以有助于减少遍历次数。
+双指针主要用于遍历数组，两个指针指向不同的元素，从而协同完成任务。双指针法可以有助于减少遍历次数。
 
 1. [LeetCode 167. Two Sum II - Input Array Is Sorted](题解/LeetCode%20167.%20Two%20Sum%20II%20-%20Input%20Array%20Is%20Sorted.md)
 
@@ -155,6 +360,36 @@ class Solution:
 6. [LeetCode 141. Linked List Cycle](题解/LeetCode%20141.%20Linked%20List%20Cycle.md)
 
 7. [LeetCode 524. Longest Word in Dictionary through Deleting](题解/LeetCode%20524.%20Longest%20Word%20in%20Dictionary%20through%20Deleting.md)
+
+### 关联题目
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("双指针")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 双指针
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
 
 
 

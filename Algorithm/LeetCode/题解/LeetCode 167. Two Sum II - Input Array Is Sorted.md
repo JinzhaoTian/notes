@@ -1,24 +1,17 @@
-[Two Sum II - Input Array Is Sorted](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)
+---
+leetcode: LeetCode 167. Two Sum II - Input Array Is Sorted
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted
+tags:
+  - LeetCode
+  - 双指针
+---
 
-Python:
+## 题解
 
-```
-class Solution:
-    def twoSum(self, numbers: List[int], target: int) -> List[int]:
-        l, r = 0, len(numbers)-1
-        while l<r:
-            if numbers[l] + numbers[r] > target:
-                r -= 1
-            elif numbers[l] + numbers[r] < target:
-                l += 1
-            else:
-                break
-        return [l+1, r+1]
-```
+### C++
 
-C++:
-
-```
+```cpp
 class Solution {
 public:
     vector<int> twoSum(vector<int>& numbers, int target) {
@@ -36,3 +29,21 @@ public:
     }
 };
 ```
+
+
+### Python
+
+```python
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        l, r = 0, len(numbers)-1
+        while l<r:
+            if numbers[l] + numbers[r] > target:
+                r -= 1
+            elif numbers[l] + numbers[r] < target:
+                l += 1
+            else:
+                break
+        return [l+1, r+1]
+```
+

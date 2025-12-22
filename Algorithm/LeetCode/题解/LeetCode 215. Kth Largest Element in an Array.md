@@ -5,6 +5,7 @@ link: https://leetcode-cn.com/problems/kth-largest-element-in-an-array
 tags:
   - LeetCode
   - 二分查找
+  - 排序
 ---
 
 ## 题目

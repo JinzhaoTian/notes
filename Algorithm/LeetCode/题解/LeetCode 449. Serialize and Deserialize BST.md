@@ -1,4 +1,12 @@
-[Leetcode 449. Serialize and Deserialize BST](https://leetcode-cn.com/problems/serialize-and-deserialize-bst/)
+---
+leetcode: LeetCode 449. Serialize and Deserialize BST
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/serialize-and-deserialize-bst
+tags:
+  - LeetCode
+  - 二叉树
+---
+
 
 二叉搜索树的一个性质就是中序遍历会输出一个有序的结果。利用这个性质和前序遍历或者后序遍历就可以序列化或者还原一个二叉搜索树。
 

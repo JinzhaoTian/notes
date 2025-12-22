@@ -1,10 +1,24 @@
-[Leetcode 1654. Minimum Jumps to Reach Home](https://leetcode-cn.com/problems/minimum-jumps-to-reach-home/)
+---
+leetcode: LeetCode 1654. Minimum Jumps to Reach Home
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/minimum-jumps-to-reach-home
+tags:
+  - LeetCode
+  - 搜索
+---
+
+## 题目
 
 一个虫最少要经过多少跳才能到家。
 
+
+## 题解
+
+### Python
+
 DFS:
 
-```
+```python
 class Solution:
     def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
         forbidden = set(forbidden)
@@ -27,7 +41,7 @@ class Solution:
 
 BFS:
 
-```
+```python
 class Solution:
     def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
         forbidden = set(forbidden)

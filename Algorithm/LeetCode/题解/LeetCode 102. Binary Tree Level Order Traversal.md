@@ -1,1 +1,8 @@
-[Leetcode 102. Binary Tree Level Order Traversal](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+---
+leetcode: LeetCode 102. Binary Tree Level Order Traversal
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/binary-tree-level-order-traversal
+tags:
+  - LeetCode
+  - 二叉树
+---

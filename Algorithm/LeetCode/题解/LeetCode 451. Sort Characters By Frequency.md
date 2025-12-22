@@ -1,9 +1,20 @@
-[451. Sort Characters By Frequency](https://leetcode-cn.com/problems/sort-characters-by-frequency/)
+---
+leetcode: LeetCode 451. Sort Characters By Frequency
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/sort-characters-by-frequency
+tags:
+  - LeetCode
+  - 排序
+---
 
 
-Python:
 
-```
+
+## 题解
+
+### Python
+
+```python
 class Solution:
     def frequencySort(self, s: str) -> str:
         count = collections.Counter(s)
