@@ -1,5 +1,10 @@
-[Leetcode 96. Unique Binary Search Trees](https://leetcode-cn.com/problems/unique-binary-search-trees/)
-
+---
+leetcode: LeetCode 96. Unique Binary Search Trees
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/unique-binary-search-trees
+tags:
+  - LeetCode
+---
 
 可以自己分析情况，从0个节点，1个，2个，3个，直到4个节点，5个，就可以看出来规律了。
 
