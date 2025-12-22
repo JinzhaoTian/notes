@@ -6,9 +6,9 @@
 
 TypeScript 支持 JavaScript 的所有基础类型，并扩展了额外类型：
 
-- **原始类型**：`number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`。
-- **复杂类型**：`object`, `array`, `function`。
-- **TypeScript 特有类型**：
+1. **原始类型**：`number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`。
+2. **复杂类型**：`object`, `array`, `function`。
+3. **TypeScript 特有类型**：
     - `any`：禁用类型检查（慎用）。
     - `unknown`：类型安全的 `any`，使用时需显式断言。
     - `void`：表示函数没有返回值。
@@ -16,16 +16,16 @@ TypeScript 支持 JavaScript 的所有基础类型，并扩展了额外类型：
 
 #### 静态类型检查
 
-- **编译时类型检查**：TypeScript 在编译阶段（而非运行时）检查类型错误。
+1. **编译时类型检查**：TypeScript 在编译阶段（而非运行时）检查类型错误。
 
 #### 类型注解与推断
 
-- **显式注解**：手动声明变量类型。
+1. **显式注解**：手动声明变量类型。
 ```TypeScript
 let name: string = "Alice";
 ```
 
-- **类型推断**：TypeScript 自动推断类型（如根据初始值）。
+2. **类型推断**：TypeScript 自动推断类型（如根据初始值）。
 ```TypeScript
 let age = 30; // 自动推断为 number
 ```
@@ -33,7 +33,7 @@ let age = 30; // 自动推断为 number
 
 ### 联合类型
 
-- **联合类型**（`|`）：表示值可以是多种类型之一。
+**联合类型**（`|`）表示值可以是多种类型之一。
 ```TypeScript
 let id: number | string;
 ```
@@ -41,16 +41,16 @@ let id: number | string;
 
 ### 交叉类型
 
-- **交叉类型**（`&`）：合并多个类型的属性。
+**交叉类型**（`&`）用于合并多个类型的属性。
 ```TypeScript
 type Person = { name: string };
 type Employee = { id: number };
 type Staff = Person & Employee; // { name: string, id: number }
 ```
 
-### 接口（Interface）
+### 接口
 
-- **接口**：定义对象的结构，支持继承和扩展。
+**接口**（Interface）用于定义对象的结构，支持继承和扩展。
 ```TypeScript
 interface User {
     name: string;
@@ -58,17 +58,16 @@ interface User {
 }
 ```
 
+### 类型别名
 
-### 类型别名（Type Alias）
-
-- **类型别名**：为类型命名，支持更复杂的类型组合。
+**类型别名**（Type Alias）用于为类型命名，支持更复杂的类型组合。
 ```TypeScript
 type Point = { x: number; y: number };
 ```
 
-### 泛型（Generics）
+### 泛型
 
-提供代码复用性，允许在定义函数、类或接口时使用类型参数。
+**泛型**（Generics）提供代码复用性，允许在定义函数、类或接口时使用类型参数。
 ```TypeScript
 function identity<T>(arg: T): T {
     return arg;
@@ -78,14 +77,25 @@ let output = identity<string>("hello");
 
 ### 高级类型
 
-- **条件类型**：`T extends U ? X : Y`。
-- **映射类型**：基于旧类型创建新类型（如 `Readonly<T>`）。
-- **模板字面量类型**：结合字符串字面量类型（如 `type Event = "click" | "hover"`）。
+1. **条件类型**：
+```typescript
+T extends U ? X : Y
+```
+
+2. **映射类型**：基于旧类型创建新类型
+```typescript
+Readonly<T>
+```
+
+3. **模板字面量类型**：结合字符串字面量类型
+```typescript
+type Event = "click" | "hover"
+```
 
 
 ### 类型守卫
 
-- **类型守卫**：运行时检查类型（如 `typeof`, `instanceof`, 或自定义函数）。
+**类型守卫**用于运行时检查类型（如 `typeof`，`instanceof`，或自定义函数）。
 ```TypeScript
 if (typeof val === "string") {
     console.log(val.toUpperCase());
@@ -94,12 +104,10 @@ if (typeof val === "string") {
 
 ### 类型断言
 
-- **类型断言**：手动指定类型（避免滥用）。
+**类型断言**用于手动指定类型（避免滥用）。
 ```TypeScript
 let input = document.getElementById("input") as HTMLInputElement;
 ```
-
-
 
 ### 类型兼容性
 
@@ -120,17 +128,16 @@ let pet: Cat = { name: "Whiskers", age: 2 }; // 兼容，因为包含 name
 ## `@types`
 
 
-`TypeScript` 作为一个有类型的语言，在 `.ts` 文件引用包时，默认时必须要有类型声明的，不能是 `any`，而 `TypeScript` 对于包的类型声明要求为提供 `.d.ts`，否则就要在 `tsconfig.json` 中声明。
+TypeScript 作为一个有类型的语言，在 `.ts` 文件引用包时，默认时必须要有类型声明的，不能是 `any`，而 TypeScript 对于包的类型声明要求为提供 `.d.ts`，否则就要在 `tsconfig.json` 中声明。
 
-`TypeScript` 对于包/模块的**声明寻找规则**如下：
-1. `TypeScript` 编译器先在当前编译上下文找模块的定义
+TypeScript 对于包/模块的**声明寻找规则**如下：
+1. TypeScript 编译器先在当前编译上下文找模块的定义
 2. 如果找不到，则会去 `node_modules` 中的 `@types`（默认情况，目录可以修改，后面会提到）目录下去寻找对应包名的模块声明文件
 
+使用 TypeScript 时，要注意添加的是哪种类型的依赖。因为 TypeScript 是一个开发工具，而且TypeScript 类型不存在于运行时，**与 TypeScript 相关的包一般属于 `devDependencies`** 。
 
-使用 `Typescript` 时，要注意添加的是哪种类型的依赖。因为 `Typescript` 是一个开发工具，而且`TypeScript` 类型不存在于运行时，**与 `TypeScript` 相关的包一般属于 `devDependencies`** 。
 
-
-#### `extends`
+### `extends`
 
 1. `extends` 关键字可用于 `class` 的继承
 2. `extends` 关键字可以实现 `interface` 类型的扩展
@@ -179,14 +186,12 @@ TypeScript 提供了一系列内置的**实用类型**（Utility Types），它�
 2. **`Extract<T, U>`** ：从 `T` 中提取可赋值给 `U` 的类型
 3. **`NonNullable<T>`** ：从 `T` 中排除 `null` 和 `undefined`
 
-
 #### 函数操作类型
 
 1. **`Parameters<T>`** ：获取函数参数类型元组
 2. **`ReturnType<T>`** ：获取函数返回值类型
 3. **`ConstructorParameters<T>`** ：获取构造函数参数类型
 4. **`InstanceType<T>`** ：获取构造函数实例类型
-
 
 ### 高级实用类型
 
@@ -213,7 +218,7 @@ type Concat<A extends string, B extends string> = `${A}${B}`;
 
 ### 使用
 
-#### `Exclude`
+#### `Exclude<T, U>`
 
 `Exclude` 是 TypeScript 中的一个内置实用类型（Utility Type），用于从**联合类型**中**排除**某些指定的类型。
 
@@ -239,7 +244,7 @@ type Exclude<T, U> = T extends U ? never : T;
 3. 与其他实用类型结合使用（如 `Extract`、`Omit` 等）
 
 
-#### `Extract`
+#### `Extract<T, U>`
 
 `Extract` 是 TypeScript 中的一个内置实用类型（Utility Type），用于从**联合类型**中**提取**与指定类型匹配的类型成员。
 
@@ -264,7 +269,7 @@ type Extract<T, U> = T extends U ? T : never;
 3. 与其他实用类型结合使用
 
 
-#### `Omit`
+#### `Omit<T, K>`
 
 `Omit` 是 TypeScript 中的一个内置实用类型（Utility Type），用于从**对象类型**中**排除**指定的属性，并返回一个新的对象类型。
 
@@ -312,7 +317,7 @@ type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 3. 处理 API 响应时选择需要的字段
 
 
-#### `Pick`
+#### `Pick<T, K>`
 
 `Pick` 是 TypeScript 中的一个内置实用类型（Utility Type），用于从**对象类型**中**选择**指定的属性，创建一个新的对象类型。
 

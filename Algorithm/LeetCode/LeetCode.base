@@ -12,7 +12,7 @@ properties:
     displayName: 链接
 views:
   - type: table
-    name: 题库
+    name: 全部题目
     order:
       - leetcode
       - file.name
@@ -25,3 +25,42 @@ views:
       note.leetcode: 169
       file.name: 221
       note.difficulties: 143
+  - type: table
+    name: 简单题目
+    filters:
+      and:
+        - difficulties == "EASY"
+    order:
+      - leetcode
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+  - type: table
+    name: 中等题目
+    filters:
+      and:
+        - difficulties == "MEDIUM"
+    order:
+      - leetcode
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+  - type: table
+    name: 困难题目
+    filters:
+      and:
+        - difficulties == "HARD"
+    order:
+      - leetcode
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC

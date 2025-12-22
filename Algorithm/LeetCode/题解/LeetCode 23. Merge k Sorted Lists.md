@@ -4,6 +4,8 @@ difficulties: HARD
 link: https://leetcode.cn/problems/merge-k-sorted-lists
 tags:
   - LeetCode
+  - 链表
+  - Hot100
 ---
 
 ## 分析

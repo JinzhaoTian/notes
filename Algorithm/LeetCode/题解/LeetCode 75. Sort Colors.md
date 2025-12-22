@@ -1,10 +1,17 @@
-[75. Sort Colors](https://leetcode-cn.com/problems/sort-colors/)
+---
+leetcode: LeetCode 75. Sort Colors
+difficulties: MEDIUM
+link: https://leetcode-cn.com/problems/sort-colors
+tags:
+  - LeetCode
+---
 
 
+## 题解
 
-Python:
+### Python
 
-```
+```python
 class Solution:
     def sortColors(self, nums: List[int]) -> None:
         """
@@ -17,7 +24,7 @@ class Solution:
 
 可以使用双指针法：
 
-```
+```python
 class Solution:
     def sortColors(self, nums: List[int]) -> None:
         """

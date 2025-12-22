@@ -4,6 +4,7 @@ difficulties: EASY
 link: https://leetcode.cn/problems/two-sum
 tags:
   - LeetCode
+  - Hot100
 ---
 
 ## 分析

@@ -5,7 +5,11 @@
 
 卡特兰数（Catalan数）
 
-```
+## 题解
+
+### Python
+
+```python
 class Solution:
     def numTrees(self, n):
         """

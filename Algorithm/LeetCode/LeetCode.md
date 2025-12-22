@@ -9,13 +9,37 @@
 
 ## 1. 动态规划
 
-> 动态规划要求问题的子问题具有最优子结构，同时又保留了子问题的解，避免重复计算。
+动态规划要求问题的子问题具有最优子结构，同时又保留了子问题的解，避免重复计算。
 
-1. [LeetCode 1143. Longest Common Subsequence](题解/LeetCode%201143.%20Longest%20Common%20Subsequence.md)
 
-谈起动态规划，就不得不提到最长公共子序列。
+### 关联题目
 
-2. [LeetCode 44. Wildcard Matching](题解/LeetCode%2044.%20Wildcard%20Matching.md)
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("#动态规划")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 动态规划
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+```
 
 
 ## 2. 二分查找

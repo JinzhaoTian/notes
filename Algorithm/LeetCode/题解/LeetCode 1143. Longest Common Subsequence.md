@@ -4,6 +4,7 @@ difficulties: MEDIUM
 link: https://leetcode-cn.com/problems/longest-common-subsequence
 tags:
   - LeetCode
+  - 动态规划
 ---
 
 谈起动态规划，就不得不提到最长公共子序列。

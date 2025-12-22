@@ -102,7 +102,7 @@ priority: 3
    但是官方说不太支持 Markdown，![](_imgs/Pasted%20image%2020241116130335.png)如果是要以 Markdown 文本作为输入输出格式，建议用别的。
 
 2. [CodeMirror](../../Language/Node/前端开发/CodeMirror.md) ：注重 Markdown 语法高亮，适合轻量级需求，可以通过 Tailwind CSS 定制编辑器的外观。
-3. [Lexical](https://lexical.dev/docs/intro) ：性能高、架构现代化，适合构建复杂 Markdown 编辑器。内置支持 Tailwind CSS，通过插件化架构添加 Markdown 支持。![](../../Language/Node/前端开发/imgs/Pasted%20image%2020241119174811.png)
+3. [Lexical](https://lexical.dev/docs/intro) ：性能高、架构现代化，适合构建复杂 Markdown 编辑器。内置支持 Tailwind CSS，通过插件化架构添加 Markdown 支持。![](../../Language/Node/前端开发/_imgs/Pasted%20image%2020241119174811.png)
 
 
 2. [七款优质开源项目，让你的Markdown编辑更加行云流水 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/178981578)

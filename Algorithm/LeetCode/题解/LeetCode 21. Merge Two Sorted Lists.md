@@ -4,6 +4,8 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/merge-two-sorted-lists
 tags:
   - LeetCode
+  - 链表
+  - Hot100
 ---
 
 ## 分析
