@@ -245,7 +245,7 @@ views:
 filters:
   and:
     - "!leetcode.isEmpty()"
-    - file.tags.containsAny("链表")
+    - file.tags.containsAny("链表", "双向链表")
 properties:
   note.leetcode:
     displayName: 题目
