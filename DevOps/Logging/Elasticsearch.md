@@ -3,7 +3,7 @@ Elasticsearch 是一个开源的分布式搜索和分析引擎，基于 Apache L
 
 ## 安装
 
-1. **下载**：从[Elasticsearch官网]([Download Elasticsearch | Elastic](https://www.elastic.co/downloads/elasticsearch))下载最新版本
+1. **下载**：从 [Elasticsearch官网]([Download Elasticsearch | Elastic](https://www.elastic.co/downloads/elasticsearch))下载最新版本
 2. **配置**：在 `config/elasticsearch.yml` 中配置
 ```yaml
 cluster.name: production-cluster
