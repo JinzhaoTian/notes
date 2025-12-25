@@ -4,6 +4,7 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/circular-array-loop
 tags:
   - LeetCode
+  - 快慢指针
 ---
 
 ## 题目

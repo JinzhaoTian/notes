@@ -5,6 +5,7 @@ link: https://leetcode-cn.com/problems/binary-tree-level-order-traversal
 tags:
   - LeetCode
   - 二叉树
+  - Hot100
 ---
 
 ## 题目

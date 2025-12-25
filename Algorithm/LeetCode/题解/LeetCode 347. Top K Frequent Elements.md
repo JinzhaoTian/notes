@@ -5,13 +5,54 @@ link: https://leetcode-cn.com/problems/top-k-frequent-elements
 tags:
   - LeetCode
   - 排序
+  - Hot100
 ---
+
+## 题目
+
+给你一个整数数组 `nums` 和一个整数 `k` ，请你返回其中出现频率前 `k` 高的元素。
 
 ## 分析
 
 寻找前k个出现频率最高的元素，这道题一看就知道用**桶排序**，但是如何设置桶和我想得不一样。
 
 ## 题解
+
+### C++
+
+鉴于STL全都忘完了，注意一下几个数据结构，unordered_map，vector。
+
+```cpp
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        int maxCnt = 0;
+        unordered_map<int, int> hash_map;
+        for (auto num : nums) {
+            hash_map[num] ++;
+            maxCnt = max(maxCnt, hash_map[num]);
+        }
+
+        vector<vector<int>> bucket(maxCnt + 1);
+        for (auto item : hash_map) {
+            int num = item.first, idx = item.second;
+            bucket[idx].push_back(num);
+        }
+
+        vector<int> res;
+        for (int i = bucket.size() - 1; i >= 0; i--){
+            if (k == 0) break;
+            if (!bucket[i].size()) continue;
+            for (int j = 0; j < bucket[i].size(); j++) {
+                res.push_back(bucket[i][j]);
+                k--;
+            }
+        }
+        return res;
+    }
+};
+```
+
 
 ### Python
 
@@ -49,37 +90,3 @@ class Solution:
 ```
 
 
-### C++
-
-鉴于STL全都忘完了，注意一下几个数据结构，unordered_map，vector。
-
-```cpp
-class Solution {
-public:
-    vector<int> topKFrequent(vector<int>& nums, int k) {
-        int maxCnt = 0;
-        unordered_map<int, int> hash_map;
-        for (auto num : nums) {
-            hash_map[num] ++;
-            maxCnt = max(maxCnt, hash_map[num]);
-        }
-
-        vector<vector<int>> bucket(maxCnt + 1);
-        for (auto item : hash_map) {
-            int num = item.first, idx = item.second;
-            bucket[idx].push_back(num);
-        }
-
-        vector<int> res;
-        for (int i = bucket.size() - 1; i >= 0; i--){
-            if (k == 0) break;
-            if (!bucket[i].size()) continue;
-            for (int j = 0; j < bucket[i].size(); j++) {
-                res.push_back(bucket[i][j]);
-                k--;
-            }
-        }
-        return res;
-    }
-};
-```
