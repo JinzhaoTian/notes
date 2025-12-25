@@ -85,7 +85,7 @@
 
 3. **分布式架构**
 	- **CDN（内容分发网络）**：缓存静态资源（JS/CSS/图片），减少服务器压力。
-	- **边缘计算**：将计算逻辑靠近用户（如 Cloudflare Workers）。
+	- **边缘计算**：将计算逻辑靠近用户（如 [Cloudflare Workers](../Backend/服务商/Cloudflare.md#Cloudflare%20Workers)）。
 	- **多可用区（Multi-AZ）部署**：提高容灾能力，避免单机房故障。
 
 ### 代码优化（微观层面）
