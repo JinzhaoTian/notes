@@ -33,7 +33,7 @@ Filebeat 通过以下步骤工作：
 
 ## 安装
 
-1. **下载**：从[Filebeat官网](https://www.elastic.co/downloads/beats/filebeat)下载最新版本
+1. **下载**：从 [Filebeat官网](https://www.elastic.co/downloads/beats/filebeat)下载最新版本
 2. **配置**：在文件 `filebeat.yml` 中配置
 ```yaml
 filebeat.inputs:

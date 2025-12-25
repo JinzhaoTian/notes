@@ -21,3 +21,25 @@ xpack.security.enabled: true # 启用基础安全（强烈建议）
 bin/elasticsearch-setup-passwords interactive
 ```
 
+
+## 命令
+
+1. **安装**：
+```bash
+elasticsearch-service.bat install
+```
+
+2. **启动服务**：
+```bash
+elasticsearch-service.bat start
+```
+
+3. **停止服务**：
+```bash
+elasticsearch-service.bat stop
+```
+
+4. **卸载**：
+```bash
+elasticsearch-service.bat remove
+```
