@@ -37,7 +37,7 @@ server.host: "0.0.0.0"
 elasticsearch.hosts: ["https://localhost:9200"]
 
 # 1. 使用 username / password, elasticsearch 默认用户 elastic 不能使用
-elasticsearch.username: "kibana_system" # 使用Kibana系统用户
+elasticsearch.username: "kibana" # 使用Kibana用户
 elasticsearch.password: "your_kibana_password"
 
 # 2. 使用 Token
@@ -52,3 +52,27 @@ i18n.locale: "zh-CN" # 可选：中文界面
 	- Linux/macOS：运行 `bin/kibana` 
 	- Windows：运行 `bin\kibana.bat` 
 4. 访问：`http://localhost:5601`
+
+
+
+## 使用
+
+1. **访问 Kibana**：打开浏览器，访问 `http://localhost:5601`。
+2. **创建索引模式**：进入 **Stack Management > 索引模式 > 创建索引模式**，输入 `dotnet-api-logs-*`，选择 `@timestamp` 字段作为时间字段。
+3. **发现日志**：进入 **Analytics > Discover**，选择你创建的索引模式，即可搜索、筛选和查看所有日志。
+    
+4. **创建可视化与仪表板**：
+    
+    - 进入 **Analytics > Dashboard** 创建新的仪表板。
+        
+    - 点击 “创建可视化”，选择如 **TSVB (时间序列可视化构建器)** 或 **Lens**。
+        
+    - 可以创建以下有用的图表：
+        
+        - **请求量/错误率趋势图**（基于时间）
+            
+        - **HTTP状态码分布**（饼图）
+            
+        - **慢请求追踪**（筛选 `Duration` 大于某阈值的日志）
+            
+        - **异常类型统计**（筛选 `Level: Error` 并聚合 `Exception` 字段）
