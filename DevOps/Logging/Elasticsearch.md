@@ -20,7 +20,7 @@ xpack.security.enabled: true # 启用基础安全（强烈建议）
 ```bash
 bin/elasticsearch-setup-passwords interactive
 ```
-
+5. **访问**：`https://localhost:9200/`
 
 ## 命令
 
@@ -43,3 +43,9 @@ elasticsearch-service.bat stop
 ```bash
 elasticsearch-service.bat remove
 ```
+
+5. 生成 Kibana 的 Token
+```bash
+.\elasticsearch-service-tokens.bat create elastic/kibana kibana-token
+```
+

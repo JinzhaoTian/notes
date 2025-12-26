@@ -33,12 +33,22 @@ Kibana 是 Elastic Stack（原 ELK Stack，包括 Elasticsearch、Logstash、Ki
 ```yaml
 server.port: 5601
 server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://localhost:9200"]
+
+elasticsearch.hosts: ["https://localhost:9200"]
+
+# 1. 使用 username / password, elasticsearch 默认用户 elastic 不能使用
 elasticsearch.username: "kibana_system" # 使用Kibana系统用户
 elasticsearch.password: "your_kibana_password"
+
+# 2. 使用 Token
+elasticsearch.serviceAccountToken: "your_kibana_token"
+
+elasticsearch.ssl.certificateAuthorities: [ "C:/Program Files/elasticsearch-9.2.2/config/certs/http_ca.crt" ]
+
+
 i18n.locale: "zh-CN" # 可选：中文界面
 ```
 3. **启动**：
 	- Linux/macOS：运行 `bin/kibana` 
 	- Windows：运行 `bin\kibana.bat` 
-4. 访问：
+4. 访问：`http://localhost:5601`
