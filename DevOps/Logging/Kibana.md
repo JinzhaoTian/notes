@@ -41,3 +41,4 @@ i18n.locale: "zh-CN" # 可选：中文界面
 3. **启动**：
 	- Linux/macOS：运行 `bin/kibana` 
 	- Windows：运行 `bin\kibana.bat` 
+4. 访问：
