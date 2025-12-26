@@ -59,10 +59,15 @@ setup.kibana:
 	- Windows：以管理员身份运行 PowerShell 并执行：
 ```powershell
 cd "C:\Program Files\Filebeat"
-.\filebeat.exe -c filebeat.yml setup # 加载索引模板等
-.\filebeat.exe -c filebeat.yml # 启动Filebeat
-# 或安装为Windows服务（推荐）：
-.\filebeat.exe install service -c filebeat.yml
+
+# 1. 直接启动
+.\filebeat.exe -c filebeat.yml setup    # 加载索引模板等
+.\filebeat.exe -c filebeat.yml -e       # 启动Filebeat
+
+
+# 2. 安装为Windows服务（推荐）：
+.\install-service-filebeat.ps1
+.\filebeat.exe setup -e
 Start-Service filebeat
 ```
 

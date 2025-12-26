@@ -57,8 +57,9 @@ i18n.locale: "zh-CN" # 可选：中文界面
 
 ## 使用
 
-1. **访问 Kibana**：打开浏览器，访问 `http://localhost:5601`。
-2. **创建索引模式**：进入 **Stack Management > 索引模式 > 创建索引模式**，输入 `dotnet-api-logs-*`，选择 `@timestamp` 字段作为时间字段。
+1. **访问**：打开浏览器，访问 `http://localhost:5601` ，用 elasticsearch 用户登录：
+
+2. **创建索引模式**：进入 **Stack Management > 索引模式 > 创建索引模式**，输入 `api-logs-*`，选择 `@timestamp` 字段作为时间字段。
 3. **发现日志**：进入 **Analytics > Discover**，选择你创建的索引模式，即可搜索、筛选和查看所有日志。
     
 4. **创建可视化与仪表板**：
