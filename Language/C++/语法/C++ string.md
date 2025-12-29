@@ -51,13 +51,25 @@ std::cin >> s;      // 从标准输入读取字符串
 std::cout << s << std::endl;
 ```
 
-2. **通用流 I/O**：
-	- `is >> s`：
+2. **通用流 I/O**：`istream` 是所有输入流的基类，`ostream` 是所有输出流的基类，**无论流类型如何，读取和输出的逻辑相同**。
+	- **常见流 I/O 类型**：
+		- `iostream`：控制台输入输出流
+		- `sstream`：字符串流
+		- `fstream`：文件输入输出流
+	- **`is >> s`**：
+		- `is`是`istream&`引用
+		- 重载 `operator>>(istream&, string&)` 模板函数
+		- 流状态可检查（`is.good()`，`is.eof()` 等）
+	- **`os << s`**：
+		- `os`是`ostream&`引用
+		- 重载 `operator<<(ostream&, const string&)` 模板函数
+		- **不同流类型有不同的缓冲区策略**
 ```cpp
 #include <iostream>
-#include <string>
 #include <sstream>
 #include <fstream>
+
+#include <string>
 
 string s;
 
@@ -65,16 +77,19 @@ os << s;       // 将 s 写到输出流 os 中，返回 os
 is >> s;       // 从 is 中读取字符串赋给 s，返回 is，以空白字符作为分隔
 ```
 
-3. **`getline`**：可以接收除回车符之外的空白字符（空格，Tab），并将回车符摒弃，自动转为`\0`。
+3. **`getline`**：可以接收除回车符之外的空白字符（空格，Tab），并将回车符摒弃，自动转为 `\0` 。
 	- `cin.getline(char *cha, int num, char delim);`：属于 `istream` 流，定义在头文件`<iostream>`，**只能向字符数组进行输入**，输入过程中达到 `num-1` 个数或者提前遇到 `delim` 字符，则输入结束。
 	- `getline(istream& is, string& str, char delim)`：属于 `string` 流，定义在头文件`<string>`，从输入流读取字符并将它们放进 `string`。**只能向 `string` 类进行输入**，遇到 `delim` 字符输入结束。
 
+#### 比较
 
 
-4. 拼接：确保每个`+`两侧的运算对象至少有一个是string。
+#### 操作
+
+1. 拼接：确保每个`+`两侧的运算对象至少有一个是string。
 		1. 正确形式：`string s1 = "Hello,", s2 = "World\n";string s3 = s1 + s2;`，`s1 += s2;`，`string s4 = s1 + ", ";`，`string s6 = s1 + ", " + "World";`。
 		2. 错误形式：`string s5 = "Hello" + ", ";`，`string s7 = "Hello" + ", " + s2;`
-	3. 对象操作：
+2. 对象操作：
 		1. 元素访问：
 			1. `.at(size_type pos)`：返回根据字符位置pos指定的字符的引用。`string s = 'abc'; s.at(2) = 'x';`，常数复杂度。
 			2. `.front()`：返回 string 中首字符的引用。`string s("Exemplary"); char& f = s.front();f = 'e';`
