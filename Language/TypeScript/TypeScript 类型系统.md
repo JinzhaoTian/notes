@@ -4,17 +4,17 @@
 
 ### 基础类型
 
-TypeScript 支持 JavaScript 的所有基础类型，并扩展了额外类型：
+TypeScript 支持 [JavaScript 的所有基础类型](../JavaScript/JavaScript%20类型系统.md)，并扩展了额外类型：
 
 1. **原始类型**：
+	- `undefined`
+	- `null`
+	- `boolean`
 	- `number`
 	- `string`
-	- `boolean`
-	- `null`
-	- `undefined`
 	- `symbol`
 	- `bigint`
-2. **复杂类型**：
+2. **引用类型**：
 	- `object`
 	- `array`
 	- `function`

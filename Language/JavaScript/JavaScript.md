@@ -22,7 +22,7 @@ JavaScript 常用来完成以下任务：
 
 ## Overview
 
-1. [JavaScript 基础语法](JavaScript%20基础语法.md)
+1. [JavaScript 类型系统](JavaScript%20类型系统.md)
 	- [JavaScript Promise](JavaScript%20Promise.md)
 	- [JavaScript Generators](JavaScript%20Generators.md)
 2. [JavaScript 核心概念](JavaScript%20核心概念.md)

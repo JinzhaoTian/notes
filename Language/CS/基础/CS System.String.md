@@ -222,32 +222,11 @@ string greeting = $"""Hello, "{name}"!""";
 ```
 
 
-## `StringBuilder`
-
-对于频繁修改的字符串操作，使用 `StringBuilder` 可以提高性能。
-
-```csharp
-// 低效 - 创建多个字符串对象
-string result = "";
-for (int i = 0; i < 1000; i++)
-{
-    result += i.ToString(); // 每次循环都创建新字符串
-}
-
-// 高效 - 使用StringBuilder
-StringBuilder sb = new StringBuilder();
-for (int i = 0; i < 1000; i++)
-{
-    sb.Append(i);
-}
-string efficientResult = sb.ToString();
-```
-
 
 ## 性能调优
 
-1. 使用 `StringBuilder` 进行大量字符串拼接
+1. 使用 [`StringBuilder`](CS%20System.Text.md#`StringBuilder`) 进行大量字符串拼接
 2. 使用字符串插值代替 `String.Format`
 3. 注意字符串比较的文化差异
 4. 避免在循环中拼接字符串
-5. 考虑使用 `Span<char>` 处理高性能场景
+5. 考虑使用 [`Span<T>`](CS%20System.Memory.md#`Span<T>`) 处理高性能场景

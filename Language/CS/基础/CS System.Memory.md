@@ -18,6 +18,39 @@
 3. **统一 API**
 	- 可以处理数组、字符串、堆栈分配内存、非托管内存等
 
+### 相关类型
+
+1. **`ReadOnlySpan<T>`**
+	- 只读版本的 `Span<T>`
+	- 从字符串创建时自动使用 `ReadOnlySpan<char>`
+
+2. **`Memory<T>`**
+	- 类似 `Span<T>`，但可以存储在堆上
+	- 适用于需要跨异步边界的情况
+```csharp
+string text = "Hello, World!";
+Memory<char> memory = text.AsMemory();
+
+// 可以存储为字段
+class StringProcessor
+{
+    private Memory<char> _buffer;
+    
+    public StringProcessor(string text)
+    {
+        _buffer = text.AsMemory();
+    }
+}
+```
+
+3. **`stackalloc`**：在栈上分配内存，配合 `Span<T>` 使用
+```csharp
+// 在栈上分配字符数组
+Span<char> buffer = stackalloc char[100];
+buffer[0] = 'H';
+buffer[1] = 'i';
+```
+
 ### 基本使用
 
 1. **从字符串创建 `Span<char>`**：
@@ -114,3 +147,38 @@ public static bool IsValidNumber(ReadOnlySpan<char> input)
     return hasDigit;
 }
 ```
+
+4. **字符串反转**：
+```csharp
+public static string ReverseString(ReadOnlySpan<char> input)
+{
+    Span<char> result = stackalloc char[input.Length];
+    
+    for (int i = 0; i < input.Length; i++)
+    {
+        result[i] = input[input.Length - 1 - i];
+    }
+    
+    return new string(result);
+}
+```
+
+5. **URL 路径解析**：
+```csharp
+public static (string path, string query) ParseUrl(string url)
+{
+    ReadOnlySpan<char> urlSpan = url.AsSpan();
+    int queryIndex = urlSpan.IndexOf('?');
+    
+    if (queryIndex == -1)
+    {
+        return (url, string.Empty);
+    }
+    
+    var path = urlSpan.Slice(0, queryIndex).ToString();
+    var query = urlSpan.Slice(queryIndex + 1).ToString();
+    
+    return (path, query);
+}
+```
+
