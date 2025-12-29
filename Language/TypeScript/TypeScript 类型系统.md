@@ -6,8 +6,18 @@
 
 TypeScript 支持 JavaScript 的所有基础类型，并扩展了额外类型：
 
-1. **原始类型**：`number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`。
-2. **复杂类型**：`object`, `array`, `function`。
+1. **原始类型**：
+	- `number`
+	- `string`
+	- `boolean`
+	- `null`
+	- `undefined`
+	- `symbol`
+	- `bigint`
+2. **复杂类型**：
+	- `object`
+	- `array`
+	- `function`
 3. **TypeScript 特有类型**：
     - `any`：禁用类型检查（慎用）。
     - `unknown`：类型安全的 `any`，使用时需显式断言。

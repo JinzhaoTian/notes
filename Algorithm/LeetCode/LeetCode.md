@@ -5,8 +5,41 @@
 
 ### 字符串
 
-1. [字符串基础原理](../Basic%20Algorithm/Data%20Structure/字符串.md)
+1. [基础原理](../Basic%20Algorithm/Data%20Structure/字符串.md)
+2. **常见操作**：
+	- 拼接
+	- 反转
+	- 切片
 
+
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("字符串")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 链表
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
 
 ### 链表
 
