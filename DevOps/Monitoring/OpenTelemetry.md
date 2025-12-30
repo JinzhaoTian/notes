@@ -20,7 +20,7 @@ OpenTelemetry（OTel）是一个开源的、厂商中立的可观测性框架，
 ## 优势
 
 - **标准化**：统一了不同语言的观测数据格式
-- **灵活性**：支持多种后端系统（如 Prometheus，Jaeger，Zipkin 等）
+- **灵活性**：支持多种后端系统（如 [Prometheus](Prometheus.md)，[Jaeger](Jaeger.md)，Zipkin 等）
 - **自动检测**：许多库和框架已有现成的检测支持
 - **生产就绪**：被众多大型企业采用
 
@@ -75,11 +75,11 @@ dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
 
 ### 配置 OpenTelemetry
 
-配置 OpenTelemetry 以收集和导出遥测数据。通常需要设置：
+配置 [OpenTelemetry](OpenTelemetry.md) 以收集和导出遥测数据，通常需要设置：
 
-- **服务名称**（`service.name`）
-- **导出方式**（如 OTLP、Jaeger、Zipkin）
-- **采样率**（决定收集多少数据）
+1. **服务名称**（`service.name`）
+2. **导出方式**（如 OTLP、[Jaeger](Jaeger.md)、Zipkin）
+3. **采样率**（决定收集多少数据）
 
 #### Java 自动埋点
 
