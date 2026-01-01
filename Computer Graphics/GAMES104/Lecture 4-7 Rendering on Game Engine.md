@@ -279,9 +279,9 @@ $$
 ##### Simplify Material
 
 在渲染方程中，材质项 $f_r$（BRDF）描述了光线如何与表面交互。游戏引擎的发展过程中，出现过这些技术：
-###### Blinn-Phong Reflectance Model
+###### Empirical Models
 
-Blinn-Phong 模型是一种经验模型，并不完全符合物理规律，但计算极其简单。其基于如下假设：（**光可叠加原理**，Principle of Superposition）来自不同光源的光在某一点产生的效果，等于每个光源单独作用时效果的线性总和。
+早期游戏引擎（如 DirectX 9 时代）的主流方案有 Lambert（漫反射）、Phong / Blinn-Phong（高光）。Blinn-Phong 模型是一种经验模型，并不完全符合物理规律，但计算极其简单。其基于如下假设：（**光可叠加原理**，Principle of Superposition）来自不同光源的光在某一点产生的效果，等于每个光源单独作用时效果的线性总和。
 
 Blinn-Phong 模型将材质的视觉表现分解，
 
@@ -302,7 +302,7 @@ $$
 	- **问题**：Blinn-Phong 的参数（$k_d$，$k_s$）与真实的物理材质属性没有直接对应关系，美术师只能依靠经验和试错来调节，难以稳定地创作出各种不同质感的材质。由于其模型的局限性，无论如何调节参数，用 Blinn-Phong 渲染出的物体（无论是木头、石头还是金属）往往都带有一种挥之不去的塑料感。
 	- **对比**：现代的 PBR 材质模型通过引入粗糙度（Roughness）、金属度（Metallic）等与物理属性直接挂钩的参数，能够更精准、更真实地表现大千世界的各种材质。
 
-###### Physically Based Rendering
+###### Physically Based Models
 
 基于物理的渲染（PBR）是一套渲染准则，要求材质必须遵循物理世界的三个基本原则：
 
@@ -314,16 +314,31 @@ PBR 将繁杂的材质参数统一为 BaseColor（基础色）、Roughness（粗
 
 在实现 PBR 时，主流 BRDF 模型是 Cook-Torrance 模型，其通过一个复杂的公式描述了光线在微表面上的高光反射：
 
-1.  **$D$**：法线分布函数（Normal Distribution Function），描述微表面法线的集中程度（决定高光点的大小和亮感）。
-2.  **$G$**：几何遮挡函数（Geometry Function），描述微表面之间互相遮挡的情况。
+1. **$D$**：法线分布函数（Normal Distribution Function），描述微表面法线的集中程度（决定高光点的大小和亮感）。
+2. **$G$**：几何遮挡函数（Geometry Function），描述微表面之间互相遮挡的情况。
 3. **$F$**：菲涅尔方程（Fresnel Equation），描述不同观察角度下的反射比，常用 Schlick 逼近法（将复杂的指数运算简化为简单的 5 次方乘法）。
 
 Cook-Torrance 模型将真实物理世界中杂乱无章的表面散射，浓缩成了三个可计算的数学项，使得 GPU 能够并行处理。
+
+###### Pre-computation & Approximation
 
 在计算环境光（IBL）时，根据 Cook-Torrance 公式，每个像素都需要对整个半球环境贴图进行积分采样，这在实时渲染中计算量太大，因此 Epic Games 的 Brian Karis 在普及 PBR 时提出了最重要的工程简化：**拆分求和近似**（Split Sum Approximation），将渲染方程中的材质项与光照项拆开，通过预计算一张 2D Look-up Table（LUT），让复杂的积分在运行时变成一次纹理采样。
 
 在运行时，GPU 只需要**采样两次纹理**并进行简单的乘加运算，就能得到原本需要几千次采样才能算出的环境反射积分结果。
 
+针对 Diffuse（漫反射）部分，使用 Spherical Harmonics 将环境光压成几个系数，彻底消灭积分。
+
+
+###### Special-purpose Simplification
+
+1. **次表面散射简化（SSS）**：
+    - **方案**：Pre-integrated Skin Shading（预积分皮肤着色）。
+    - **逻辑**：不去模拟光线在皮肤内部的散射，而是根据物体的厚度或曲率，提前计算好光照衰减图。
+2. **多层材质简化（Clear Coat）**：
+    - **方案：** 双层 BRDF 叠加。
+    - **逻辑：** 将车漆、碳纤维等结构简化为底层（Base）和顶层（Coating）两次高光计算。
+3. **布料材质（Cloth）**：
+    - **方案**：Silk/Velvet 模型（使用不同的 $D$ 项，如 Charlie 或 Ashikhmin）。
 
 ##### Simplify Visibility to Light 
 
@@ -502,8 +517,6 @@ Lightmap 是将场景中静态物体接收到的光照效果（包括直接光�
 4. **巨大的存储开销**：Lightmap 本质是纹理，会占用大量的显存和磁盘空间（通常为几十到几百MB），这正是其空间换时间策略的代价。
 
 
-
-
 ##### Light Probes
 
 > [!tip] 为什么需要它？（弥补 Lightmap 的缺陷）
@@ -520,9 +533,27 @@ Light Probes 是游戏引擎中用于解决“动态物体如何接收静态全�
 
 
 
-#### PBR Material
+#### Physically Based Rendering
+
+基于物理的渲染（Physically Based Rendering，PBR）是现代游戏引擎（如 UE5，Unity，Frostbite）渲染管线的基石，其理论基础是**微平面理论**（Microfacet Theory）。
+
+##### Microfacet Theory 
 
 
+##### Cook-Torrance BRDF
+
+Cook-Torrance BRDF（双向反射分布函数）是描述物体表面**高光反射**最核心的数学模型，在渲染方程中，BRDF 项 $f_r$ 通常被拆分为**漫反射**（Diffuse）和**高光**（Specular）两个部分：
+
+$$
+f_r = k_{d}f_{lambert} + k_{s}f_{specular}
+$$
+
+其中， $k_d$​ 是折射比例，$k_s$​ 是反射比例，且满足能量守恒 $k_d​+k_s​=1$ ；漫反射项 $f_{lambert}$ 通常采用最简单的 Lambert 模型，假设光线向四周均匀散射：
+
+$$
+f_{lambert} = \frac{c}{\pi}
+$$
+其中，$c$ 是物体
 
 
 
