@@ -308,7 +308,7 @@ $$
 
 1. **能量守恒**：反射的光不能多于入射光。
 2. **微表面理论**：认为所有物体表面都是由无数微小的平面镜组成的。
-3. **菲涅尔效应（Fresnel）**：视线越平齐（掠射角），物体的反射率越高。
+3. **菲涅尔效应**：视线越平齐（掠射角），物体的反射率越高。
 
 PBR 将繁杂的材质参数统一为 BaseColor（基础色）、Roughness（粗糙度）、Metallic（金属度） 等标准化输入。对于引擎来说，这意味着无论在什么光照下，材质都能表现出一致的真实感。
 
@@ -560,13 +560,13 @@ $$
 f_r = k_{d}f_{lambert} + k_{s}f_{specular}
 $$
 
-其中， $k_d$​ 是折射比例，$k_s$​ 是反射比例，且满足能量守恒 $k_d​+k_s​=1$ 。漫反射项（Lambertian） $f_{lambert}$ 通常采用最简单的 Lambert 模型，假设光线向四周均匀散射：
+其中， $k_d$​ 是漫反射比例（通常由 Fresnel 项决定），$k_s$​ 是反射比例，且满足能量守恒 $k_d​+k_s​=1$ 。漫反射项（Lambertian） $f_{lambert}$ 通常采用最简单的 Lambert 模型，假设光线向四周均匀散射：
 
 $$
 f_{lambert} = \frac{c}{\pi}
 $$
 
-其中，$c$ 是物体的反照率（Albedo/Base Color）。高光项（Cook-Torrance Specular）$f_{specular}$ 公式如下：
+其中，$c$ 是物体的反射率（Albedo/Base Color）。高光项（Cook-Torrance Specular）$f_{specular}$ 公式如下：
 
 $$
 f_{specular}​= \frac{D⋅G⋅F​}{4(n⋅l)(n⋅v)}
@@ -612,6 +612,7 @@ $$
 $$
 F(h,v)=F_0​+(1−F_0​)(1−(h⋅v))^5
 $$
+
 其中，$h$ 是半程向量，即 $v + l$ 的归一化向量；$F_0​$ 是基础反射率（垂直观察时的反射率），非金属的 $F_0$​ 通常很低（如 0.04），而金属的 $F_0$​ 很高且带有颜色。这个 $5$ 次方是一个经过大量实验和拟合得出的经验值，它能很好地模拟真实世界中反射率随角度变化的曲线。
 
 > [!tip] 菲涅尔效应
@@ -623,13 +624,13 @@ $$
 
 其**成功在于**：
 1. **物理 plausible**：基于微表面理论，比传统经验模型（如 Blinn-Phong）更符合物理规律和能量守恒。
-2. **参数直观**：艺术家不再需要调整晦涩的 Power 值，而是通过 Roughness (粗糙度)、Metallic (金属度) 和 Albedo (基础色) 等直观参数来定义材质。
+2. **参数直观**：艺术家不再需要调整晦涩的 Power 值，而是通过 Roughness（粗糙度）、Metallic (金属度) 和 Albedo（基础色）等直观参数来定义材质。
 3. **表现力强**：仅用少数几个参数，就能生动地表达出从粗糙的混凝土到光滑的金属等各种截然不同的材质。
 
 > [!tip] 从理论到实践：测量 BRDF 数据
 > 为了让艺术家能够准确地设置 PBR 参数，图形学界付出了巨大的努力来测量真实世界材质的 BRDF 数据。
 > 
-> 像 MERL (Mitsubishi Electric Research Laboratories) 这样的机构，使用精密设备（测角反射计）扫描了上百种真实材质，并将其 BRDF 数据公开，形成了著名的 MERL 数据库。
+> 像 MERL（Mitsubishi Electric Research Laboratories）这样的机构，使用精密设备（测角反射计）扫描了上百种真实材质，并将其 BRDF 数据公开，形成了著名的 MERL 数据库。
 > 
 > 这些测量数据为引擎开发者和艺术家提供了宝贵的参考。我们可以知道，真实的木头、塑料、黄金等材质，其 $Roughness$ 和 $F_0$ 值大概在什么范围，从而创建出更可信的数字资产。这为 PBR 工作流的标准化和普及奠定了坚实的基础。
 > 
@@ -660,10 +661,507 @@ Disney Principled BRDF 是由迪士尼动画工作室的 Brent Burley 在 2012 �
 ![](_imgs/Pasted%20image%2020260101164755.png)
 
 
+##### Specular/Glossiness
+
+> [!tip] 两种主流的材质工作流
+> PBR 的理论模型虽然统一，但在实践中，为了方便美术师创作并保证物理正确性，业界演化出了两种主流的材质工作流（Workflow）：一套是目前成为主流的 Metallic/Roughness（MR）模型，另一套就是你提到的 Specular/Glossiness（SG）模型。
+> 
+> 虽然现在很多游戏引擎默认使用 MR 模型，但 SG 模型在离线渲染（如 V-Ray）和一些高性能 3A 资产制作中依然占有一席之地。
+
+Specular/Glossiness（SG）模型是一种通过直接定义材质的基础反射率（$F_0$）和平滑度来表现物体特征的方法。SG 模型最大的特点是将材质的各个核心物理属性完全通过贴图来控制，赋予了艺术家像素级别的精确控制能力，几乎不需要手动设置零散的数值参数。
+
+**核心贴图**（Core Maps）：在 SG 工作流中，材质的属性由以下三张关键贴图决定：
+1. **Diffuse**（漫反射贴图）
+	- **作用**：RGB 三通道，存储物体的固有色（不含光影信息的纯色），常被称为 Albedo。
+	- **特殊规则**：在物理上，金属会吸收几乎所有的折射光。因此，在 SG 模型中，纯金属的 Diffuse 颜色必须是全黑的。
+2. **Specular**（高光/反射贴图）
+	- **作用**：RGB 三通道，直接定义材质的 $F_0$  (垂直入射时的反射率)。
+	- **特点**：它是一张 RGB 彩色贴图。
+		- **非金属**：使用灰度值（通常在 $2\%∼5\%$ 左右的反射率）。
+		- **金属**：使用彩色（因为金属会吸收特定波长的光，导致反射光带有颜色，如金、铜）。
+3. **Glossiness**（光泽度贴图）
+	- **作用**：单通道灰度图，描述表面的平滑程度。
+	- **数学关系**：它与 MR 模型中的 Roughness（粗糙度）是相反的，$Glossiness=1−Roughness$。
+	- **表现**：白色（1.0）代表极度光滑，产生尖锐的高光；黑色（0.0）代表极度粗糙，高光完全弥散。
+
+**优点**：
+1. **功能强大且完整**：能够精确地表达各种材质，无论是金属还是非金属。
+2. **符合物理直觉**：遵循迪士尼原则，艺术家创作出的材质效果稳定且可预测。
+3. **像素级控制**：给予艺术家极高的创作自由度。
+
+**缺点**：
+1. **过于灵活**：特别是 `Specular` 贴图，艺术家需要同时理解并绘制 $F_0$ 的颜色和强度，对于区分导体（金属）和绝缘体（非金属）的物理规则需要有一定认知，否则容易出错。
+
+**Shader 中的实现**：
+1. **材质参数准备**（Material Inputs）：
+```hlsl
+// 1. 采样贴图
+float3 albedo = pow(tex2D(BaseColorMap, uv).rgb, 2.2); // 转回线性空间
+float roughness = tex2D(RoughnessMap, uv).r;
+float metallic = tex2D(MetallicMap, uv).r;
+
+// 2. 计算 F0 (基础反射率)
+// 电介质 (非金属) 的 F0 默认为 0.04，金属则使用 albedo
+float3 F0 = float3(0.04, 0.04, 0.04); 
+F0 = lerp(F0, albedo, metallic);
+
+// 3. 计算中间变量
+float3 N = normalize(worldNormal);
+float3 V = normalize(viewPos - worldPos);
+float alpha = roughness * roughness; // 采用迪士尼的平方映射
+```
+
+2. **实现 Cook-Torrance 三项**：
+```hlsl
+float DistributionGGX(float3 N, float3 H, float alpha) {
+    float a2 = alpha * alpha;
+    float NdotH = max(dot(N, H), 0.0);
+    float denom = (NdotH * NdotH * (a2 - 1.0) + 1.0);
+    return a2 / (PI * denom * denom);
+}
+
+float3 FresnelSchlick(float cosTheta, float3 F0) {
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float GeometrySchlickGGX(float NdotV, float k) {
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+
+float GeometrySmith(float3 N, float3 V, float3 L, float k) {
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    return GeometrySchlickGGX(NdotV, k) * GeometrySchlickGGX(NdotL, k);
+}
+```
+
+3. **合成渲染方程**（Assembly）：
+```hlsl
+// 计算单光源贡献
+float3 H = normalize(V + L);
+float NdotL = max(dot(N, L), 0.0);
+float NdotV = max(dot(N, V), 0.0);
+
+// 计算 D, G, F
+float  D = DistributionGGX(N, H, alpha);
+float3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+float  G = GeometrySmith(N, V, L, k);
+
+// 计算 Specular 项
+float3 numerator = D * G * F;
+float denominator = 4.0 * NdotV * NdotL + 0.0001; // 防止除以零
+float3 specular = numerator / denominator;
+
+// 计算 Diffuse 项 (基于能量守恒)
+float3 kS = F;            // 反射的比例
+float3 kD = 1.0 - kS;     // 折射的比例
+kD *= 1.0 - metallic;     // 金属几乎不产生漫反射
+
+float3 diffuse = kD * albedo / PI;
+
+// 最终颜色输出
+float3 Lo = (diffuse + specular) * radiance * NdotL;
+```
+
+
+##### Metallic/Roughness
+
+Metallic/Roughness（MR）模型源自 Disney Principled BRDF 的设计理念，通过将复杂的物理属性压缩为几个直观的参数，极大地降低了美术创作的门槛，同时保证了渲染的物理正确性，是目前现代游戏引擎和工业标准（如 glTF 格式）中最主流的 PBR 工作流。
+
+**核心贴图**（Core Maps）：在 MR 工作流中，物体的材质表现主要由以下三张贴图定义：
+1. **Base Color**（基础色）：
+	- **非金属**（电介质）：代表物体的漫反射颜色（Albedo）。
+	- **金属**：代表物体的反射颜色（Specular Color）。因为金属没有漫反射，光线进入表面后会被立即吸收。
+	- **关键规则**：贴图中不能包含任何光影信息（如 AO 或阴影），必须是纯粹的颜色。
+2. **Metallic**（金属度）：
+	- **取值**：通常是二值化的（0 或 1）。
+		- 0（黑色）：绝缘体/电介质（木头、塑料、布料）。
+		- 1（白色）：纯金属（金、银、铝）。
+	- **作用**：它是控制渲染引擎如何处理 $F_0$（基础反射率）和 $k_d$（漫反射比例）的开关。
+3. **Roughness**（粗糙度）：
+	- **取值**：0（极光滑）到 1（极粗糙）。
+	- **作用**：对应微平面理论中的法线分布（$D$ 项），粗糙度越高，高光越模糊；粗糙度越低，高光越尖锐。
+	- **映射**：在渲染管线内部，通常采用 $\alpha = Roughness^2$ 来获得更自然的视觉过渡。
+
+**内部逻辑**：
+1. **自动确定 $F_0$​**（基础反射率）：在 SG 模型中，你需要手动画 $F_0$​。但在 MR 模型中：
+	- $Metallic = 0$：引擎自动将 $F_0$​ 设为固定的 $0.04$（绝大多数非金属的平均反射率）。 
+	- $Metallic = 1$：引擎将 Base Color 作为 $F_0$ ​
+	- 公式：`F0 = lerp(0.04, BaseColor, Metallic)`
+2. **自动执行能量守恒**：引擎会自动根据金属度来剔除漫反射成分：
+	- **纯金属**：所有的 $k_d​$（漫反射）被设为 $0$。
+	- **公式**：`kD = (1.0 - Specular) * (1.0 - Metallic)`
+
+**局限性**：虽然它很强大，但也有力所不及的地方：
+1. **非金属的 $F_0​$ 调整**：有些特殊的电介质反射率不是 0.04（如宝石或水）。为此，UE4/5 引入了一个额外的 Specular 参数（默认 0.5 对应 0.04 反射率）来微调这部分。
+2. **白边走样**（White Edges）：在金属和非金属的交界处（由于贴图插值），可能会出现一圈白色的像素点，这是 MR 模型天然的走样问题。
+
+**Shader 中的实现**：
+1. **材质参数准备**（Material Inputs）：
+```hlsl
+// 1. 颜色空间转换 (sRGB -> Linear)
+// BaseColor 必须在线性空间计算
+float3 albedo = pow(texBaseColor.Sample(uv).rgb, 2.2); 
+
+// 2. 采样 MR 贴图
+float metallic  = texMetallic.Sample(uv).r;
+float roughness = texRoughness.Sample(uv).r;
+
+// 3. 计算 Alpha (迪士尼平方映射)
+// 让粗糙度的视觉变化更线性
+float alpha = roughness * roughness;
+
+// 4. 【核心步骤】计算 F0 (基础反射率)
+// 非金属默认使用 0.04 (4% 反射率)，金属则直接使用 Albedo 的颜色作为反射率
+float3 F0 = float3(0.04, 0.04, 0.04);
+F0 = lerp(F0, albedo, metallic);
+```
+
+2. **实现 Cook-Torrance 三项**：
+```hlsl
+float DistributionGGX(float3 N, float3 H, float a) {
+    float a2 = a * a;
+    float NdotH = max(dot(N, H), 0.0);
+    float denom = (NdotH * NdotH * (a2 - 1.0) + 1.0);
+    return a2 / (PI * denom * denom);
+}
+
+float3 FresnelSchlick(float cosTheta, float3 F0) {
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float3 FresnelSchlick(float cosTheta, float3 F0) {
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+```
+
+3. **光照整合**（按单光源计算）：
+```hlsl
+// 1. 基础向量计算
+float3 L = normalize(lightPos - worldPos);
+float3 H = normalize(V + L);
+float NdotL = max(dot(N, L), 0.0);
+float NdotV = max(dot(N, V), 0.0);
+
+// 2. 运行 Cook-Torrance 三项
+float  D = DistributionGGX(N, H, alpha);
+float  G = GeometrySmith(NdotV, NdotL, roughness);
+float3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+
+// 3. 计算高光项 (Specular)
+float3 numerator = D * G * F;
+float denominator = 4.0 * NdotV * NdotL + 0.0001; // 防止除以0
+float3 specular = numerator / denominator;
+
+// 4. 【核心步骤】计算能量守恒下的漫反射
+// kS 是反射的比例，即菲涅尔项 F
+float3 kS = F;
+// kD 是折射（漫反射）的比例
+float3 kD = float3(1.0, 1.0, 1.0) - kS;
+// 关键：如果是纯金属，则完全没有漫反射
+kD *= (1.0 - metallic);
+
+// 5. 最终输出
+float3 diffuse = kD * albedo / PI;
+float3 directLight = (diffuse + specular) * lightColor * NdotL;
+```
+
+4. **关键逻辑点**（总结）：
+	- **$F_0$ 的线性插值**：`F0 = lerp(0.04, albedo, metallic)`，这行代码是整个 MR 的灵魂。它解决了电介质和金属在物理特性上的巨大差异。
+	- **$k_D$ 的修正**：`kD *= (1.0 - metallic)`，保证了当你把金属度拉满时，漫反射部分会自动消失，符合金属吸收折射光的物理事实。
+	- **通道打包**（Channel Packing）：在实际工程中，`metallic` 和 `roughness` 通常会被存在一张贴图的不同通道里（例如 R 通道存金属度，G 通道存粗糙度），减少显存压力。
+
+5. **后处理**（Post-Processing）：由于 Shader 计算是在 HDR（高动态范围）下进行的，还需要在输出前进行 Tone Mapping（色调映射）和 Gamma 校正，否则画面会看起来太黑或者颜色失真。
+```hlsl
+// 伪代码：输出前的最后处理
+color = ToneMapping(directLight + ambient); // 映射到 0-1
+color = pow(color, 1.0 / 2.2);              // Gamma 2.2 校正
+```
+
+
+#### Image-Based Lighting
+
+基于图像的光照（Image-Based Lighting，IBL）是一种将 360 度全景图像视为一个巨大光源的渲染技术，IBL 要解决的问题是如何让物体融入到真实的环境光照中。
+
+在传统的渲染中，我们通过手动放置点光源、方向光来照亮场景。而在 IBL 中，全景图（通常是 HDR 格式）的每一个像素都被当作一个发射光线的发光点。这使得物体能够完美地融入其周围的环境，获得极其真实的间接光照和反射效果。
+
+**核心逻辑**：**环境即光源**，渲染方程中的入射光 $L_i$​ 不再由简单的数学公式（如点光源）提供，而是通过对环境贴图（Environment Map）进行采样获得：
+
+$$
+L_o​(x, \omega_o) = \int_{\Omega} ​f_r(x,\omega_o, \omega_i)​ L_i​(x, \omega_i​)cos \theta_i d\omega_i 
+$$
+
+为了在实时引擎中高效运行，IBL 通常被拆分为漫反射（Diffuse）和高光（Specular）两个部分进行处理：
+
+$$
+\begin{aligned}
+L_o​(x, \omega_o) &= \int_{\Omega} ​f_r(x,\omega_o, \omega_i)​ L_i​(x, \omega_i​)cos \theta_i d\omega_i \\
+&= \int_{\Omega} ​(k_df_{Lambert} + f_{CookTorrance}) L_i(x, \omega_i​)cos \theta_i d\omega_i \\
+&= \int_{\Omega} ​k_df_{Lambert} L_i(x, \omega_i​)cos \theta_i d\omega_i + \int_{\Omega} ​f_{CookTorrance} L_i(x, \omega_i​)cos \theta_i d\omega_i \\
+&= L_d(x, \omega_o) + L_s(x, \omega_o) \\
+\end{aligned}
+$$
+
+1. **漫反射 IBL**（Diffuse IBL）：辐照度贴图（Irradiance Map）
+	- **目标**：模拟来自环境的低频间接光（也就是环境光）。
+	- **挑战**：漫反射需要对半球上的所有像素进行积分。
+	- **解决方案**：
+	    - **预计算辐照度图（Irradiance Map）**：提前将环境贴图进行极致的模糊处理，存储每个方向受到的总光照。
+	    - **球谐函数（Spherical Harmonics）**：如我们之前讨论的，将这张模糊的图压缩为 9 个系数，计算速度极快。
+$$
+\begin{aligned}
+L_d(x, \omega_o) &= \int_\Omega k_d f_{Lambert} L_i(x, \omega_i) cos \theta_i d\omega_i \\
+&\approx k_d^*c \frac{1}{\pi} \int_\Omega L_i(x, \omega_i) cos \theta_i d\omega_i
+\end{aligned}
+$$
+
+> [!quote] 推导
+> 在严谨的物理模型中，$k_d$​（即 $1−F$）其实是与入射角 $\theta_i$​ 相关的（Fresnel 效应），但在实时渲染中，为了优化性能通常会做出以下假设：
+> - **预计算辐照度**（Irradiance Map）：积分部分 $\frac{1}{\pi} \int_{\Omega} L_i(x, \omega_i) cos \theta_i d\omega_i$ 被称为 Irradiance（辐照度）。在游戏引擎中，这部分通常通过预计算的环境贴图（Cube Map）或球谐函数（Spherical Harmonics）来快速获取。![](_imgs/Pasted%20image%2020260102191748.png)
+> - **$k_d$​ 的近似**：将 $k_d$​ 视为一个常数并移出积分号（即 $k_d^*$ ），虽然这在物理上不完全精确（因为 Fresnel 应该在积分内计算），但在漫反射占主导的情况下，这种近似带来的视觉误差很小，且极大提升了计算效率。
+
+
+2. **高光 IBL**（Specular IBL）：辐射度贴图（Radiance Map），预滤波环境贴图（Pre-filtered Environment Map）
+	- **目标**：模拟物体表面的环境反射（镜面反射）。
+	- **关键点**：反射的效果取决于物体的**粗糙度**。
+	- **解决方案**：使用 Split Sum Approximation（拆分求和近似）。
+	    -  **预过滤环境贴图（Pre-filtered Env Map）**：提前生成一系列不同模糊程度的贴图（Mipmaps）。最清晰的层级对应 0 粗糙度（镜子），最模糊的层级对应 1 粗糙度。
+	    - **BRDF 查找表（LUT）**：处理材质随角度变化的反射率。
+
+$$
+\begin{aligned}
+L_s(x, \omega_o) &= \int_{\Omega} ​f_{CookTorrance} L_i(x, \omega_i​)cos \theta_i d\omega_i\\
+&\approx \underbrace{ \left( \frac{\int_\Omega f_{CookTorrances} L_i(x, \omega_i) cos \theta_i d\omega_i}{\int_\Omega f_{CookTorrances} cos \theta_i d\omega_i} \right)}_{Lighting\ Term} \cdot \underbrace{ \left( \int_\Omega f_{CookTorrances} cos \theta_i d\omega_i \right)}_{BRDF\ Term} \\
+\\
+Lighting\ Term  &\approx \frac{\sum_k^N L(\omega_i^k) G(\omega_i^k)}{\sum_k^NG(\omega_i^k)} \\
+&\approx \frac{\sum_k^N L(\omega_i^k) \alpha}{\sum_k^NG(\omega_i^k)} \\
+\\
+BRDF\ Term  &= \int_{\Omega} f cos \theta d\omega_i \\
+&\approx \int_{\Omega} (F_0 + (1 - F_0)(1-cos \theta)^5) cos \theta d\omega_i \\
+&\approx F_0 \cdot A + B \\
+&\approx F_0 \cdot LUT.r + LUT.g
+\end{aligned}
+$$
+
+> [!quote] 推导
+> 原始的镜面反射积分式将环境光 $L_i​$ 与复杂的 BRDF 项耦合在一起，目的是为了将原本无法在实时环境下完成的半球积分，转化为可以预计算的纹理查询。
+> 1. **第一步**：使用 Split Sum Approximation（拆分求和近似）将积分“强行”拆分为两个独立积分的乘积，虽然它不完全等价，但在材质粗糙度较低（高光集中）或环境光颜色变化较均匀时，其结果非常接近物理真实情况。
+> 2. **第二步**：对于 Lighting Term，将其离散化为蒙特卡洛采样（Monte Carlo Sampling）的求和形式，其中，
+> 	- $L(\omega_i^k)$ 代表在特定采样方向 $\omega_i^k$ 上的**环境光辐射度**（Radiance），即环境贴图中对应像素的颜色；
+> 	- $G(\omega_i^k)$ 代表重要性采样的权重，在推导中，它通常对应于 Cook-Torrance 模型中的 $D$（法线分布项） 和 $cos \theta$ 的乘积。为了让这一项只取决于粗糙度 $\alpha$，在预计算时假设视角方向 $V=N=R$（即视线、法线和反射方向重合）。
+> 	- Lighting Term 被简化为对环境贴图（Cube Map）的预卷积采样，即预过滤环境贴图 （Pre-Filtered Environment Map）。
+> 3. 第三步：对于 BRDF Term，
+> 	- 引入 Schlick 菲涅尔近似将 $F$ 拆分为包含 $F_0$	（基础反射率）和 $(1−cos \theta)^5$ 的形式。
+> 	- 提取变量：通过数学变换，将 $F_0$ 从积分号内提取出来
+> 	- 剩下的积分部分只剩下两个变量粗糙度（$\alpha$）和入射角的余弦值（$cos \theta$）。
+> 	- 引擎预计算一张 2D 查找表（Look-up Table，LUT），Shader 运行时只需采样这张图，即可得到 A（存储在 R 通道）和 B（存储在 G 通道）的值。
+> 
+> ![](_imgs/Pasted%20image%2020260102191152.png)
+> 
+> 结合以上两点，IBL Specular 方案虽然是基于大量假设的**近似解**，但它带来了革命性的视觉提升：
+> 1. **真实的高光**：首次让游戏场景中的物体能够从环境中反射出柔和、模糊且带有环境色彩的高光，而不仅仅是点光源产生的生硬光斑。
+> 2. **丰富的层次感**：加入 IBL 后，场景的材质质感和空间层次感都得到了极大的增强，整体视觉效果更舒适、更真实。![](_imgs/Pasted%20image%2020260102205620.png)
+> 3. **行业标准**：正是由于其出色的效果和高效的性能，IBL 与 PBR 相辅相成，迅速成为过去十几年所有 3A 游戏引擎的标配技术。
+
+
+#### Classic Shadow Solution
+
+##### Shadow Mapping
+
+Shadow Mapping 是目前工业界最主流、应用最广泛的方案，由 Lance Williams 在 1978 年提出。
+
+**核心原理**：这是一个两趟（Two-pass）算法。
+1. **第一趟**：从光源视角渲染场景，只记录深度信息到一张纹理中，称为 Shadow Map（深度图）。
+2. **第二趟**：从相机视角渲染场景，将每个像素的坐标转换到光源空间，并与其对应的 Shadow Map 深度值进行比较。如果当前点比 Shadow Map 记录的点更深，则说明该点在阴影中。
+
+**挑战**：走样（Aliasing）分辨率不足导致的锯齿。
+1. **自遮挡**（Self-shadowing）：由于数值精度问题，物体表面会产生错误的黑斑（Shadow Acne）。
+	- **解决方法**：引入 Bias（偏移量）来消除黑斑。
+
+##### Cascaded Shadow Maps
+
+传统的阴影贴图（Shadow Map）技术，是将整个场景从光源视角渲染到一张深度图上。但在大场景中，这会遇到一个不可调和的矛盾：
+
+1. **高分辨率 Shadow Map**：可以保证近处阴影清晰，但覆盖范围有限，且性能和显存开销巨大。
+2. **低分辨率 Shadow Map**：可以覆盖广阔的远景，但会导致近处物体的阴影出现严重的锯齿和失真（像素块）。
+
+无法用一张固定精度的 Shadow Map 同时满足近处枪械的精细阴影和远处山脉的轮廓阴影。
+
+为了解决大场景（如开放世界）中 Shadow Map 分辨率严重不足的问题，级联阴影贴图（Cascaded Shadow Maps，CSM）成为了现代引擎处理日光阴影的标准。
+
+**核心原理**：
+1. **视锥体分割**：根据与相机的距离，将视锥体（Frustum）划分为多个层级（Cascades）
+2. **独立 Shadow Map**：近处使用覆盖范围小但精度高的 Shadow Map，远处使用覆盖范围大但精度低的 Shadow Map。
+3. **分辨率的重新分配**：
+	- **近处 Cascade**：用一张高分辨率的 Shadow Map 覆盖一小片区域，保证了近景阴影的极高质量。
+	- **远处 Cascade**：用同样分辨率的 Shadow Map 覆盖一大片区域，虽然单位面积的精度下降了，但由于透视效应（近大远小），远处的阴影在屏幕上本身就占据较少像素，这种精度已经足够。
+4. **渲染时采样**：在为屏幕上的某个像素着色时，首先判断该像素所代表的物体点位于哪个 Cascade 区域，然后采样对应的 Shadow Map 来计算阴影。
+
+
+**挑战**：
+1. **层级间的混合（Blending）**：如果不进行处理，不同 Cascade 的交界处会因为分辨率的突变而产生一条非常明显的硬边界。实际项目中需要使用各种滤波和混合技术（通常是一些非常巧妙的 dirty hacks）来平滑过渡，消除这条接缝。
+2. **性能开销（Performance Cost）**：CSM 是一个非常昂贵的渲染过程。 
+	- **绘制调用（Draw Calls）**：场景需要从光源视角被重复绘制多次（每个 Cascade 绘制一次）。
+	- **显存占用**：需要存储多张 Shadow Map，增加了显存压力。
+	- **CPU 开销**：需要为每个 Cascade 单独进行视锥体裁剪和可见性计算。
+	- 在复杂的 3A 游戏中，阴影渲染的耗时通常在 2ms 到 5ms 之间，是渲染管线中最耗时的模块之一。
+
+##### Shadow Volumes
+
+阴影卷轴（Shadow Volumes）是一种基于几何的方案，曾在 Doom 3 中被发挥到极致。
+
+**核心原理**：
+1. 根据光源和物体的轮廓，向外延伸挤出一个封闭的几何体（Volume）。
+2. 利用模板测试（Stencil Buffer）来统计，如果一个像素在阴影体内部，则该像素处于阴影中。
+
+**优点**：阴影边缘极其锐利，且没有阴影贴图那样的分辨率问题（像素级精确）。
+
+**缺点**：对几何体处理开销极大，且非常消耗显存带宽（Fill-rate），难以处理带透明贴图（如叶子）的物体。
+
+
+##### Percentage Closer Filtering
+
+百分比靠近过滤（Percentage Closer Filtering，PCF）是一种为了产生软阴影（Soft Shadows）而对 Shadow Mapping 进行的改进技术。
+
+**核心原理**：
+1. 在进行深度比较时，不再只采样一个点，而是采样目标像素周围的一个邻域，并计算采样点中处于非阴影状态的比例，从而得到一个平滑的阴影边缘。
+
+
+
+###### Percentage Closer Soft Shadows
+
+百分比靠近软阴影（Percentage Closer Soft Shadows，PCSS）是一个高级变种，它能模拟出更真实的半影（Penumbra）效果，即阴影会随着遮挡物与接收物距离的增加而变得更加模糊。PCSS 通过动态计算 PCF 的滤波范围来实现这一点，是目前许多引擎中标配的高质量软阴影方案。
+
+**核心原理**：让阴影的柔和程度与遮挡物和接收物之间的距离相关联。
+1. 首先，通过一次采样（Sample 0）来估算遮挡物（Blocker）的平均深度。
+2. 然后，根据这个平均深度以及光源的大小，计算出合适的滤波范围（Penumbra Size）。
+3. 最后，在这个动态计算出的范围内进行 PCF 滤波。
+
+PCSS 是一种非常成熟且效果出色的技术，在许多现代游戏引擎中都是软阴影的标配方案，能有效缓解阴影的锯齿（Aliasing）问题。
+
+
+
+
+##### Variance Shadow Maps
+
+变体阴影贴图（Variance Shadow Maps，VSM）是一种基于统计学思想的软阴影技术，它通过存储深度的均值和方差来快速估算阴影的遮蔽百分比，从而实现非常高效的模糊效果。
+
+**核心原理**：
+1. 在 Shadow Map 中不仅存储深度 $d$，还存储深度的平方 $d^2$。
+2. 利用切比雪夫不等式（Chebyshev's Inequality）通过均值和方差直接推算出阴影比例。
+
+尽管 VSM 的数学推导在某些情况下并不完全精确（被称为 hacks），但它在实践中效果极佳且性能很高，因此也成为了许多引擎中的常用选项。
+
+
+#### Moving Wave of High Quality
+
+近些年，渲染技术正经历一场剧烈的变革，其根本驱动力源于硬件和图形 API 的飞速发展。
+
+##### Real-Time Ray Tracing
+
+![](_imgs/Pasted%20image%2020260102215221.png)
+
+实时光线追踪（Real-Time Ray Tracing，RTRT）被视为现代引擎渲染的“圣杯”，随着 NVIDIA RTX 硬件和 DXR (DirectX Raytracing) / Vulkan RT 接口的普及，渲染管线正在从传统的纯光栅化向混合渲染（Hybrid Rendering）和全光追（Path Tracing）演进。
+
+**核心加速架构**：BVH 与硬件加速，实时光追的核心挑战在于如何快速在数百万个三角形中找到光线的交点。
+1. **加速结构（Acceleration Structures）**：现代引擎使用两级结构：
+    - **BLAS（Bottom-Level AS）**：存储具体的模型几何数据。
+    - **TLAS（Top-Level AS）**：存储场景中物体的实例及其变换信息。
+2. **硬件求交（RT Cores）**：硬件厂商（NVIDIA/AMD）将求交运算（Ray-Box，Ray-Triangle）固化到芯片中，性能比软件模拟提升了数十倍。
+
+**当前主流应用**：**实时反射（Real-time Reflections）**，这是光追技术最直观、效果最显著的应用之一，已成为许多现代游戏的标配特性。
+
+###### ReSTIR
+
+ReSTIR（Reservoir-based Spatiotemporal Importance Resampling，时空重采样）是近五年 GI 领域最重要的学术突破，彻底解决了“多光源、多反弹”下采样效率低下的问题。
+
+**核心原理**：传统的 GI 每一帧都在“瞎猜”光线该往哪射。ReSTIR GI 会记录周围像素和上一帧像素找到的“优质光路”（即光照贡献大的路径），并在当前像素进行**时空重采样**。
+
+**优势**：能够以极低的每像素采样数（如 $1spp$）实现非常纯净、多反弹的间接光照，且支持海量动态光源。
+
+###### Denoising & Reconstruction
+
+由于实时渲染中每个像素的采样数（spp）极低，原始输出布满了噪点。降噪技术是 RTRT 能否落地的关键。
+
+1. **时空滤波（Spatiotemporal Filtering）**：如 ASVGF，利用运动矢量（Motion Vectors）在时间维度累积光照能量。
+2. **AI 降噪与重建**：
+    - **NVIDIA DLSS 3.5（Ray Reconstruction）**：使用训练好的神经网络直接替代传统的人工降噪器，能够在补帧的同时，修复光追反射中的细节缺失。
+
+
+
+##### Real-Time Global Illumination
+
+![](_imgs/Pasted%20image%2020260102220324.png)
+
+在游戏引擎渲染中，实时全局光照（Real-Time Global Illumination，RTGI）被认为是挑战渲染方程的最后堡垒。它的目标是在 $16.6ms$ 内模拟光线在场景中多次反弹后的效果（Indirect Lighting），包括漫反射反弹（Color Bleeding）和环境遮蔽（AO）。
+
+###### Unreal Engine 5 Lumen
+
+Lumen 是目前工业界影响力最大的 RTGI 方案，其核心在于多层次混合追踪（Multi-level Hybrid Tracing）。
+
+**技术路径**：
+1. **近处/精细**：使用硬件光线追踪（Hardware RT）。
+2. **中距离**：使用 Mesh Distance Fields（网格距离场）进行软件追踪，绕过了复杂的 BVH 遍历。
+3. **远景**：使用高度场（Heightfields）或预缩放纹理。
+
+**表面缓存**（Surface Cache）：为了避免每帧重复计算复杂的着色，Lumen 将场景物体的光照信息缓存到特定的 Atlas 空间中，显著降低了光追开销。
+
+###### Dynamic Diffuse GI
+
+动态探针方案 DDGI（Dynamic Diffuse GI）是由 NVIDIA 推动的、基于 RTX 硬件加速的探针方案，是传统静态光照探针的进化版。
+
+**工作流**：
+1. 在场景中布置一个 3D 探针网格（Grid of Probes）。
+2. 每个探针每帧利用光线追踪向四周发射少量射线，更新周围环境的亮度（Irradiance）和深度（Distance）。
+
+**优势**：通过对探针数据的统计学过滤（防止漏光），实现了完全动态的间接光照，性能开销非常可预测，非常适合 3A 游戏的动态昼夜系统。
+
+###### Neural Radiance Caching
+
+神经辐射缓存（Neural Radiance Caching，NRC）是 AI 与图形学结合的前沿领域，目前 NVIDIA 等厂商正在积极探索。
+
+**原理**：使用一个极其轻量级的神经网络在运行时实时训练。
+
+**逻辑**：渲染器不需要追踪完整的光路，只需追踪一小段，然后“询问”神经网络：在这个位置、这个方向上的剩余光照是多少？神经网络通过实时学习场景的光照分布来回答。
+
+**前景**：它可以大幅减少路径追踪的递归深度，是解决“无限反弹”GI 的终极思路。
+
+
+#### Shader Management
+
+现代游戏引擎面临的一个巨大工程挑战是**管理数量庞大的着色器**，随着渲染功能和材质复杂度的提升，着色器的组合数量会呈指数级增长，形成所谓的“着色器爆炸”（Shader Explosion），必须采用系统化的方法进行管理。
+
+##### Uber Shader and Variants
+
+编写一个功能全面、包含所有可能性的“超级着色器”模板，在这个模板内部，使用宏定义（Preprocessor Macros）（如 `#ifdef`，`#if`）来包裹不同的功能代码块。
+
+编译器会根据不同的宏定义组合，从这个 Ubershader 模板中编译生成出成千上万个具体、优化后的着色器版本。这些版本被称为着色器变体（Shader Variants）或排列组合（Permutations）。
+
+##### Cross Platform Shader Compile
+
+![](_imgs/Pasted%20image%2020260102222726.png)
+
+不同图形 API 和平台使用不同的着色器语言，现代解决方案 SPIR-V（Standard Portable Intermediate Representation）是使用一个标准的、可移植的中间语言（Intermediate Representation，IR）作为桥梁，实现“一次编写，到处运行”的着色器管线。
+
 
 
 
 ### Special Rendering
+
+本节探讨如何在虚拟世界中，重现我们所处的美丽、复杂的自然世界。
+#### Terrain
+
+地形（Terrain）在图形学和游戏引擎中，特指地表、山脉、峡谷等自然地貌的几何表示，是构成虚拟世界的基础骨架，其表现力直接决定了世界的真实感和沉浸感。
+
+
+#### Sky
+
+
+#### Atmosphere
+
+
+
+
 
 
 ### Rendering Pipeline
