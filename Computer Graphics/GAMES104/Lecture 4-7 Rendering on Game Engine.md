@@ -1171,7 +1171,3 @@ resource allocation.
 
 ![](_imgs/Pasted%20image%2020251024173001.png)
 
-
-
-
-[现代引擎架构分析 - 知乎](https://zhuanlan.zhihu.com/p/1894737037103458007)
