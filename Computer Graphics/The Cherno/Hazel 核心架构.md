@@ -38,18 +38,18 @@ void Application::Run()
 		{
 			{
 				HZ_PROFILE_SCOPE("LayerStack    OnUpdate");
-				for (Layer* layer :     m_LayerStack)//更新图层
-					layer->OnUpdate(timestep);//    执行图层逻辑更新(更新应用程序   的逻辑状态）
+				for (Layer* layer : m_LayerStack)  // 更新图层
+					layer->OnUpdate(timestep);     // 执行图层逻辑更新(更新应用程序的逻辑状态）
 			}
 			m_ImGuiLayer->Begin();
 			{
 				HZ_PROFILE_SCOPE("LayerStack    OnImGuiRender");
 				for (Layer* layer :     m_LayerStack)
-					layer->OnImGuiRender();//进 行图层实际渲染操作（逻辑更新后   才能进行的渲染操作）
+					layer->OnImGuiRender();        // 进行图层实际渲染操作（逻辑更新后才能进行的渲染操作）
 			}
 			m_ImGuiLayer->End();
 		}
-		m_Window->OnUpdate();//更新窗口
+		m_Window->OnUpdate();                       // 更新窗口
 	}
 }
 ```

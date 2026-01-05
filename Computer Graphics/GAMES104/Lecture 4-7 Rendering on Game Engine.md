@@ -1196,6 +1196,10 @@ $$
 > [!tip] 裂缝（Cracks）
 > 相邻两个块的深度（LOD 等级）可能不同，边缘的三角形无法对齐，因此产生裂缝（Cracks）。
 
+> [!tip] 跳变（Popping）
+> 当相机移动时，地形块会突然从低精度切换到高精度，玩家会看到山头突然“蹦”出来一下。
+
+
 ##### LOD Metric
 
 在游戏引擎中，地形网格的细分程度（Tessellation Level）并不是固定的，而是由一套评价函数（LOD Metric）动态计算得出的。
@@ -1300,11 +1304,22 @@ $$
 
 ###### GPU Driven Quadtree
 
+由 CPU 统筹全局，由 GPU 负责细节的遍历、评估和绘制决策。
 
+**核心原理**：
+1. **CPU**：仅将最顶层的四叉树结构或地形参数（如高度图、视点位置）打包成 Buffer 送往 GPU。
+2. **GPU**（Compute Shader）：
+	- **并行遍历**：使用 Compute Shader 并行处理四叉树的所有潜在节点。
+	- **动态评估**：在 GPU 上计算每个块的 LOD、进行精细的视锥体剔除，甚至是基于 HZB (Hierarchical Z-Buffer) 的**遮挡剔除 (Occlusion Culling)**。
+	- **生成指令**：将通过测试的节点数据写入一个 Append Buffer（即间接参数缓冲区）。
+	- **间接绘制**（Indirect Drawing）：最终调用 `DrawIndexedIndirect`。
 
-
-
-
+**挑战**：
+1. **数据一致性**：确保 Compute Shader 生成的网格索引和顶点数据在逻辑上是连续的，不产生裂缝（通常结合 Skirts 或特定的 **Morphing** 逻辑）。
+    
+2. **复杂性：** 需要非常深底层的 GPU 编程知识。例如，如何处理树的层级递归（GPU 本质上不支持真正的递归，通常用多级 Dispatch 或位运算模拟）。
+    
+3. **调试困难：** GPU 端的错误极难排查，通常需要使用 NSight 或 RenderDoc 等专业工具查看 Buffer 里的原始数值。
 
 
 
@@ -1418,7 +1433,7 @@ $$Error(v) = v^T Q v$$
 
 ###### GPU-Driven Dynamic Terrain Deformation
 
-###### Beyond Heightfields
+###### Beyond Height Fields
 
 
 
