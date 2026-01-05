@@ -1315,11 +1315,9 @@ $$
 	- **间接绘制**（Indirect Drawing）：最终调用 `DrawIndexedIndirect`。
 
 **挑战**：
-1. **数据一致性**：确保 Compute Shader 生成的网格索引和顶点数据在逻辑上是连续的，不产生裂缝（通常结合 Skirts 或特定的 **Morphing** 逻辑）。
-    
-2. **复杂性：** 需要非常深底层的 GPU 编程知识。例如，如何处理树的层级递归（GPU 本质上不支持真正的递归，通常用多级 Dispatch 或位运算模拟）。
-    
-3. **调试困难：** GPU 端的错误极难排查，通常需要使用 NSight 或 RenderDoc 等专业工具查看 Buffer 里的原始数值。
+1. **数据一致性**：确保 Compute Shader 生成的网格索引和顶点数据在逻辑上是连续的，不产生裂缝（通常结合 Skirts 或特定的 Morphing 逻辑）。
+2. **复杂性**：需要非常深底层的 GPU 编程知识。例如，如何处理树的层级递归（GPU 本质上不支持真正的递归，通常用多级 Dispatch 或位运算模拟）。
+3. **调试困难**：GPU 端的错误极难排查，通常需要使用 NSight 或 RenderDoc 等专业工具查看 Buffer 里的原始数值。
 
 
 
