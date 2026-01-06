@@ -46,10 +46,6 @@ views:
 
 1. [基础原理](../Basic%20Algorithm/Data%20Structure/链表.md)
 
-这个链表不仅包括一个next指针，还包括一个random指针随机指向链表中的一个节点。所以深拷贝的时候就不能顺序遍历，可以使用的方法是：
-
-1. 方法一：先遍历一遍，借助hashmap，把新节点创造出来，然后再遍历一遍，把next指针和random指针连上。时间复杂度O(n)，空间O(n)。
-2. 方法二：拼接+拆分。时间复杂度O(n)，空间O(1)。
 
 
 ```base
@@ -116,16 +112,144 @@ views:
 
 ### 栈
 
+
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("栈")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 栈
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
+
 ### 堆
 
+
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("堆")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 堆
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
+
 ### 优先队列
+
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("优先队列")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 优先队列
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
 
 
 ### 双端队列
 
 
 
+
+
 ### 哈希表
+
+
+```base
+filters:
+  and:
+    - "!leetcode.isEmpty()"
+    - file.tags.containsAny("哈希表")
+properties:
+  note.leetcode:
+    displayName: 题目
+  note.difficulties:
+    displayName: 难度
+  note.link:
+    displayName: 链接
+views:
+  - type: table
+    name: 哈希表
+    order:
+      - file.name
+      - difficulties
+      - link
+    sort:
+      - property: leetcode
+        direction: ASC
+    columnSize:
+      file.name: 259
+      note.difficulties: 84
+
+```
+
+
+
+
 
 ### 图
 
@@ -236,7 +360,7 @@ views:
 
 
 
-### 贪心思想
+### 贪心
 
 贪心法的核心思想是每次都选取局部最优的结果，最终形成全局最优。这种思想简单，易于实现，但是并不是所有具有最优子结构的问题都能用贪心，还可能会是动态规划。
 

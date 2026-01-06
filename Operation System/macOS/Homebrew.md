@@ -161,3 +161,58 @@ Homebrew 通过一套精巧的目录结构和符号链接来管理软件：
 brew link [--overwrite] package_name
 ```
 
+
+
+## 常见问题
+
+### Python 包管理
+
+```bash
+➜ pip install "rendercv[full]"
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try brew install
+    xyz, where xyz is the package you are trying to
+    install.
+
+    If you wish to install a Python library that isn't in Homebrew,
+    use a virtual environment:
+
+    python3 -m venv path/to/venv
+    source path/to/venv/bin/activate
+    python3 -m pip install xyz
+
+    If you wish to install a Python application that isn't in Homebrew,
+    it may be easiest to use 'pipx install xyz', which will manage a
+    virtual environment for you. You can install pipx with
+
+    brew install pipx
+
+    You may restore the old behavior of pip by passing
+    the '--break-system-packages' flag to pip, or by adding
+    'break-system-packages = true' to your pip.conf file. The latter
+    will permanently disable this error.
+
+    If you disable this error, we STRONGLY recommend that you additionally
+    pass the '--user' flag to pip, or set 'user = true' in your pip.conf
+    file. Failure to do this can result in a broken Homebrew installation.
+
+    Read more about this behavior here: <https://peps.python.org/pep-0668/>
+```
+
+这是 macOS 和 Homebrew 为了保护你的系统 Python 环境不被搞乱而引入的一种保护机制（基于 PEP 668 协议）。
+
+以往用户直接使用 `pip install` 会将包安装到 Homebrew 管理的全局路径下。如果 `pip` 安装的文件和 `brew` 管理的文件发生冲突，可能会导致：
+- Homebrew 无法正常升级 Python。
+- 某些依赖全局 Python 环境的系统工具突然崩溃。
+- 产生难以清理的库文件冲突。
+
+因此，现在的 Python 环境被标记为 **"Externally Managed"（外部管理）**，强制你使用更安全的方式安装包。
+
+**解决方案**：
+1. 使用 `pipx`：`pipx` 专门用于安装 Python 开发的命令行应用程序。它会为每个工具创建一个独立的虚拟环境，并自动把命令软链接到全局。
+```bash
+brew install pipx
+pipx ensurepath
+```
