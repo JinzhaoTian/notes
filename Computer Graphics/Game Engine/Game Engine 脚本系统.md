@@ -4,7 +4,7 @@
 
 常见的用于游戏开发的脚本语言：
 - [Lua](../../Language/Lua/Lua.md) 
-- [C#](../../Language/CS/CS.md)
+- [C#](../../Language/CS/CSharp.md)
 - [JavaScript](../../Language/JavaScript/JavaScript.md)
 
 
