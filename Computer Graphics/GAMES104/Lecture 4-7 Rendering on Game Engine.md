@@ -1426,10 +1426,9 @@ $$Error(v) = v^T Q v$$
 > 
 > **结论**: 引擎开发是一个在前沿技术、硬件普及、玩家基数之间不断权衡和演进的过程。地形渲染技术的变迁，完美地体现了图形API、硬件厂商和游戏开发者三者之间紧密协作、共同推动行业进步的关系。
 
-
-
-
 ###### GPU-Driven Dynamic Terrain Deformation
+
+
 
 ###### Beyond Height Fields
 
