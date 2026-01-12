@@ -27,6 +27,7 @@ views:
     order:
       - file.name
       - difficulties
+      - file.tags
       - link
     sort:
       - property: leetcode
@@ -34,6 +35,7 @@ views:
     columnSize:
       file.name: 235
       note.difficulties: 84
+      file.tags: 235
 
 ```
 
