@@ -1,4 +1,11 @@
-MinIO 是一个高性能、分布式对象存储系统，采用 Apache License 2.0 开源协议，兼容 Amazon Web Services S3 API ，并支持所有核心 S3 功能，非常适合私有云、混合云和边缘计算场景下的数据存储需求。
+MinIO 是一个高性能、分布式对象存储系统，~~采用 Apache License 2.0 开源协议~~（变更为 GNU AGPL v3.0 协议），兼容 Amazon Web Services S3 API ，并支持所有核心 S3 功能，非常适合私有云、混合云和边缘计算场景下的数据存储需求。
+
+> [!warning] MinIO 变更开源策略
+> 2025 年 12 月 3 日，高性能分布式对象存储 MinIO 变更开源策略，宣布进入维护模式：This project is currently under maintenance and is not accepting new changes. 该项目目前正在维护中，暂不接受新的变更。
+> - 代码库处于仅维护状态
+> - 不再接受任何新功能、增强功能或 PR 提交
+> - 关键修复安全将根据具体情况进行评估
+> - 现有 Issue 和 PR 将不再主动审核
 
 ![](../../Distributed%20System/_imgs/Pasted%20image%2020250701093813.png)
 

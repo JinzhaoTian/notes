@@ -185,7 +185,7 @@ public class ExampleBatchJob {
 
 ##### Go
 
-通过 Prometheus 监控 Go 的 [Gin](../../Language/Golang/Gin.md) Web 框架
+通过 Prometheus 监控 Go 的 [Gin](../../Language/Golang/框架/Gin.md) Web 框架
 
 1. **项目依赖**
 ```

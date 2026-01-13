@@ -25,16 +25,16 @@ Go 语言（又称 Golang）是 Google 开发的一种静态强类型、编译�
 ## 开发框架
 
 1. **高性能 API**：
-	- [**Gin**](Gin.md) 
+	- [**Gin**](框架/Gin.md) 
 	- Fiber
-	- [**Echo**](Echo.md) 
+	- [**Echo**](框架/Echo.md) 
 2. **全栈开发**：
 	- Beego
 	- Revel
 	- Buffalo
 3. **微服务**：
-	- [**Gin**](Gin.md) 
-	- [**Echo**](Echo.md) 
+	- [**Gin**](框架/Gin.md) 
+	- [**Echo**](框架/Echo.md) 
 4. **企业级应用**：
 	- Beego
 	- Revel
@@ -44,4 +44,8 @@ Go 语言（又称 Golang）是 Google 开发的一种静态强类型、编译�
 
 [Download and install - The Go Programming Language](https://golang.google.cn/doc/install)
 
+
+## 语言规范
+
+[The Go Programming Language Specification - The Go Programming Language](https://golang.google.cn/ref/spec)
 
