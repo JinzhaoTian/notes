@@ -49,6 +49,7 @@ RabbitMQ 服务端代码是使用并发式语言 Erlang 编写的，安装 Rabbi
 	- 下载地址：[Installing on Windows | RabbitMQ](https://www.rabbitmq.com/docs/install-windows)
 	- 点击安装
 	- **启动服务**
+		- 到 `C:\Program Files\RabbitMQ Server\rabbitmq_server-4.2.0\sbin` 路径下输入命令，`.\rabbitmq-plugins.bat enable rabbitmq_management`，然后重启 RabbitMQ 服务
 	- 打开主页：[http://127.0.0.1:15672/](http://127.0.0.1:15672/)，默认账号：guest，默认密码：guest![](_imgs/Pasted%20image%2020251103160700.png)![](_imgs/Pasted%20image%2020251103160635.png)
 	- **创建用户**：![](_imgs/Pasted%20image%2020251103162353.png)
 
