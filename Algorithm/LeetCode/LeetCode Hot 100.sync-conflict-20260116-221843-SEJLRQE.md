@@ -35,7 +35,7 @@ views:
     columnSize:
       file.name: 235
       note.difficulties: 84
-      file.tags: 251
+      file.tags: 235
 
 ```
 
