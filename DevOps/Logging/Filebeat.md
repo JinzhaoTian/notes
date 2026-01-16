@@ -71,3 +71,12 @@ cd "C:\Program Files\Filebeat"
 Start-Service filebeat
 ```
 
+临时更改 PowerShell 的执行策略（Execution Policy）：
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+```
+
+
+```powershell
+Restart-Service filebeat
+```
