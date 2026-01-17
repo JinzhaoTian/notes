@@ -1,5 +1,5 @@
 
-**OpenGL着色器语言（OpenGL Shading Language，GLSL）**
+**OpenGL 着色器语言（OpenGL Shading Language，GLSL）**
 
 有些着色器可以由开发者配置，因为允许用自己写的着色器来代替默认的，所以能够更细致地控制图形渲染管线中的特定部分了。因为它们运行在GPU上，所以节省了宝贵的CPU时间。OpenGL着色器是用OpenGL着色器语言（OpenGL Shading Language，GLSL）写成的。
 
