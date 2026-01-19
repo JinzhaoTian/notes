@@ -81,12 +81,41 @@ git不同的项目有不用的用户，应该有方便的设置来进行吧，�
 
 
 
+## Worktree
+
+传统上，一个 Git 仓库只有一个工作目录（`.git` 文件夹所在的目录），Git Worktree 允许你在同一个仓库中同时维护多个工作目录，连接到同一个 Git 仓库。
+
+Worktree 让你可以：
+1. **同时创建多个工作目录**
+2. **每个目录可以 checkout 不同的分支**
+3. **共享同一个 .git 仓库数据**
+
+
+### 使用
+
+```bash
+# 创建新的工作树
+git worktree add <路径> <分支名>
+
+# 示例
+git worktree add ../feature-login feature/login
+git worktree add ../hotfix-bugfix hotfix/123
+
+# 列出所有工作树
+git worktree list
+
+# 删除工作树
+git worktree remove <路径>
+```
+
+
+
+
+
+
+
 
 ## Commit Message
-
-具体规范参考[文章](https://zhuanlan.zhihu.com/p/182553920)。
-
-### 具体格式
 
 ```
 <type>(<scope>): <subject>
@@ -114,5 +143,9 @@ git不同的项目有不用的用户，应该有方便的设置来进行吧，�
 
 
 
-[解决 Github port 443 : Timed out - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/636418854)
+
+
+## 常见问题
+
+1. [解决 Github port 443 : Timed out - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/636418854)
 

@@ -814,9 +814,9 @@ target_link_libraries(subproject PRIVATE module1)
 
 当 CMake 安装成功后，你可以选择从命令行或者 GUI 启动 CMake
 
-### 编译流程
+## 编译流程
 
-#### Windows
+### Windows
 
 Windows 上，打开 CMake 可以看到一个 GUI ，
 ![](../_imgs/Pasted%20image%2020240103172645.png)
@@ -827,7 +827,7 @@ CMake 需要一个源代码目录和一个存放编译结果的目标文件目�
 
 在build文件夹里可以找到 `*.sln` 文件。
 
-#### Linux
+### Linux
 
 Linux 平台下使用 CMake 生成 Makefile 并编译的流程如下：
 1. 写 CMake 配置文件 `CMakeLists.txt` 。
