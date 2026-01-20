@@ -81,6 +81,42 @@ git不同的项目有不用的用户，应该有方便的设置来进行吧，�
 
 
 
+## 技巧
+
+### 合并多个提交
+
+```bash
+git rebase -i HEAD~3      # 从HEAD版本开始往过去数3个版本
+
+git rebase -i [commitid]  # 从此提交开始到当前的提交
+```
+
+1. 使用`git rebase -i`选择要合并的 commit
+2. 编辑要合并的版本信息，保存提交，多条合并会出现多次（可能会出现冲突）
+	- p, pick = use commit
+	- r, reword = use commit, but edit the commit message
+	- e, edit = use commit, but stop for amending
+	- s, squash = use commit, but meld into previous commit
+	- f, fixup = like "squash", but discard this commit's log message
+	- x, exec = run command (the rest of the line) using shell
+	- d, drop = remove commit
+3. 修改注释信息后，保存提交，多条合并会出现多次
+4. 推送远程仓库或合并到主干分支
+
+
+
+### 调整提交顺序
+
+```bash
+git rebase -i HEAD~3      # 从HEAD版本开始往过去数3个版本
+
+git rebase -i [commitid]  # 从此提交开始到当前的提交
+```
+
+使用快捷键 dd 剪切要调整的 commit 行，光标移动到指定行，按 p 把内容粘贴到当前行的下方。
+
+
+
 ## Worktree
 
 传统上，一个 Git 仓库只有一个工作目录（`.git` 文件夹所在的目录），Git Worktree 允许你在同一个仓库中同时维护多个工作目录，连接到同一个 Git 仓库。
