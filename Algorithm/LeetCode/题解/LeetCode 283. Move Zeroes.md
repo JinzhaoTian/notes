@@ -4,8 +4,8 @@ difficulties: EASY
 link: https://leetcode.cn/problems/move-zeroes
 tags:
   - LeetCode
-  - 双指针
   - Hot100
+  - 双指针
 ---
 
 ## 题目

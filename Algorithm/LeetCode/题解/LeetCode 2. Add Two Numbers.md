@@ -4,8 +4,8 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/add-two-numbers
 tags:
   - LeetCode
-  - 链表
   - Hot100
+  - 链表
 ---
 
 ## 题目

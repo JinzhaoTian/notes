@@ -4,9 +4,9 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/3sum
 tags:
   - LeetCode
+  - Hot100
   - 双指针
   - 排序
-  - Hot100
 ---
 
 ## 题目

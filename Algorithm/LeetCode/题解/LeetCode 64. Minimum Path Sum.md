@@ -4,8 +4,8 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/minimum-path-sum
 tags:
   - LeetCode
-  - 动态规划
   - Hot100
+  - 动态规划
 ---
 
 ## 分析

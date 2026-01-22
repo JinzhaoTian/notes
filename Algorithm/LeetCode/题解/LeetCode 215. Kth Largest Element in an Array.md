@@ -4,9 +4,9 @@ difficulties: MEDIUM
 link: https://leetcode-cn.com/problems/kth-largest-element-in-an-array
 tags:
   - LeetCode
+  - Hot100
   - 二分查找
   - 排序
-  - Hot100
 ---
 
 ## 题目

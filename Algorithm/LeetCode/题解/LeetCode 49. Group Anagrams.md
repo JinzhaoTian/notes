@@ -4,8 +4,8 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/group-anagrams
 tags:
   - LeetCode
-  - 字符串
   - Hot100
+  - 字符串
 ---
 
 ## 题目

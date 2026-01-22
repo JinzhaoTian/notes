@@ -4,10 +4,10 @@ difficulties: EASY
 link: https://leetcode-cn.com/problems/linked-list-cycle
 tags:
   - LeetCode
-  - 快慢指针
-  - 链表
   - Hot100
   - 双指针
+  - 快慢指针
+  - 链表
 ---
 
 ## 题目

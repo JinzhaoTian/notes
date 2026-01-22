@@ -4,8 +4,8 @@ difficulties: EASY
 link: https://leetcode-cn.com/problems/reverse-linked-list
 tags:
   - LeetCode
-  - 链表
   - Hot100
+  - 链表
 ---
 
 ## 题目

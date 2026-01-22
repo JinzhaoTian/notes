@@ -4,8 +4,8 @@ difficulties: MEDIUM
 link: https://leetcode-cn.com/problems/top-k-frequent-elements
 tags:
   - LeetCode
-  - 排序
   - Hot100
+  - 排序
 ---
 
 ## 题目

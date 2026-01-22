@@ -4,9 +4,9 @@ difficulties: MEDIUM
 link: https://leetcode-cn.com/problems/lru-cache
 tags:
   - LeetCode
+  - Hot100
   - 哈希表
   - 双向链表
-  - Hot100
 ---
 
 ## 题目

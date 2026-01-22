@@ -4,9 +4,9 @@ difficulties: MEDIUM
 link: https://leetcode.cn/problems/longest-substring-without-repeating-characters
 tags:
   - LeetCode
+  - Hot100
   - 字符串
   - 滑动窗口
-  - Hot100
 ---
 
 ## 题目
