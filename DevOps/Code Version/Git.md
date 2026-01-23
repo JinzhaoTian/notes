@@ -184,4 +184,7 @@ git worktree remove <路径>
 ## 常见问题
 
 1. [解决 Github port 443 : Timed out - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/636418854)
-
+```
+git config --global http.proxy http://127.0.0.1:7890 
+git config --global https.proxy http://127.0.0.1:7890
+```
