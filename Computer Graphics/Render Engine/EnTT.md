@@ -39,3 +39,117 @@ view.each([](auto& pos, auto& vel) { // 遍历所有符合条件的实体
 });
 ```
 
+
+## 核心模块
+
+| 模块名称    | 核心接口/类                      | 主要功能与特点                      |
+| ------- | --------------------------- | ---------------------------- |
+| **注册表** | `entt::registry`            | **世界容器**，管理所有实体和组件，是库的核心。    |
+| **实体**  | `entt::entity`              | **唯一标识符**，本质上是一个整数，没有数据。     |
+| **组件**  | 用户定义的结构体                    | **纯数据**，不包含逻辑，可通过注册表挂载到实体。   |
+| **视图**  | `registry.view<Comp...>()`  | **只读或读写遍历**，高效查询拥有特定组件组合的实体。 |
+| **观察器** | `registry.observer()`       | **主动响应变化**，监听组件的新增、移除或更新。    |
+| **组**   | `registry.group<Comp...>()` | **最高性能遍历**，对固定组件组合进行缓存和极速迭代。 |
+
+### 详细功能
+
+#### `entt::registry`
+
+`entt::registry` 是世界容器，用来管理所有实体和组件，是 EnTT 的核心。它不仅是创建、销毁实体的工厂，也是存储和索引所有组件的数据库。
+
+```cpp
+entt::registry registry; // 创建一个世界
+auto entity = registry.create(); // 创建实体
+registry.destroy(entity); // 销毁实体
+```
+
+##### 相关方法
+
+1. 实体生命周期：
+	- `.create()`
+	- `.destroy()`创建和销毁实体
+2. 组件操作：
+	- `.emplace()`
+	- `.get()`
+	- `.remove()`
+	- `.patch()` 添加、获取、删除和修改组件
+3. 关系与层次
+	- `emplace_as<Parent>()`
+	- `get_as()` 建立父子关系（从v3.12开始）
+4. 存储与视图：
+	- `storage<Comp>()`
+	- `view<Comp...>()`
+	- `group<Comp...>()` 访问底层存储，创建视图/组进行遍历
+5. 观察与监听：
+	- `observer()`
+	- `on_construct<Comp>()` 监听组件变化，实现响应式逻辑
+6. 上下文数据
+	- `ctx()`
+	- `set()`
+	- `get()` 存储和访问全局共享数据
+
+
+
+
+#### 组件
+
+组件是用户定义的普通 C++ 结构体，纯数据，不包含逻辑，可通过注册表挂载到实体。
+
+```cpp
+// 定义组件
+struct Position { float x, y; };
+struct Velocity { float dx, dy; };
+
+// 添加/获取/删除组件
+registry.emplace<Position>(entity, 1.0f, 2.0f);
+auto& pos = registry.get<Position>(entity);
+registry.remove<Position>(entity);
+```
+
+
+#### `registry.view<Comp...>()`
+
+`registry.view<Comp...>()` 是视图，用于只读或读写地高效遍历拥有指定组件的实体。
+
+```cpp
+// 遍历所有同时拥有Position和Velocity的实体
+auto view = registry.view<Position, Velocity>();
+for (auto entity : view) {
+    auto& pos = view.get<Position>(entity);
+    auto& vel = view.get<Velocity>(entity);
+    pos.x += vel.dx;
+}
+// 更简洁的lambda写法
+view.each([](Position& pos, const Velocity& vel) {
+    pos.x += vel.dx;
+});
+```
+
+#### `registry.observer()`
+
+`registry.observer()` 观察器，主动响应变化，监听组件的新增、移除或更新。用于在组件发生变化时执行代码，非常适合触发事件。
+
+```cpp
+// 监听Velocity组件被添加到任何实体
+auto observer = registry.observer<Velocity>()
+    .connect<&MySystem::onVelocityAdded>(); // 连接回调函数
+```
+
+
+#### `registry.group<Comp...>()`
+
+当需要频繁迭代一个固定的组件组合时，组 `registry.group<Comp...>()` 是最高效的选择。它会在内部进行数据布局优化，但会限制使用灵活性（如不能在组存在时动态增删涉及的组件类型）。
+
+
+
+
+### 扩展模块
+
+除了上述核心 ECS 模块，EnTT 还提供了一些强大的官方插件，它们虽然不是核心，但在构建复杂应用时非常有用：
+
+| 扩展模块       | 核心类                            | 作用                          |
+| ---------- | ------------------------------ | --------------------------- |
+| **委托与信号**  | `entt::delegate`, `entt::sigh` | 实现灵活的事件和回调系统，用于系统间解耦。       |
+| **资源管理**   | `entt::resource_cache`         | 用于缓存和管理（如图片、音频等）资源的加载与生命周期。 |
+| **运行时反射**  | `entt::meta`                   | 在运行时动态获取和操作类型信息，无需宏或代码生成。   |
+| **协作式调度器** | `entt::organizer`              | 帮助定义和管理各处理系统的执行顺序与依赖关系。     |
