@@ -65,28 +65,70 @@ registry.destroy(entity); // 销毁实体
 
 ##### 相关方法
 
-1. 实体生命周期：
-	- `.create()`
-	- `.destroy()`创建和销毁实体
+1. **实体生命周期**：
+	- `.create()`：创建实体
+	- `.destroy()`：销毁实体
 2. 组件操作：
 	- `.emplace()`
 	- `.get()`
 	- `.remove()`
 	- `.patch()` 添加、获取、删除和修改组件
 3. 关系与层次
-	- `emplace_as<Parent>()`
-	- `get_as()` 建立父子关系（从v3.12开始）
+	- `.emplace_as<Parent>()`
+	- `.get_as()` 建立父子关系（从v3.12开始）
 4. 存储与视图：
-	- `storage<Comp>()`
-	- `view<Comp...>()`
-	- `group<Comp...>()` 访问底层存储，创建视图/组进行遍历
+	- `.storage<Comp>()`
+	- `.view<Comp...>()`
+	- `.group<Comp...>()` 访问底层存储，创建视图/组进行遍历
 5. 观察与监听：
-	- `observer()`
-	- `on_construct<Comp>()` 监听组件变化，实现响应式逻辑
-6. 上下文数据
-	- `ctx()`
-	- `set()`
-	- `get()` 存储和访问全局共享数据
+	- `.observer()`
+	- `.on_construct<Comp>()` 监听组件变化，实现响应式逻辑
+6. **上下文数据**
+	- `.ctx()`：提供一个固定的地方来存放**全局单例数据**，例如游戏状态、物理世界指针、渲染上下文、资源管理器等。
+		- `.emplace<T>()`：构造并放置
+		- `.insert_or_assign()`：构造后赋值（有则替换）
+		- `.get<T>()`：获取数据
+		- `.erase<T>()`：删除数据
+		- `.contains<T>()`：检查是否存在
+```cpp
+#include <entt/entt.hpp>
+
+// 定义一些全局数据类
+struct GameState {
+    bool isPaused = false;
+    int currentLevel = 1;
+};
+
+struct PhysicsWorld {
+    // ... 物理引擎相关数据
+};
+
+int main() {
+    entt::registry registry;
+
+    // 1. 设置/替换数据
+    // 使用 emplace 存放数据，如果该类型已存在则会被替换
+    registry.ctx().emplace<GameState>();
+    registry.ctx().emplace<PhysicsWorld>();
+
+    // 也可以直接构造或替换
+    registry.ctx().insert_or_assign(GameState{false, 2});
+
+    // 2. 获取数据引用
+    GameState& state = registry.ctx().get<GameState>();
+    state.currentLevel = 3;
+
+    // 3. 检查数据是否存在
+    if (registry.ctx().contains<GameState>()) {
+        // 进行相关操作...
+    }
+
+    // 4. 删除数据
+    registry.ctx().erase<GameState>();
+
+    return 0;
+}
+```
 
 
 
