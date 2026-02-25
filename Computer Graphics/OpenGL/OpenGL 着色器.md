@@ -1,8 +1,4 @@
-
-**OpenGL 着色器语言（OpenGL Shading Language，GLSL）**
-
-有些着色器可以由开发者配置，因为允许用自己写的着色器来代替默认的，所以能够更细致地控制图形渲染管线中的特定部分了。因为它们运行在GPU上，所以节省了宝贵的CPU时间。OpenGL着色器是用OpenGL着色器语言（OpenGL Shading Language，GLSL）写成的。
-
+有些着色器可以由开发者配置，因为允许用自己写的着色器来代替默认的，所以能够更细致地控制图形渲染管线中的特定部分了。因为它们运行在 GPU 上，所以节省了宝贵的 CPU 时间。OpenGL 着色器是用 OpenGL 着色器语言（OpenGL Shading Language，GLSL）写成的。
 
 图形渲染管线具体可以分为以下几个阶段：**顶点着色器**（Vertex Shader），图元装配（Primitive Assembly），**几何着色器**（Geometry Shader），光栅化阶段（Rasterization Stage），**片段着色器**（Fragment Shader），Alpha测试和混合（Blending），其中加粗的为可编程管线。
 

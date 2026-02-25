@@ -143,7 +143,7 @@ void main() {
 	- Shader：定义了逻辑和需要的参数（"我需要一张贴图和一个颜色"）。
 	- Material：提供了具体的数据（"贴图是 `brick.png`，颜色是红色"）。 管理系统负责将材质的数据准确地映射到 Shader 的 Uniform 槽位上。
 
-3. 热重载（Hot-Reloading）：在开发工具中，开发者修改 Shader 代码后，引擎必须能在不重启程序的情况下，动态重新编译并替换 GPU 上的 Shader 程序，以便即时预览效果。
+3. **热重载**（Hot-Reloading）：在开发工具中，开发者修改 Shader 代码后，引擎必须能在不重启程序的情况下，动态重新编译并替换 GPU 上的 Shader 程序，以便即时预览效果。
 
 
 ### 管理策略
@@ -228,3 +228,4 @@ Shader 内置函数：[Intrinsic Functions - Win32 apps | Microsoft Learn](https
 
 ### HLSL
 
+HLSL（高层次着色器语言，High-Level Shading Language）是微软为 DirectX 设计的一种强大且功能丰富的着色器语言，统一了美术和图形程序员的资产来源，简化了版本控制和构建流程。
