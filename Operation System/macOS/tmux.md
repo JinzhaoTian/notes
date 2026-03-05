@@ -32,3 +32,26 @@ tmux 是一个终端复用器（Terminal Multiplexer），其允许你在单个�
 
 ## 安装
 
+### Linux
+
+```bash
+sudo apt install tmux
+```
+
+```bash
+sudo dnf install tmux 
+```
+
+### macOS
+
+```bash
+brew install tmux
+```
+
+### Windows (WSL)
+
+```bash
+sudo apt install tmux
+```
+
+适用于安装了Windows Subsystem for Linux (WSL) 的环境。
