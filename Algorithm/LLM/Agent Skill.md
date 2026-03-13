@@ -15,3 +15,6 @@ Agent Skill 是指一个智能体（Agent）为了完成特定任务而具备的
 4. **可执行代码**：背后真正干活的那段程序。可以是一个 Python 函数、一个 API 调用、一段 SQL 查询等。当智能体决定调用此 Skill 并用正确的参数触发时，这段代码就会运行。
 5. **输出/返回值**：技能执行完毕后返回的结果，通常会送回给智能体的大脑，以便进行下一步处理或生成最终回复。
 
+
+
+[obra/superpowers: An agentic skills framework & software development methodology that works.](https://github.com/obra/superpowers)
