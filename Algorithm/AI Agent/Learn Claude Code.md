@@ -1,2 +1,30 @@
-[Learn Claude Code](https://learn.shareai.run/zh/)
+所有 AI Coding Agent 共享同一个循环：调用模型、执行工具、回传结果。生产级系统会在其上叠加策略、权限和生命周期层。
+
+
+
+
+
+
+
+## Tool
+
+> [!tip] 四个核心工具
+> 四个工具分别是 `bash`、`read_file`、`write_file` 和 `edit_file`，覆盖了大约 95% 的编程任务：
+> - `bash` 处理执行和任意命令；
+> - `read_file` 提供带行号的精确文件读取；
+> - `write_file` 创建或覆盖文件；
+> - `edit_file` 做精确的字符串替换。
+> 
+> 剩下的 5% 任务之所以无法被覆盖，是因为它们涉及环境交互、状态管理、人机协作和复杂操作等场景：
+> - 环境状态查询与管理
+> - 搜索与定位（类似 `grep -r` 但更智能）
+> - 交互式操作（逐步调试、等待用户输入）
+> - 版本控制交互
+
+
+
+
+## 参考
+
+1. [Learn Claude Code](https://learn.shareai.run/zh/)
 

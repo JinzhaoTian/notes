@@ -37,3 +37,4 @@ Godot 编辑器本身就是一个“自托管”的应用程序。它并不是�
 
 
 
+[Godot 4.x GDScript Best Practices - Coding Standards | SkillKit | SkillKit](https://skillkit.io/zh/skills/claude-code/godot-best-practices)
