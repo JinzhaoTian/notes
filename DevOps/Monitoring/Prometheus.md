@@ -366,7 +366,7 @@ public class WeatherForecastController : ControllerBase
 
 ##### Python
 
-`prometheus-flask-exporter`是一个开源项目，基于 Python 的 [Flask](../../Language/Python/Flask.md) Web 框架，该库能够收集 HTTP 请求指标并能导出到 Prometheus 中，降低开发人员在监控方面的成本。
+`prometheus-flask-exporter`是一个开源项目，基于 Python 的 [Flask](../../Language/Python/后端/Flask.md) Web 框架，该库能够收集 HTTP 请求指标并能导出到 Prometheus 中，降低开发人员在监控方面的成本。
 
 1. **安装**
 ```bash

@@ -1,7 +1,7 @@
 
 > 参考：[API Reference](https://spark.apache.org/docs/latest/api/python/reference/index.html)
 
-PySpark 是 [Spark](../../Backend/分布式中间件/Spark.md) 的 Python API，使用 PySpark，您也可以使用 Python 编程语言处理 RDD。
+PySpark 是 [Spark](../../../Backend/分布式中间件/Spark.md) 的 Python API，使用 PySpark，您也可以使用 Python 编程语言处理 RDD。
 
 ## 操作模式
 

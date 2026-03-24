@@ -1,31 +1,53 @@
-[FastAPI](https://fastapi.tiangolo.com/zh/) 是一个用于构建 API 的现代、快速（高性能）的 Web 框架，使用 Python 3.6+ 并基于标准的 Python 类型提示。FastAPI 从语法上和 Flask 非常的相似，有异曲同工之妙。
+FastAPI 是一个用于构建 API 的现代、快速（高性能）的 Web 框架，使用 Python 3.6+ 并基于标准的 Python 类型提示。
 
-> Web框架
->
-> Web框架使得在进行Web应用开发的时候，减少了工作量。Web框架主要用于动态网络开发，动态网络主要是指现在的主要的页面，可以实现数据的交互和业务功能的完善。使用Web框架进行Web开发的时候，在进行数据缓存、数据库访问、数据安全校验等方面，不需要自己再重新实现，而是将业务逻辑相关的代码写入框架就可以。也就是说，通过对Web框架进行主观上的“缝缝补补”，就可以实现自己进行Web开发的需求了。
->
-> 目前**Python主流的框架有Django和Flask**等。Django是一个比较重量级的框架，重量级的意思是说，Django几乎所有的功能都帮助开发者写好了，有时候如果想做一个简单的网站，并不需要太多功能，这时候使用Django的话，就比较不合适，因为在部署网站的时候会导致很多不必要的功能也部署了进来。而Flask是一个轻量级的框架，一些核心的功能实现了，但是实现的功能并没有Django那么多，这样可以进行自己的发挥，在Flask的基础上，如果想实现更多的功能，可以很方便地加入。
->
-> 目前**Java的主流开发框架是ssm**(spring spring-mvc和mybatis)。相比之前的ssh(spring struts hibernate)，ssm也是比较轻量级的框架。
+## 核心特性
 
-关键特性:
+1. **极高性能**
+	- 可与 NodeJS 和 Go 比肩的极高性能
+	- 基于 Starlette（ASGI 框架）和 Pydantic（数据验证）
+2. **自动交互式 API 文档**
+	- 自动生成 Swagger UI（访问 `/docs`）
+	- 自动生成 ReDoc（访问 `/redoc`）
+	- 无需额外编写文档，代码即文档
+3. **基于 Python 类型提示**
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-- **快速**：可与 **NodeJS** 和 **Go** 比肩的极高性能（归功于 Starlette 和 Pydantic）。最快的 Python web 框架之一。
-- **高效编码**：提高功能开发速度约 200％ 至 300％。
-- **更少 bug**：减少约 40％ 的人为（开发者）导致错误。
-- **智能**：极佳的编辑器支持。处处皆可自动补全，减少调试时间。
-- **简单**：设计的易于使用和学习，阅读文档的时间更短。
-- **简短**：使代码重复最小化。通过不同的参数声明实现丰富功能。bug 更少。
-- **健壮**：生产可用级别的代码。还有自动生成的交互式文档。
-- **标准化**：基于（并完全兼容）API 的相关开放标准：[OpenAPI](https://github.com/OAI/OpenAPI-Specification) (以前被称为 Swagger) 和 [JSON Schema](https://json-schema.org/)。
+app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
+
+@app.post("/items/")
+def create_item(item: Item):
+    # FastAPI 自动验证请求数据
+    return {"item_name": item.name, "price": item.price}
+```
+4. **自动数据验证和序列化**
+	- 使用 Pydantic 自动验证请求/响应数据
+	- 自动转换数据类型（如字符串转整数）
+5. **异步支持**
+	- 原生支持 `async` / `await`
+	- 可与异步数据库、第三方 API 高效协作
+
+
+## 主要优势
+
+1. **开发效率**：代码简洁，自动文档减少沟通成本
+2. **类型安全**：编辑器支持自动补全、错误检测
+3. **依赖注入系统**：易于管理数据库会话、认证等依赖
+4. **安全性**：内置对 OAuth2、JWT 等认证方案的支持
+5. **生产就绪**：支持 CORS、GZip、HTTPS 重定向等中间件
 
 
 
 ## 安装
 
 ```
-pip install fastapi
-pip install uvicorn
+pip install fastapi uvicorn
 ```
 
 > Uvicorn 是基于 uvloop 和 httptools 构建的非常快速的 ASGI 服务器。 uvloop 用于替换标准库 asyncio 中的事件循环，使用 Cython 实现，它非常快，可以使 asyncio 的速度提高 2-4 倍。写异步代码离不开asyncio。httptools 是 nodejs HTTP 解析器的 Python 实现。ASGI 是异步网关协议接口，一个介于网络协议服务和 Python 应用之间的标准接口，能够处理多种通用的协议类型，包括 HTTP，HTTP2 和 WebSocket。

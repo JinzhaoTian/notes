@@ -1,6 +1,17 @@
-https://mp.weixin.qq.com/s/olKWkWvZwHGmrfpcSG8lNQ
+
 
 ![](_imgs/0a5f64299e37677b1a88a1c22b4abd59.png)
+
+## 学习路线
+
+先推荐 HKUDS 的 [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) 。
+1. **概念**：Agent 应用开发的本质 = 传统后端 + LLM 能力 + 自动化工作流，所以工程化永远躲不开后端基建，核心特点是接受用户输入，理解意图，调用 LLM 进行推理决策，执行工具，返回结构化结果并应用。
+2. **Python 基础与异步编程**：Agent 应用要处理大量的 IO 密集型操作，落地是需要对性能进行提升的，这里的核心是 async 事件循环/协程、并发控制（限流、批量执行）、线程池、类型注解与数据模型。会应用于并发调用、批量上传、流式输出场景下（一般都会有这样的需求）
+3. **Web 框架**：FastAPI（必学），Agent 开发的必学框架，很适配（原生异步支持）。核心点是路由设计 / APIRouter、依赖注入、请求验证与响应模型、Websocket（流式输出）。
+4. **数据存储**：数据在 Agent 项目中是非常重要的，因为需要持久化会话历史、任务状态、知识库数据，这里的重点在关系型数据库（SQLAIchemy ORM）、Redis（缓存）。
+5. **异步任务队列**：Celery，因为 Agent 任务都比较长，需要进行异步执行，避免阻塞，Celery 的核心是 Broker + Worker + Backend、任务的定义和调度、重试与超时处理、任务状态追踪，通常和 Redis 组合。
+6. LLM + Prompt + Agent 架构 **Pipeline 编排**：这一块没什么好说的 Agent 开发与工程化学习路线的必经之路。
+
 
 
 ## 主流框架
@@ -38,3 +49,9 @@ https://mp.weixin.qq.com/s/olKWkWvZwHGmrfpcSG8lNQ
 | **工具调用策略**  | **Agentic Search**：优先使用标准工具 (grep/glob) 而非RAG | **Shell优先**：主要通过Shell命令交互，辅以沙箱环境      |
 | **对MCP的态度** | **原生支持**：内置MCP服务器，支持三层配置管理                    | **评估后拒绝**：认为MCP缺乏丰富的会话语义，但可选支持        |
 | **安全模型**    | 文件读默认允许，写/执行需显式授权                             | 沙箱化执行环境，混合主动交互设计                      |
+
+
+
+## 参考
+
+1. https://mp.weixin.qq.com/s/olKWkWvZwHGmrfpcSG8lNQ
