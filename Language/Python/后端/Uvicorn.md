@@ -85,3 +85,28 @@ gunicorn -k uvicorn.workers.UvicornWorker main:app
 |`--log-level`|日志级别|`info`、`debug`、`warning`|
 
 ### 生产部署建议
+
+1. **使用反向代理**：Nginx 处理静态文件和 SSL 终止
+```
+Nginx (80/443) → Uvicorn (8000)
+```
+
+2. **多 worker 进程**：利用多核 CPU
+```bash
+uvicorn main:app --workers 4
+```
+
+3. **结合 Gunicorn**：作为进程管理器
+```bash
+gunicorn -k uvicorn.workers.UvicornWorker -w 4 main:app
+```
+
+4. **Docker 部署**
+```dockerfile
+FROM python:3.11
+COPY . /app
+WORKDIR /app
+RUN pip install fastapi uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+

@@ -1,4 +1,4 @@
-Python 的 `typing` 模块是用于类型提示（Type Hints）的标准库，它允许你在代码中添加类型信息，帮助静态类型检查工具（如 `mypy`、`pyright`）在运行前发现类型错误。
+Python `typing` 模块是用于类型提示（Type Hints）的标准库，它允许你在代码中添加类型信息，帮助静态类型检查工具（如 `mypy`、`pyright`）在运行前发现类型错误。
 
 
 ## 基本语法
