@@ -32,6 +32,8 @@ LangChain 是一个用于构建基于大型语言模型（LLM）应用程序的�
 
 ## 示例代码
 
+### [Python](../../Language/Python/AI%20Agents/LangChain.md)
+
 ```python
 from langchain_community.llms import OpenAI
 from langchain.chains import LLMChain
@@ -51,4 +53,6 @@ chain = LLMChain(llm=llm, prompt=prompt)
 response = chain.run(topic="量子计算")
 print(response)
 ```
+
+### [TypeScript](../../Language/Node/AI%20Agents/LangChain.md)
 
