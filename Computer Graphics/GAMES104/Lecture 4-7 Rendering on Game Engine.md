@@ -2778,4 +2778,77 @@ Tile-Based 思想在**三维空间**中的进一步延伸，更激进和高效�
 
 ### Render Graph
 
+现代游戏引擎渲染管线面临三大核心挑战：
+
+| 挑战 | 描述 |
+|------|------|
+| **管线模块化与灵活性** | 不同游戏有不同渲染需求，渲染管线需要像乐高积木一样自由组合、插拔功能模块 |
+| **复杂的资源管理** | 渲染过程中产生大量临时 Buffer 和 Texture，需管理生命周期、进行内存重用 |
+| **现代图形 API 底层复杂性** | DX12、Vulkan 将硬件底层控制权暴露给开发者，须手动处理内存屏障、防止死锁 |
+
+Render Graph（或 Frame Graph）是管理上述复杂性的系统级框架。
+
+#### 核心思想
+
+将整个渲染管线抽象成一个**有向无环图 (Directed Acyclic Graph, DAG)**：
+
+| 图元素 | 含义 |
+|--------|------|
+| **节点 (Node)** | 一个独立的计算单元，如一个渲染 Pass（Z-Pass、G-Buffer Pass、Shadow Pass 等） |
+| **边 (Edge)** | 节点之间的依赖关系，即资源的生产与消费关系（如 G-Buffer Pass 生产 G-Buffer，光照 Pass 消费 G-Buffer） |
+
+> [!tip] 类比
+> Render Graph 就像一种"渲染语言"。它提供语法和语义，让开发者清晰描述"要做什么"，将"具体怎么做"的复杂细节（同步、资源屏障）交给底层处理。
+
+#### Render Graph 解决的核心问题
+
+##### 自动化资源管理
+
+| 功能 | 描述 |
+|------|------|
+| **生命周期管理** | Graph 系统知道每个资源何时被创建、被哪些 Pass 使用、何时不再需要，自动分配和释放内存 |
+| **资源重用与别名 (Resource Aliasing)** | 分析出不同 Pass 使用的临时资源在时间上没有重叠，让它们共享同一块物理显存，节约显存占用 |
+
+##### 自动化同步与屏障管理
+
+通过分析节点间的依赖关系，系统**自动推断**在何处插入正确的内存屏障，将开发者从手动管理同步的噩梦中解放出来。
+
+##### 管线模块化与解耦
+
+每个 Pass 只需声明"**需要输入什么资源**"和"**会输出什么资源**"，无需关心资源的具体来源和去向。各渲染模块高度解耦，易于维护、重组和复用。
+
+#### 典型工作流
+
+```
+定义阶段 (Setup)：
+  pass_gbuffer.reads([scene_geometry])
+  pass_gbuffer.writes([albedo, normal, depth])
+
+  pass_lighting.reads([albedo, normal, depth, shadow_map])
+  pass_lighting.writes([hdr_color])
+
+  pass_bloom.reads([hdr_color])
+  pass_bloom.writes([bloom_color])
+
+编译阶段 (Compile)：
+  → 分析依赖关系，构建 DAG
+  → 剔除不影响最终输出的 Pass（Culling）
+  → 分配资源，确定内存别名
+  → 自动插入同步屏障
+
+执行阶段 (Execute)：
+  → 按拓扑排序依次执行各 Pass
+```
+
+#### 业界实践
+
+| 引擎 | 实现 |
+|------|------|
+| **Unity** | SRP (Scriptable Render Pipeline)，包括 URP 和 HDRP，底层基于 Render Graph 思想构建 |
+| **Unreal Engine** | RDG (Render Dependency Graph) |
+
+**团队协作价值**：在大型团队中，Render Graph 提供统一框架，让不同开发者编写的渲染模块能够安全、高效地协同工作，从根本上消除大量因资源管理和同步错误导致的 Bug。
+
+> [!important] 定位
+> Render Graph 是**下一代引擎中核心的底层功能**，位于上层渲染特性（Features）和底层图形 API（Vulkan、DX12）之间。所有渲染特性都应构建在 Render Graph 之上。
 
