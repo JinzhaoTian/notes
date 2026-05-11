@@ -40,7 +40,7 @@
 - [**Vulkan**](../Vulkan/Vulkan.md)：新一代的 OpenGL，相比之下，Vulkan 更接近底层，并且能很好地分配 CPU 核心来执行并行任务。
 	- **适用平台**：Windows、Linux 和 Android
 
-- **DirectX 11**、**DirectX 12**：微软公司在 Windows 系统上所开发的3D图形编程接口。
+- **[DirectX](../DirectX/DirectX.md) 11**、**DirectX 12**：微软公司在 Windows 系统上所开发的3D图形编程接口。
 	- **适用平台**：Windows
 
 - **Metal**：Metal API 由苹果公司提供，它旨在为 iOS、iPadOS、macOS 和 tvOS 上的应用程序提供对 GPU 硬件的低级访问来提高性能，它与 Vulkan、DX12 都属于低级别的 API 。
