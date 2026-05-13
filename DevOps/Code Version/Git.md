@@ -16,6 +16,7 @@ Git 是一个分布式版本控制系统，CVS 及 SVN 都是集中式的版本�
 
 
 
+
 git不同的项目有不用的用户，应该有方便的设置来进行吧，不用每次都切换一下吧？
 
 * `git config --global user.name "Jinzhao Tian" `：设置 git 自己的名字
