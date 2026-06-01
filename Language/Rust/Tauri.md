@@ -1,0 +1,1 @@
+Tauri 是一个开源框架，用于使用 Web 技术（HTML、JavaScript、CSS）构建体积小巧、运行快速、安全可靠的跨平台应用程序。
