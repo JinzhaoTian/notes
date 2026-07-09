@@ -21,11 +21,15 @@ WebGPU 是一种现代的 Web 图形与计算 API，旨在为网页应用（如�
 
 ## 使用
 
-开发基于 WebGPU 的程序，核心路径主要分为 Web 端（JavaScript）和原生端（如 C++、Rust ）。这里我们聚焦于更常见的 Web 端开发，带你从环境搭建到绘制第一个图形，梳理出完整的开发脉络。
+开发基于 WebGPU 的程序，核心路径主要分为 Web 端（JavaScript）和原生端（如 C++、Rust ）。
 
-### 环境准备
+### Web 端
 
-开发WebGPU程序，首先需要一个支持它的浏览器和基本的开发工具。
+这里我们聚焦于更常见的 Web 端开发，带你从环境搭建到绘制第一个图形，梳理出完整的开发脉络。
+
+#### 环境准备
+
+开发 WebGPU 程序，首先需要一个支持它的浏览器和基本的开发工具。
 
 - **浏览器**：推荐使用 **Chrome 113+**、**Edge 113+** 或 **Firefox 121+** 的最新版本[](https://developer.baidu.com/article/detail.html?id=5129697)。你可以在 `chrome://version` 检查Chrome版本。
     - **特别提醒**：如果使用旧版Chrome（如113），可能需要手动开启实验性功能。在地址栏输入 `chrome://flags`，搜索并启用 `#enable-unsafe-webgpu` 后重启浏览器。
@@ -33,10 +37,9 @@ WebGPU 是一种现代的 Web 图形与计算 API，旨在为网页应用（如�
 - **本地服务器**：WebGPU API需要在安全上下文（如 `localhost` 或 `https`）中运行，**不能**直接用浏览器打开HTML文件。你可以使用 `http-server`、`live-server` 或 `Vite` 等工具在本地启动一个静态服务器。
 - **Node.js环境**：如果你打算使用构建工具（如Vite、Webpack），需要安装Node.js。
 
+#### 核心开发步骤
 
-### 核心开发步骤
-
-开发一个典型的WebGPU应用，通常遵循以下七个步骤。
+开发一个典型的 WebGPU 应用，通常遵循以下七个步骤。
 
 1. **检测浏览器兼容性**
 
@@ -160,3 +163,18 @@ function frame() {
 requestAnimationFrame(frame);
 ```
 
+
+### 原生端
+
+WebGPU 并非只能在浏览器环境运行，它从一开始就被设计为一个跨平台的图形与计算 API。除了浏览器，它完全可以在桌面端、移动端等原生环境中运行。
+
+#### 核心实现
+
+1. **Dawn**：由 Google 主导开发，是 Chrome 浏览器内置的 WebGPU 实现。它同时也作为一个独立的 C++ 库，供开发者构建原生应用。
+2. **[wgpu](wgpu.md)**：由 Mozilla 主导，用 Rust 语言实现。它被设计为“**原生优先**”，即在桌面端运行是它的首要目标，对 Web 的支持反而次之。
+
+#### 开发步骤
+
+1. **C++ 开发**：直接使用 Dawn 库提供的 `webgpu.h` C API 或 `webgpu_cpp.h` C++ 封装。Chrome 官方有文档指导如何用 C++ 编写一个同时运行在 Web 和桌面端的应用，并且有对应的跨平台示例项目可供参考。
+2. **Rust 开发**：使用 `wgpu` 库，它能在 Windows、Linux、macOS 等桌面系统上，基于 Vulkan、Metal、DirectX 12 等现代图形 API 原生运行。`wgpu` 生态成熟，是 Rust 社区进行 GPU 开发的首选。
+3. **Node.js 开发**：通过 NPM 包（如 `@kmamal/gpu` 或 `node-dawn`）在 Node.js 环境中使用 WebGPU。这使得 JavaScript 开发者无需浏览器也能进行 GPU 计算或渲染。例如，`@kmamal/gpu` 包就提供了与浏览器 `GPU` 对象类似的 API。
