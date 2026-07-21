@@ -1,4 +1,6 @@
-Pi Agent（`@mariozechner/pi-coding-agent`）遵循极简主义（Minimalist）设计理念，这是其区别于其他 Agent 框架的核心特征：
+![](_imgs/Pasted%20image%2020260721161521.png)
+
+Pi Agent（`@earendil-works/pi-coding-agent`）遵循极简主义（Minimalist）设计理念，这是其区别于其他 Agent 框架的核心特征：
 1. **原子工具集**：只提供 4 个原子工具
 	- `read`：读取文件内容
 	- `write`：覆盖/创建文件
@@ -30,23 +32,5 @@ Pi 最核心的安全特性是其沙箱机制（Cell Isolation）机制，设计
 对于 Python 脚本执行，Pi 会在独立的虚拟环境中运行，避免污染主环境。
 
 
-### 会话管理
+## 安装
 
-1. **Session 隔离**
-	- 不同聊天渠道（单聊/群聊）的 Session 隔离
-	- 自动切分策略：空闲超时切分、每日凌晨4点后切分
-	- Session 存储路径：`~/.openclaw/agents/<agentId>/sessions/<SessionId>.jsonl`
-
-2. **Workspace 文件**：Pi 的工作区包含多个影响行为的 Markdown 文件：
-
-| 文件             | 作用                                                                     |
-| -------------- | ---------------------------------------------------------------------- |
-| `BOOTSTRAP.md` | 首次启动引导                                                                 |
-| `SOUL.md`      | 指引行动方式                                                                 |
-| `IDENTITY.md`  | 聊天风格定义                                                                 |
-| `USER.md`      | 用户画像                                                                   |
-| `MEMORY.md`    | 长期记忆存储（由agent自主写入）[](https://zhuanlan.zhihu.com/p/2006279773752664590) |
-
-3. **上下文压缩策略**：Pi Agent 内置上下文压缩机制：
-	- 溢出时自动压缩并重试
-	- 压缩使用专用提示词生成摘要，保留最近消息
