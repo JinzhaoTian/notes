@@ -22,6 +22,38 @@ Pi Agent（`@earendil-works/pi-coding-agent`）遵循极简主义（Minimalist�
 	- 这是最高级的可观测性
 
 
+
+## 分层架构
+
+Pi 的源码组织如下：
+```
+pi
+├── packages/
+│	├── ai/                # 统一模型、消息与 Provider API
+│	├── agent/             # Agent 状态、Agent Loop、工具调度与事件
+│	├── coding-agent/      # CLI、AgentSession、工具、会话、扩展与运行模式
+│	└── tui/               # 终端输入、组件和差量渲染
+├── scripts/
+│   └── ...
+├── package-lock.json
+├── package.json
+└── README.md
+```
+
+Pi 同时要处理模型协议、Agent Loop、终端显示和编码工具，与 Pi Agent 执行直接相关的代码主要在 `packages/` 下，依赖关系是：
+```
+pi-coding-agent ──→ pi-agent-core ──→ pi-ai     pi-tui
+ │                                      ↑         ↑ 
+ ├──────────────────────────────────────┘         │
+ └────────────────────────────────────────────────┘ 
+```
+
+
+
+
+
+
+
 ### 沙箱机制
 
 Pi 最核心的安全特性是其沙箱机制（Cell Isolation）机制，设计目标是安全地执行不可信代码：
