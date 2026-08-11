@@ -72,6 +72,12 @@ Pi 最核心的安全特性是其沙箱机制（Cell Isolation）机制，设计
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 ```
 
+
+### 配置
+
+
+
+
 ## 扩展
 
 Pi 原生只提供 4 个基础工具，其他所有能力都通过扩展系统来添加。Pi 的扩展生态很丰富，从增强核心能力到改善用户体验的各类工具都有。
