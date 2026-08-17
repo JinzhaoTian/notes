@@ -23,7 +23,7 @@ Windows Presentation Foundation（WPF）是一个演示框架，可用于开发�
 
 ### Implementing an Application Definition
 
-典型的 WPF 应用程序的定义是使用 XAML 和 code-behind 实现的。这允许您使用 XAML 以声明方式设置应用程序属性、资源和注册事件，同时在 code-behind 中处理事件并实现特定于应用程序的行为。
+典型的 WPF 应用程序的定义是使用 XAML 和 [Code-Behind](../前端/Code-Behind.md) 实现的。这允许您使用 XAML 以声明方式设置应用程序属性、资源和注册事件，同时在 Code-Behind 中处理事件并实现特定于应用程序的行为。
 
 以下示例显示了如何使用标记和代码隐藏实现应用程序定义：
 ```xml
