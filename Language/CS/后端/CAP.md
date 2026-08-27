@@ -84,6 +84,85 @@ public interface ICapSubscriber
 }
 ```
 
+### CapSubscribe
+
+`CapSubscribe` 是 CAP 框架中用于**标记消息订阅方法**的特性（Attribute），定义了该方法如何订阅和消费特定的消息。
+
+```csharp
+[CapSubscribe("topic", Group = "group", GroupConcurrent = 4)]
+```
+
+**核心参数**：
+1. **`Name`**：主题（Topic）名称，`string`，**必须项**，指定了当前方法要订阅哪个主题的消息。
+	 - **底层映射**：这个主题名称在不同的消息队列（Broker）中有不同的对应物[](https://cap.dotnetcore.xyz/user-guide/zh/cap/configuration/)：
+	    - **RabbitMQ**: 对应 **Routing Key**。
+	    - **Kafka**: 对应 **Topic**。
+	    - **Azure Service Bus**: 对应 **Subject**。
+	    - **NATS**: 对应 **Subject**。
+	    - **Redis Streams**: 对应 **Stream**。
+
+2. **`Group`**：分组参数，`string`，可选项，指定了当前订阅者所属的消费者组（Consumer Group）名称，决定了当多个服务实例订阅了相同主题时，消息如何被分发。
+	- **作用**：
+		- **相同组（竞争消费者模式）**：如果多个订阅者拥有**相同的 `Group`**，那么一条消息只会被其中一个订阅者消费。这实现了**负载均衡**，适用于提升处理能力。
+		- **不同组（广播模式）**：如果多个订阅者拥有**不同的 `Group`**，那么一条消息会被**所有**组各自消费一次。这实现了**广播**，适用于需要多个独立服务同时响应同一事件的场景。
+	- **底层映射**：`Group` 在消息队列底层也有对应概念：
+	    - **RabbitMQ**: 对应 **Queue**。
+	    - **Kafka**: 对应 **Consumer Group**。
+	    - **Azure Service Bus**: 对应 **Subscription Name**。
+	    - **NATS**: 对应 **Queue Group**。
+	    - **Redis Streams**: 对应 **Consumer Group**。
+
+3. **`GroupConcurrent`**：并发控制参数，`string`，可选项，用于控制当前消费者组内，可以同时并行处理的消息数量。
+	- **作用**：设置为 `4`，意味着对于这个特定的 `Group`，CAP 框架最多会启动 **4 个线程**来并发地处理到达的消息，从而提升消费吞吐量。
+	- **注意事项**：
+		- 如果在同一个 `Group` 内的多个订阅方法上都设置了 `GroupConcurrent`，那么该组的实际并行度是这些设置值的**总和**。
+		- 该设置**仅对新消息生效**，失败后重试的消息不受此并发度限制。
+
+
+### ISerializer
+
+`ISerializer` 是 CAP（一个处理分布式事务和事件总线的 .NET 库）中的一个核心接口，是在 CAP 3.0 版本中引入的，主要目的是为发往消息队列（MQ）的消息体提供可自定义的序列化机制。
+
+`ISerializer` 接口定义了两个核心的异步方法：
+
+1. **`SerializeAsync` 方法**：用于**序列化**。
+    - **输入**：一个 `Message` 对象，它封装了你的业务数据。
+    - **输出**：一个 `Task<TransportMessage>`，即一个专用于在消息队列中传输的二进制消息对象。
+    - **作用**：将业务对象转换为可传输的格式。
+2. **`DeserializeAsync` 方法**：用于**反序列化**。
+    - **输入**：一个 `TransportMessage` 对象（从消息队列接收到的）和期望的目标类型 `Type`。
+    - **输出**：一个 `Task<Message>`，即还原后的业务消息对象。
+    - **作用**：将传输格式的数据恢复为业务对象。
+
+**使用**：
+
+1. **创建一个类，实现 `ISerializer` 接口**。例如，创建一个 `MyCustomSerializer` 类：
+```csharp
+public class MyCustomSerializer : ISerializer
+{
+	public Task<TransportMessage> SerializeAsync(Message message)
+	{
+		// 在这里实现你的序列化逻辑，将 message 转换为 TransportMessage
+	}
+	public Task<Message> DeserializeAsync(TransportMessage transportMessage, Type valueType)
+	{
+		// 在这里实现你的反序列化逻辑，将 TransportMessage 转换为 Message
+	}
+}
+```
+
+2. **将你的自定义实现注册到依赖注入（DI）容器中**。这通常在 `Startup.cs` 或 `Program.cs` 中完成：
+```csharp
+// 注册自定义序列化器
+services.AddSingleton<ISerializer, MyCustomSerializer>();
+// 然后正常添加 CAP 服务
+services.AddCap(x => { ... });
+```
+
+通过这种方式，CAP 在需要序列化或反序列化消息时，就会自动使用你注册的实现。
+
+
+
 
 ## 基本用法
 
@@ -248,6 +327,11 @@ public class OrderEventHandler
     }
 }
 ```
+
+
+
+
+
 
 ## 高级特性
 
