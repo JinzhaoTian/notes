@@ -190,9 +190,19 @@ export function apply(ctx: Context) {
 ```
 
 
-4. **生命周期与副作用**（**Effect**）：这是 Cordis 最核心的机制。插件通过 `ctx.effect()` 注册的副作用和通过 `ctx.on()` 注册的事件监听器等，都会在插件卸载时**自动且逆向地撤销**。这种设计让热插拔和热重载变得安全可靠。
+4. **生命周期与副作用**（**Effect**）：这是 Cordis 最核心的机制。Cordis 插件可能因修改配置、热重载、显式资源释放或所需服务消失而卸载。插件通过 `ctx.effect()` 注册的副作用和通过 `ctx.on()` 注册的事件监听器等，都会在插件卸载时**自动且逆向地撤销**。这种设计让热插拔和热重载变得安全可靠。
+	- **Fiber 状态机**：每个已加载插件实例都拥有一个 fiber，并在以下状态之间转换：
+		- `PENDING`：已经声明，但所需服务尚不可用。
+		- `LOADING` / `ACTIVE`：`apply` 正在运行／已经完成。
+		- `FAILED`：`apply` 或配置校验抛出异常。
+		- `UNLOADING` / `DISPOSED`：disposer 正在运行／一切均已拆除。
+```
+PENDING → LOADING → ACTIVE → UNLOADING → DISPOSED
+                  ↘ FAILED
+```
 
 ```typescript
+// lifecycle.ts
 import type { Context } from '@deepseek-ai/cordis'
 
 export const name = 'lifecycle-demo'
@@ -223,6 +233,12 @@ export function apply(ctx: Context) {
   })
 }
 ```
+
+ `cordis.yml`：
+```yaml
+- name: './lifecycle.ts'
+```
+
 
 5. **服务**（**Service**）：服务是插件提供、其他插件通过 `ctx` 消费的具名能力。例如 `ctx.tools`、`ctx.llm` 都是服务。服务通过继承 `Service` 类来创建，并使用 `declare module` 进行 TypeScript 类型合并，以获得类型安全。
 
