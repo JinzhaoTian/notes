@@ -53,10 +53,63 @@ DeepSeek Harness 的架构设计思想可以用一句话来概括：一切皆插
 > [!quote]
 > 插件 = 一个「bundle」包
 
+插件通过 `package.json` 里的 `dsh.bundle.patch` 指向一个 YAML patch，patch 往 Loader 的插件行列表里插入一行（或按 id 覆盖已有行）。你从不直接改配置文件，安装 bundle 就是改配置的唯一手段。
 
+### 定位
 
+两条完全不同的路径，选错会白做：
 
+- **Host / 全局能力**（新工具、注册表、Service、HTTP 路由、Web UI 插件）→ 走本流程，写 bundle 安装到 profile。
+- **Agent preset / 组合**（人格、给某类 agent 的 scoped 工具集）→ 走 `editing-cordis-compositions`，patch 里声明 `@deepseek-ai/dsh-agent-preset` 的 `config.plugins`。
 
+判断依据：**被 Host 插件消费的 Service 必须放 Host 配置**；preset 里提供 Service 的插件必须把 provider 和所有 consumer 一起 `isolate`。纯 UI 装饰、Sidebar 页签、工具，都属于 Host bundle 里的 Client 半边。
+
+### 发现
+
+不要凭记忆猜方法名。顺序是：
+
+1. `cordis_inspect_list` 拿 provider 清单；Host 有 `Service` / `Event` / `Config` / `Tool`，Client 有 `Service` / `Event` / `Builtin` / `Slots` / `Theme`。
+2. 定向查询：先省略 `service`/`event` 拿目录，再传精确名字拿完整签名的 coding contract。
+3. UI 必查 `Slots.listSubTree`（`root` 传精确 slot key）：拿到该 slot 的 `kind`、`purpose`、`replaceRisk`、`registration` 参数、`keyDomain` 和已占用 key。
+4. 给已装插件的 row 写 `config` 前，用 `Config.listConfigs`（先 `name` 过滤，再用 `entry` id）读它的 JSON Schema，并跟进 `$defs`。
+
+UI 落点选择原则：优先**已分配空间**的 slot（如 `conversation.composer.dock`、`sidebar.right.tab.*`），需要浮层才用 `shell.overlay`。`replaceRisk: shadows-shipped-ui` 的 slot 意味着会顶掉自带 UI——除非确实要替换，否则别选。
+
+### 编写
+
+1. **`package.json`**：最小 Host bundle 不需要依赖、构建或 install script：
+
+```json
+{
+  "name": "@local/my-plugin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./index.js" },
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+}
+```
+
+有 UI 半边时增加 `dsh.client`（`platform` / `immediately` / `inject` / 可选 `external`）、`"./client"` export，以及显示元数据：`meta.title`/`meta.description`（多语言放 `locale/<lang>.json`）、顶层 `icon` 指向包内 SVG/PNG/JPEG/WebP（≤256 KiB，拒绝绝对路径、URL、越界路径、外指符号链接）。缺字段会回退到包名与 `description`。本仓库的 package.json 就是一个带 Client 半边的完整例子。
+
+2. **`cordis.patch.yml`**：patch 方言的要点：
+	- `insert: [rows]` 追加行；若 `id` 指向已有 `group: true` 行，则插入该组。
+	- 只写 `id` 的 patch 会**覆盖目标行**，且 `config` 是**整体替换而非深合并** —— 必须把该行需要的每个字段重新写全。
+	- 无 `insert` 且无有效 `id`、或匹配不到目标行的 patch，会被警告并跳过。
+	- 行字段：`id`、`name`、`config`、`disabled`、`inject`、`intercept`、`isolate`。
+	- `!!js` 是 Loader 表达式（不是 `!js`）：只在 `config` 内或 `disabled` 中使用，在声明注入激活后按该插件 context 求值，可用 `ctx.<service>`。
+
+3. **`index.js`**：（Host 半边）二选一，不要混用：
+	- `export function apply(ctx, config) {}`，可选 `export const inject = [...]` 与 `export const Config`；
+	- 或 default export 一个 service class。
+
+**所有资源都在 `apply` 内用 `ctx.effect` / `ctx.on` 注册并返回清理函数** —— 这是插件能被正确卸载/热更的前提。本仓库 index.js 里 `ctx.effect(() => ctx.webServer.register({...}))` 就是标准写法。
+
+4. **`client.js`**：（浏览器半边，可选）产物是 `window.__ModuleLoader__.load({ id, factory })`，`id` 必须等于包名；React 从浏览器模块表 `require('react')` 取，**不要**自带 React、CDN 或 UMD。factory 内保持无副作用，用 `ctx.slots.inject(slot, () => ctx.slots.register(options, Component))` 注册。样式只用主题 token（本仓库用的是 `--dsw-alias-*`），可见文案走 Client locale service；不要替换 app root 或往 `document.body` 追加第二份应用，也不要读别的插件的 DOM/CSS 来「估算位置」。
+
+### 安装
+
+`plugin_manager` `action: install_bundle`，`target` = **bundle 的绝对包目录**。它自己完成装包与 bundle 选中，**不要**用 shell 复刻这些步骤。若返回 `pendingBuilds`，只有在用户明确同意后才能传 `approvedBuilds`。安装会在 Host 进程执行插件代码，因此需要 Full access 或审批。
 
 
 
