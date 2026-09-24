@@ -48,6 +48,18 @@ DeepSeek Harness 的架构设计思想可以用一句话来概括：一切皆插
 ```
 
 
+## 插件开发
+
+> [!quote]
+> 插件 = 一个「bundle」包
+
+
+
+
+
+
+
+
 ## Cordis
 
 `cordiverse/cordis` 是一个元框架（Meta Framework），用来支持 DeepSeek Harness 底层插件系统的**无损热插拔**。
