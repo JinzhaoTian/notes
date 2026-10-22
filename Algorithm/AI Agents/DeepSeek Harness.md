@@ -1,4 +1,4 @@
-DeepSeek Harness 的架构设计思想可以用一句话来概括：一切皆插件，插件皆可逆。
+DeepSeek Harness 的架构设计思想：**一切皆插件，插件皆可逆**。
 
 ```
                   ┌─────────────────────────────┐
@@ -46,6 +46,103 @@ DeepSeek Harness 的架构设计思想可以用一句话来概括：一切皆插
         │                        │                        │
  local/remote             local/sandbox       DSH / Claude / Codex
 ```
+
+## 项目解读
+
+### 1. 底层：Cordis 插件框架
+
+核心概念：
+
+- **插件**：一个函数或 `Service` 子类。
+- **上下文 `ctx`**：放服务的容器，比如 `ctx.tools`、`ctx.llm`、`ctx.sessions`。插件按 key 查找服务，不直接 import 具体实现。
+- **`inject`**：声明依赖，依赖就绪后插件才启动。
+- **类型化事件**：有 `emit`、`waterfall`、`parallel`、`serial`、`bail` 五种分发方式。
+- **注册是可逆的副作用**：通过 `ctx.effect()` 注册，插件卸载时自动撤销，所以支持热重载。
+
+这样一来就没有"特权内核"：模型适配器、工具注册表、会话日志、agent loop 全都是插件，都能通过配置替换。
+
+### 2. 运行时组合：Profile → Bundle → Patch
+
+一个运行中的 `dsh` 是一棵插件树，由多层 YAML 按顺序叠加而成：
+
+```
+profile 列出的 bundle（如 dsh-base + dsh-web-app）
+  → profile 自己的 cordis.patch.yml
+  → home 级 patch
+  → 命令行 --patch overlay
+```
+
+- 内置 profile 有 `web`、`headless`、`sdk`、`sdk-minimal`、`acp`；Desktop 另外有一个保留的 `desktop` profile。
+- `packages/bundle/base/cordis.patch.yml` 是共享的第一层，包括 LLM、会话、凭据、沙箱、工具等。默认模型是 `deepseek-official / deepseek-flash`。
+- 上层可以按 id 整行替换任何一行配置。`dsh --profile web --dump-config` 能打印出最终的插件树。
+
+### 3. 核心：Agent 循环 + 会话日志
+
+核心循环是 `agent.ts`（`packages/core/agent-loop/src/agent.ts`）里的 `ReactLoopAgent`。
+- 一个 `step` 是一次模型请求加上它调用的工具
+- 一个 `turn` 包含 0 到 n 个 step
+
+```
+turn/start
+  ┌ step 循环 ──────────────────────────────────────────
+  │ agent/pre-step        插件可改写或拒绝本步输入（waterfall）
+  │ 组装 system prompt + 工具 schema
+  │ agent/request → prepareCall   确定模型路由
+  │ 写日志：system/message、user/message
+  │ ctx.llm.stream() → assistant/message
+  │ tool/call → tools/pre-execute → execute → post-execute → tool/result
+  └ 还有待处理的工具结果或新输入 → 进入下一个 step
+agent/turn-stopping       插件可在这里注入输入，让本轮继续
+turn/end
+```
+
+对应代码在 `turn()`（`packages/core/agent-loop/src/agent.ts#L298`）和 `step()`（`packages/core/agent-loop/src/agent.ts#L400`）。
+
+整个设计围绕一条不变量：**模型能看到的内容，一定写进了日志**。发给模型的每个请求都必须能从只追加的 session 日志重建出来，所以 fork、resume、转录和遥测都从日志推导。
+
+会话存成带版本号的 JSONL 文件（`session.vN.jsonl`）。
+
+升级时由迁移包逐级转换（`packages/session/` 下的 `v0-to-v1` 到 `v3-to-v4`），已有的旧版本文件不会被覆盖或删除。
+
+### 4. 能力接缝（Capability seam）
+
+每种能力都分成三个角色：Service Definition（接口）、Service Provider（实现）、Consumer（通常是给模型用的工具）。换一个 provider，整个产品的行为就跟着变。比如把文件系统和子进程的 provider 指向远端，Bash、PTY 和 LSP 会一起切过去。
+
+| 领域    | 内容                                                                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------- |
+| 模型    | DeepSeek 官方（API key 或账号登录）；`pi-ai` 多提供方（默认不注册任何路由，配置后才生效）；请求重试；token 计量                                         |
+| 执行    | bash/pwsh、持久终端（PTY）、SSH、后台 jobs；PTC 模式（`run_code`：模型写一段 TS 程序，实验性支持 Python，把宿主工具当 async 函数调用，每次子调用仍然走完整的工具守卫流程） |
+| 沙箱    | Linux 用 bwrap/Landlock，macOS 用 Seatbelt，Windows 用受限令牌加 ACL                                                      |
+| 文件/代码 | read/write/edit、glob/grep（自带 ripgrep）、LSP                                                                       |
+| 协作    | subagent：可以在进程内新建或 fork 子 agent，也可以把任务委派给真正的 Codex 或 Claude Code；另有 todo、plan 模式、goal、定时任务                      |
+| 扩展    | MCP、skill、上下文压缩；插件管理器（模型在获得批准后可以安装或启用插件）                                                                        |
+
+完整工具清单见 [docs/tool-catalog.zh.md](vscode-webview://09d0qov5j8ic8cql960hkoppsi4qn0vbk7gq68f1gjcm51lej76i/docs/tool-catalog.zh.md)。这份清单由脚本实际启动每个工具插件生成。
+
+### 5. 交付形态
+
+- **CLI**：`/apps/cli/` 里的 `dsh` 是唯一受支持的启动入口，运行 `npx @deepseek-ai/dsh web` 即可。
+- **Web UI**：分 Host（Node）和 Client（浏览器 React）两半。Client 也是插件化的，`packages/client/` 下约 66 个包，大多是 `ui-*` 插件。两端通过 Typert 通信：它从 TS 类型自动生成 schema 和类型化 RPC，不用手写协议。
+- **Desktop**：基于 Electron，内置完整运行时，复用整套 Web 应用。
+- **SDK**：TypeScript 的 JSON-RPC SDK，以及 Python SDK。Python SDK 打包的是同一个 `dsh`，启动时用 `--profile sdk`。
+- **ACP**：只面向自动化场景的 Agent Client Protocol 服务器。
+
+`tsconfig.base.client.json` 是 Client 端的编译配置（浏览器 lib、React JSX、不带 Node 类型），和 `tsconfig.host.json` 一起，把 Host 和 Client 分成两套独立的 TypeScript 编译配置。
+
+### 6. 工程体系
+
+- **规模**：约 340 个包，`src` 下约 44 万行 TS。2026-06-10 开始，到现在约 2.2 万次提交（含合并提交）。
+- **门禁很严**：
+    - TS 开 `strict`；
+    - `packages/*/*/src` 要求逐文件 100% 覆盖率；
+    - 有 76 个 `verify-*` 检查脚本，比如导出必须写 JSDoc、UI 文案必须走 i18n、启动入口有白名单；
+    - 不允许新增 `as unknown`。
+- **快照测试**：录下来的真实会话可以在没有 API key 的情况下回放，覆盖各个内置 profile。
+- **文档**：中英双语成对维护。工具目录、配置目录、模块依赖图都由脚本生成，并检查是否过期。
+- **由 agent 参与开发**：`.agents/` 下有约 2500 篇决策记录和一组开发用 skill，`AGENTS.md` 也写得非常细。看得出这个仓库本身有大量 coding agent 参与开发。
+- **实验包**：`packages/experimental/` 下有 47 个，包括 Agent Teams、浏览器和桌面操控（Playwright/Stagehand/CUA）、直接复用 Claude Code 的 `hooks.json`、语音输入、GitHub webhook、worktree 等。
+
+
 
 
 ## 插件开发
