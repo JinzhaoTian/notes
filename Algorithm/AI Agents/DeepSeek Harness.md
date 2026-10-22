@@ -75,46 +75,20 @@ DeepSeek Harness 的架构设计思想：**一切皆插件，插件皆可逆**�
   disabled: false                                # 可选，也可以写成 !!js 表达式
 ```
 
-- **Patch**：一个 YAML 数组，每一项是对清单条目的一次修改，只有三种：
-    - `- insert: [...]`：追加新行
-    - `- id: X` 加上 `config: {...}`：把 X 这一行的 config **整块换掉**
-    - `- id: X` 加上 `disabled: true`：关掉 X 这一行
-```yaml
-# ① 插入新行：不写 id 就追加到根列表；写了 id，就插到那个 group 行里面
-- insert:
-    - id: my-plugin
-      name: '@someone/dsh-my-plugin'
-
-# ② 按 id 覆盖某一行的字段
-- id: session-title
-  config: { ... }
-
-# ③ 按 id 禁用某一行
-- id: llm-pi-ai
-  disabled: true
-```
-
-- **Bundle**：一个普通的 npm 包
-	- 首先，`package.json` 里使用 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }` 指向 patch 文件；在 dependencies 指定插件包
-	- 其次，`cordis.patch.yml` 里指明每个插件 entry 的配置、设置、依赖关系
-
-- **Profile**：一个应用组合，放在 `~/.dsh/profiles/<name>/` 这个目录下。叠哪些 bundle、按什么顺序叠。同目录下的 `cordis.patch.yml` 是属于你自己的那一层。一个 profile 的组成：
-	- **名字**：`web`、`headless`，或者你自己起的名字。
-	- **Bundles**：指定这个应用组合叠哪些 bundle、按什么顺序叠，可以在 `package.json` 里通过`dsh.profile.bundles` 决定
-> [!question] 为什么 Profile 存成一个目录，而不是一个配置文件
-
-
-
-
-最终清单的算法就是：**从空数组 `[]` 开始，把所有 patch 按顺序执行一遍。**
-
-
+- **Profile**：
+最终插件清单的算法就是：**从空数组 `[]` 开始，把所有 patch 按顺序执行一遍。**
 
 #### Patch
 
-Patch 是一个 YAML 数组，语义实现在 `applyEntryPatches`(`vendor/include/src/index.ts#L57`)。
+一个 patch 是对插件清单条目（entry）的一次修改，语义实现在 `applyEntryPatches`(`vendor/include/src/index.ts#L57`)。
+
+一般保存在 patch 文件 `cordis.patch.yml` 中，该 YAML 文件**顶层必须是数组**，里面按顺序放着若干个 patch。代码里管它叫 patch list（见 `parsePatchList`）。
+
 
 **写法**：
+- `- insert: [...]`：追加新行
+- `- id: X` 加上 `config: {...}`：把 X 这一行的 config **整块换掉**
+- `- id: X` 加上 `disabled: true`：关掉 X 这一行
 ```yaml
 # ① 插入新行：不写 id 就追加到根列表；写了 id，就插到那个 group 行里面
 - insert:
@@ -146,31 +120,139 @@ Patch 是一个 YAML 数组，语义实现在 `applyEntryPatches`(`vendor/includ
 > - **`!!js` 表达式只能出现在 `config` 和 `disabled` 里**，在运行时求值，例如 `disabled: !!js "!ctx.get('profileContext')"`。
 > - **想要一个空的 patch 层，写 `[]`。** 空文件或只有注释的文件会导致启动失败。
 
-**真实示例**：
-
-`apps/web/tests/pin-browse-picker.overlay.yml`：先禁用原生的目录选择器，再插入浏览器内的选择器，一条禁用加一条插入就完成了替换。
-
 #### Bundle
 
-Bundle 是一个普通的 npm 包，在自己的 `package.json` 里声明：
+Bundle 是一个 npm 包，把**配置**（patch 文件）和**代码**（patch 里引用的插件包，作为它的依赖）一起打包分发。
 
+1. 在 `package.json` 里指定 patch 文件，可以指定单个文件，也可以指定按顺序排列的文件列表。
 ```json
-"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+"dsh": {
+  "bundle": {
+    "patch": [
+      "./cordis.patch.yml",
+      "./presets/standard.patch.yml",
+      "./presets/ptc.patch.yml",
+      "./presets/minimal.patch.yml",
+      "./presets/cordis.patch.yml"
+    ]
+  }
+},
+```
+2. 在 `package.json` 的 `dependencies` 指定所使用的插件代码包。
+3. 在 `cordis.patch.yml` 等 patch 文件里指明该 bundle 中所涉及的插件清单条目的配置、设置、依赖关系。
+
+
+**注意**：
+
+- 只有直接列在 Profile 里的 Bundle 才会生效，不会传递地带入它依赖的其他 Bundle。
+- 某个 Bundle 加载失败时，只会跳过它并报告，不会让整个启动失败。
+
+##### 内置 Bundle
+
+在 DeepSeek Harness 里内置了一些 Bundle 在 `packages/bundle/` 下：
+
+1. **`dsh-base`**：共享核心，配置了包括 LLM、会话、凭据、存储、工具等
+	- **`base/cordis.patch.yml`**：整个文件只有**一个 `insert`**，里面有
+		- 模型（`llm`、`llm-deepseek`）、
+		- 会话（`session`、`session-persistence-jsonl`）、
+		- 工具（`tool-bash`、`tool-fs`…）、
+		- 沙箱和审批、
+		- `agent-loop`、
+		- `hmr` 
+2. **`dsh-web-app`**：叠加在 `dsh-base` 上的浏览器应用
+	- **`web-app/cordis.patch.yml`**：
+	    - `insert` Web 相关的条目（`webserver`、`web-runtime`、`connection`、各种 `ui-*`）。
+	    - 调整 `dsh-base` 里属于单个 agent 的工具行关掉，比如 `tool-bash`。这些改由 agent preset 来挂。
+	    - 补充 `presets/standard.patch.yml` 等 4 个 preset 文件。
+3. **`dsh-headless`**：一次性的命令行任务，不用启动服务器
+	- **`headless/cordis.patch.yml`**：
+	    - 调整 `dsh-base` 里 `system-prompt` 的 config。
+	    - 插入 `headless-startup` 解析命令行，`headless-runner` 跑完一个任务就退出。
+	    - 关掉 `hmr`、`credentials`、`authorization`、`deepseek-account`。
+4. **`dsh-sdk-app` / `dsh-acp-app`**：SDK JSON-RPC 服务器 / ACP 服务器
+5. **`dsh-sdk-minimal`**：例外：独立提供一棵完整的配置树，不依赖 `dsh-base` 
+
+
+##### 可选 Bundle
+
+实验功能大多以**可选 Bundle** 的形式随安装附带，默认关闭，可以在插件管理器里打开（清单见 `packages/boot/app-boot/src/profile.ts#L223`）。
+
+
+
+##### 插件 Bundle
+
+第三方插件也可以做成 Bundle，用 `dsh plugin --profile <name> add <package>` 安装。
+
+
+
+#### Profile
+
+Profile 是一个应用组合，放在 `$DSH_HOME/profiles/<name>/` 这个目录下，`$DSH_HOME` 默认是 `~/.dsh`。
+
+**目录结构**：
+```
+~/.dsh/profiles/<name>/
+├── package.json
+├── cordis.yml 
+├── cordis.patch.yml
+├── pnpm-workspace.yaml
+└── compatibility.json   # 可选，记录插件版本豁免
 ```
 
-它把**配置**（patch 文件）和**代码**（patch 里引用的插件包，作为它的依赖）一起分发。`patch` 字段可以是单个文件，也可以是按顺序排列的文件列表。
+**组成**：
+- **`<name>`**：`web`、`headless`，或者你自己起的名字。
+- **`package.json`**：可以在 `package.json` 里通过 `dsh.profile.bundles` 指定这个应用组合叠哪些 bundle、按什么顺序叠
+- **`cordis.yml`**：默认为空 `[]`，**插件配置树的起点**
+- **`cordis.patch.yml`**：这个 profile 自己的 patch 层，初始内容是 `[]`。可以保存自己的配置，比如账号的配置，UI 的设置。
+- **`pnpm-workspace.yaml`**：pnpm 的设置，让第三方插件和安装共用同一个 cordis 实例
+- **`compatibility.json`**：可选，记录插件版本豁免
 
-内置的 Bundle 在 `packages/bundle/` 下：
+> [!question] 为什么 Profile 是在一个目录里，而不是一个配置文件？
+> DeepSeek Harness 可以通过 `dsh plugin --profile web add xxx` 安装插件包，此命令就是在这个目录里执行 pnpm，因此需要有一个能装插件包的目录空间，用来放置 `package.json` 加 `node_modules/`，所以每个 profile 在磁盘上都是一个私有的 npm 项目。
 
-| Bundle                        | 作用                                          |
-| ----------------------------- | ------------------------------------------- |
-| `dsh-base`                    | 共享核心：用一条 `insert` 插入几十行，包括 LLM、会话、凭据、存储、工具等 |
-| `dsh-web-app`                 | 叠在 base 上的浏览器应用                             |
-| `dsh-headless`                | 一次性命令行任务，没有服务器                              |
-| `dsh-sdk-app` / `dsh-acp-app` | SDK JSON-RPC 服务器 / ACP 服务器                  |
-| `dsh-sdk-minimal`             | 例外：独立提供一棵完整的配置树，不依赖 base                    |
+> [!question] 为什么 `cordis.yml` 是空的 `[]` ？为什么还要存在？
+> 1. **Cordis 设计**：
+> 	- 在 Cordis 的设计里，**配置文件就是插件树的存档**。程序运行时你对树做的改动（加一个插件、改一个插件的配置、某个插件把自己关掉），都会写回这个文件，下次启动时按文件原样恢复。
+> 2. **DeepSeek Harness 机制**：
+> 	- 代码（`include/src/index.ts:181`）里约定把文件所在的目录当作解析相对路径的起点，这样相对路径就都从 profile 目录算起。`--dump-config` 也用同一个文件当起点，保证打印出来的清单和真正启动时拼出来的一致。
+> 3. **必须保持 `[]`，所以每次启动都会被重写。** Include 在某些情况下会把当前的行树写回这个文件。比如某个插件自己退出了，Loader 会把这一行标成 `disabled: true`，然后触发写回（`loader/src/index.ts:164`）。写进去的是已经拼好的全部行。如果不清掉它，下次启动时，文件里的这些行会和 patch 再插入一次的行重复。所以启动器每次启动都先把它覆盖成 `[]`（`profile-boot.ts:179` 的注释专门解释了这一点）。
 
-Bundle 之间靠 id 覆盖，以 web-app 为例：
+
+##### 内置 Profile
+
+内置模板写死在 `packages/boot/app-boot/src/profile.ts#L179`：
+
+| Profile       | Bundles                     |
+| ------------- | --------------------------- |
+| `web`         | `dsh-base` + `dsh-web-app`  |
+| `headless`    | `dsh-base` + `dsh-headless` |
+| `sdk`         | `dsh-base` + `dsh-sdk-app`  |
+| `acp`         | `dsh-base` + `dsh-acp-app`  |
+| `sdk-minimal` | `dsh-sdk-minimal`           |
+
+`desktop` 使用保留的 `desktop` profile，它的 bundles 是 `dsh-base` + `dsh-web-app`，和 `web` 一样。
+
+
+**运行机制**：
+
+- 第一次运行 `dsh --profile web` 时，会**按模板自动初始化这个 Profile 目录**。之后再运行，已有文件一律不覆盖。
+- `dsh --profile my --from-default-profile web` 会从模板复制出一个独立的新 profile。它不记录继承关系，以后模板更新不会影响它；对已有的 `my` 再执行一次，会把它重置。
+
+
+#### 叠加顺序
+
+以 DeepSeek Harness 内置的 `web` Profile 为例，其 bundles 是 `dsh-base` + `dsh-web-app`，在 `packages/boot/app-boot/src/profile-context.ts#L74-L80` 中把所有层按下面的顺序拼成一个列表，后面的覆盖前面的：
+
+```
+[ ] ~/.dsh/profiles/web/cordis.yml         → Profile 目录下，每次启动都置为 []
+ +  base/cordis.patch.yml                  → Bundles：dsh-base
+ +  web-app/cordis.patch.yml               →          dsh-web-app
+ +  ~/.dsh/profiles/web/cordis.patch.yml   → Profile 目录下
+ +  ~/.dsh/cordis.patch.yml                → 对所有 profile 的修改
+ +  --patch a.yml --patch b.yml            → 命令行临时叠加，只对这次启动生效
+```
+
+ `dsh-web-app` 为例：
 
 - `packages/bundle/base/cordis.patch.yml` 插入的 `system-prompt` 行里 `personaPrefix: ''`，
 ```yaml
@@ -195,62 +277,11 @@ Bundle 之间靠 id 覆盖，以 web-app 为例：
     personaPrefix: >-
       You are a coding agent powered by the {{model}} model.
       
-      
 - insert:
     
 	# ...
     
 ```
-
-另外几点：
-
-- 第三方插件也可以做成 Bundle，用 `dsh plugin --profile <name> add <package>` 安装。
-- 实验功能大多以**可选 Bundle** 的形式随安装附带，默认关闭，可以在插件管理器里打开（清单见 `packages/boot/app-boot/src/profile.ts#L223`）。
-- 只有直接列在 Profile 里的 Bundle 才会生效，不会传递地带入它依赖的其他 Bundle。
-- 某个 Bundle 加载失败时，只会跳过它并报告，不会让整个启动失败。
-
-#### Profile
-
-Profile 是 Harness home 下的一个目录。默认位置是 `~/.dsh`，可以用 `$DSH_HOME` 改：
-
-```
-~/.dsh/profiles/web/
-├── package.json         # dsh.profile.bundles：按顺序的 Bundle 列表
-│                        # dependencies：你装的第三方插件（由 pnpm 管理）
-├── cordis.patch.yml     # 这个 profile 自己的 patch 层，初始内容是 []
-├── pnpm-workspace.yaml  # 让第三方插件和安装共用同一个 cordis 实例
-└── compatibility.json   # 可选，记录插件版本豁免
-```
-
-内置模板写死在 `packages/boot/app-boot/src/profile.ts#L179`：
-
-| Profile       | Bundle 栈                    |
-| ------------- | --------------------------- |
-| `web`         | `dsh-base` + `dsh-web-app`  |
-| `headless`    | `dsh-base` + `dsh-headless` |
-| `sdk`         | `dsh-base` + `dsh-sdk-app`  |
-| `acp`         | `dsh-base` + `dsh-acp-app`  |
-| `sdk-minimal` | `dsh-sdk-minimal`           |
-
-- 第一次运行 `dsh --profile web` 时，会按模板自动初始化这个目录。之后再运行，已有文件一律不覆盖。
-- `dsh --profile my --from-default-profile web` 会从模板复制出一个独立的新 profile。它不记录继承关系，以后模板更新不会影响它；对已有的 `my` 再执行一次，会把它重置。
-- Desktop 应用使用保留的 `desktop` profile。
-
-#### 叠加顺序
-
-具体实现在 `packages/boot/app-boot/src/profile-context.ts#L74-L80` ：
-
-```
-空列表 []
- ① Bundle 层   按 dsh.profile.bundles 的顺序：dsh-base → dsh-web-app
- ② Profile 层  ~/.dsh/profiles/web/cordis.patch.yml   只对这个 profile 生效
- ③ Home 层     ~/.dsh/cordis.patch.yml                对所有 profile 生效
- ④ 命令行      --patch a.yml --patch b.yml            只对这次启动生效
- ─────────────────────────────────────
- = 最终条目列表 → 交给 Cordis Loader 挂载
-```
-
-后面的层覆盖前面的层，同一个 id 以最后一次写入为准。所以你不用 fork 仓库，只要在 ②、③ 或 ④ 里写一条 `- id: xxx` 就能改掉产品里的任何一行。
 
 两个实用操作：
 
@@ -299,8 +330,6 @@ turn/end
 | 文件/代码 | read/write/edit、glob/grep（自带 ripgrep）、LSP                                                                       |
 | 协作    | subagent：可以在进程内新建或 fork 子 agent，也可以把任务委派给真正的 Codex 或 Claude Code；另有 todo、plan 模式、goal、定时任务                      |
 | 扩展    | MCP、skill、上下文压缩；插件管理器（模型在获得批准后可以安装或启用插件）                                                                        |
-
-完整工具清单见 [docs/tool-catalog.zh.md](vscode-webview://09d0qov5j8ic8cql960hkoppsi4qn0vbk7gq68f1gjcm51lej76i/docs/tool-catalog.zh.md)。这份清单由脚本实际启动每个工具插件生成。
 
 ### 5. 交付形态
 
