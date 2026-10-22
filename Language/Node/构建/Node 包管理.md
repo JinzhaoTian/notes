@@ -9,6 +9,121 @@ npm（Node Package Manager）是 Node.js 的默认包管理器，会随 Node.js 
 3. **发布和共享**：开发者也可以将自己编写的代码包打包，通过 `npm` 发布到官方仓库，供全球的开发者使用。
 4. **运行脚本**：可以在 `package.json` 中定义脚本命令（如 `npm start`），方便地启动项目、运行测试等。
 
+### npm 包组成
+
+一个 npm 包是**一个目录 + `package.json` 元数据**，发布时被打包成 `.tgz` tarball，安装后解压到 `node_modules` 中。
+
+#### 最小构成
+
+目录结构：
+```
+my-package/
+├── package.json      # 必需，包的核心描述
+├── index.js          # 代码入口，具体由 package.json 指定
+├── README.md         # 说明文档，通常发布
+└── LICENSE           # 许可证，通常发布
+```
+
+`package.json` 最小示例：
+```json
+{
+  "name": "my-package",
+  "version": "1.0.0",
+  "main": "index.js"
+}
+```
+
+#### `package.json`
+
+```json
+{
+  "name": "my-pkg",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./utils": "./dist/utils.js"
+  },
+  "types": "./dist/index.d.ts"
+}
+```
+
+1. **基本信息**
+	- `name`：包名，可带 scope，如 `@scope/pkg`
+	- `version`：语义化版本，如 `1.2.3`
+	- `description`、`keywords`、`author`、`license`、`repository`
+	- `private`：为 `true` 时禁止发布
+2. **入口与模块格式**
+	- `main`：CommonJS 入口，如 `index.js`
+	- `module`：给打包工具的 ESM 入口，非 Node 官方字段
+	- `browser`：浏览器环境入口
+	- `types` / `typings`：TypeScript 类型声明入口
+	- `exports`：现代 Node 推荐的导出映射，可控制子路径和条件导出
+	- `type`：`"module"` 表示 `.js` 按 ESM 处理；默认 CommonJS
+3. **依赖**
+	- `dependencies`：运行时依赖
+	- `devDependencies`：开发/测试/构建依赖，不随包安装给使用者
+	- `peerDependencies`：要求宿主项目提供的依赖，如 React 插件
+	- `optionalDependencies`：可选依赖，安装失败可继续
+	- `bundledDependencies`：随包一起打包的依赖
+4. **脚本与生命周期**
+	- `scripts`：如 `build`、`test`、`prepublishOnly`
+	- `prepare`、`prepack`、`postinstall` 等生命周期钩子
+5. **可执行命令**：安装后会在 `node_modules/.bin/` 下创建命令链接。
+```json
+{
+  "bin": {
+    "my-cli": "./bin/cli.js"
+  }
+}
+```
+6. **发布内容控制**
+	- `files`：白名单，指定发布哪些文件/目录
+	- `.npmignore`：忽略名单，类似 `.gitignore`
+	- 默认会排除 `node_modules`、`.git` 等
+	- `README`、`LICENSE`、`package.json` 通常总会被包含
+
+
+#### 代码与辅助文件
+
+一个完整包可能包含：
+```
+my-package/
+├── package.json
+├── README.md
+├── LICENSE
+├── src/              # 源码
+├── dist/             # 构建产物
+├── bin/              # CLI 可执行文件
+├── types/            # 类型声明
+├── test/             # 测试
+├── examples/         # 示例
+└── .npmignore
+```
+
+#### 安装后长什么样
+
+安装后，包会出现在项目的：
+```
+node_modules/
+└── my-package/
+    ├── package.json
+    ├── index.js
+    └── ...
+```
+
+如果包提供 `bin`，还会有：
+```
+node_modules/.bin/my-cli
+```
+
+依赖树可能被 npm 提升/嵌套，具体由 npm 解析和 `package-lock.json` 决定。注意：**`package-lock.json` 属于项目，不属于 npm 包本身**；`node_modules` 也不会被打进 npm 包。
+
+
 
 ## pnpm
 
