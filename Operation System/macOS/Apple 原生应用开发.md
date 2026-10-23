@@ -1,4 +1,4 @@
-开发 iOS、macOS、iPadOS 多端兼容的原生 App，最直接高效的方案是：使用 Swift 语言 + SwiftUI 框架，开发只需要一台 Mac 电脑（macOS Sequoia 15.6 或更高版本），并在 App Store 免费下载 **Xcode**（Apple 官方的集成开发环境，包含了写代码、运行模拟器、调试等全套工具）。
+开发 iOS、macOS、iPadOS 多端兼容的原生 App，最直接高效的方案是：使用 [Swift](../../Language/Swift/Swift.md) 语言 + SwiftUI 框架，开发只需要一台 Mac 电脑（macOS Sequoia 15.6 或更高版本），并在 App Store 免费下载 **Xcode**（Apple 官方的集成开发环境，包含了写代码、运行模拟器、调试等全套工具）。
 
 ## 创建项目
 
