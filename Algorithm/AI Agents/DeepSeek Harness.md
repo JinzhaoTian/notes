@@ -547,7 +547,7 @@ UI 落点选择原则：优先**已分配空间**的 slot（如 `conversation.c
 
 #### 入口
 
-在 DeepSeek Harness 下，Cordis 源码在 `vendor/cordis/src/` 下，源码入口 `src/index.ts` 本身不含逻辑，只是把 `context`、`fiber`、`registry`、`events`、`service`、`logger`、`utils` 这几个文件的导出汇总到一起。
+在 DeepSeek Harness 下，Cordis 源码在 `vendor/cordis/src/` 下，Cordis 包本身的源码入口 `vendor/cordis/src/index.ts` 不含逻辑，只是把 `context`、`fiber`、`registry`、`events`、`service`、`logger`、`utils` 这几个文件的导出汇总到一起。
 
 此外，DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
 
@@ -574,7 +574,8 @@ await ctx.loader.create({
 
 ```
 
-DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：造根，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
+> [!tip] DeepSeek Harness 的启动器实现
+> DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：造根，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
 
 > [!info] 从敲下 `dsh` 到第一次调用 Cordis
 > ```
