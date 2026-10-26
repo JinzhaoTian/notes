@@ -244,7 +244,7 @@ Profile 是一个应用组合，放在 `$DSH_HOME/profiles/<name>/` 这个目录
 
 #### 叠加顺序
 
-以 DeepSeek Harness 内置的 `web` Profile 为例，其 bundles 是 `dsh-base` + `dsh-web-app`，在 `packages/boot/app-boot/src/profile-context.ts#L74-L80` 中把所有层按下面的顺序拼成一个列表，后面的覆盖前面的：
+以 DeepSeek Harness 内置的 `web` Profile 为例，其 bundles 是 `dsh-base` + `dsh-web-app`，在 `packages/boot/app-boot/src/profile-context.ts#L74-L80` 中把所有层按下面的顺序拼成一个列表，**后面的覆盖前面的**：
 
 ```
 [ ] ~/.dsh/profiles/web/cordis.yml         → Profile 目录下，每次启动都置为 []
@@ -360,7 +360,216 @@ turn/end
 
 ## 启动流程
 
-DeepSeek Harness 是一个基于 Cordis 插件运行时、完全由插件拼成的应用，再加上一个按 profile 把这些插件组装起来的启动器。
+DeepSeek Harness 是一个基于 Cordis 插件运行时、完全由插件拼成的应用，再加上一个按照 profile 把这些插件组装起来的启动器。
+
+
+### 总览
+
+```
+await runCli()                                // bin.ts:77
+├── parseDshArgs()                            // bin.ts:29  ← 解析 --profile、--patch 等启动器参数
+└── runProfile()                              // bin.ts:35  ← 仅 profile 模式进入
+    ├── composeProfile()                      // profile-boot.ts:292  ← 加载 profile，cordis.yml 重写为 []
+    ├── readProfilePatches()                  // profile-boot.ts:323  ← 按层收集 patch，作为 boot 的参数
+    ├── boot(NAME, cordis.yml, patches, prepare)    // profile-boot.ts:323
+    │   ├── new Context()                     // index.ts:1204  ← 根 ctx + Fiber#0
+    │   ├── ctx.plugin(Loader)                // index.ts:1226  ← Loader#1（+ isolate#2）
+    │   ├── prepare(ctx)                      // index.ts:1227  ← 启动器往根上挂服务
+    │   ├── mountRootInclude()                // index.ts:1229  ← Loader 的 include 行 → Include
+    │   │   └── Include.init → root.update    // include/index.ts:262  ← cordis.yml 的每一行 → 一个 Fiber
+    │   ├── loader.await()                    // index.ts:1235  ← 等整棵树稳定
+    │   └── auditStartupEntries()             // index.ts:1237  ← 必需行失败 → StartupError
+    └── appReady.commit()                     // profile-boot.ts:344  ← 通知各 app 开始工作
+```
+
+### 逐行
+
+1. **`boot(NAME, cordis.yml, patches, prepare)`**
+	- **`const ctx = new Context()`**（`packages/boot/app-boot/src/index.ts:1204`）→ 进入 `vendor/cordis/src/context.ts:71`：
+	    - 创建一个 **Cordis 框架依赖注入系统的核心代理对象**，将 `Context` 实例的所有属性访问操作（读取、设置等）拦截下来，转交给 `ReflectService.handler` 处理。
+	    - 创建根 `Fiber`，它没有 runtime，构造时直接就是 ACTIVE（`vendor/cordis/src/fiber.ts:320-324`）。
+	    - 装载 `reflect`、`registry`、`events`、`logger` 四个内置服务。
+	    - 清空根 `Fiber` 的 `_disposables`（`vendor/cordis/src/context.ts:82`），这些内置能力就不会随根 dispose 被卸载。
+    - **`const diagnostics = new Context()`** 第二个独立的，只用来收集启动期间的警告和错误日志，在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1264`）。
+	    - 它和主 Context 共用一个 `logger`，但收集器挂在它自己的 `Fiber` 上（`packages/boot/app-boot/src/index.ts:1208-1214`）。
+	    - 这样主 Context 在 `catch` 里被销毁时，清理过程中的报错仍然收得进来。
+	    - 它在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1261`）。
+	- **`ctx.baseUrl = <配置目录>`**（:1219）
+	    - 这是根 ctx 上未声明的属性，set 陷阱直接放行（`reflect.ts:180-181`）。在插件 ctx 上做同样的赋值会抛错。
+	    - Loader 构造时会把它复制进自己的行树（`tree.ts:17`），所以必须在 `plugin(Loader)` 之前设好。
+	- **`ctx.provide('dshHomePath', …)`**（:1220）→ `reflect.ts:277`
+	    - 作为根 Fiber 的 effect 登记，服务实现写进全局 store 和根 Fiber 的 `store`（:292-293）。
+	    - 读一个没有 inject 的服务时，会沿 Fiber 链逐级查 `store`，一直查到根（`reflect.ts:153-166`）。所以根上的服务所有插件都读得到。
+	- **`ctx.on('internal/update', …, { global, prepend })`**（:1223）
+	    - `Fiber.update()` 把重启交给 `internal/update` 瀑布，但丢弃了返回的 promise（`fiber.ts:777-781`）。
+	    - 这个全局、前置的钩子给 `next()` 接上 `.catch`，把插件重启失败记进日志。
+	- **`await ctx.plugin(Loader)`**（:1226）→ `registry.ts:330`，创建 Loader#1
+	    - Loader 没有 inject，Fiber 构造时 `_refresh()` 直接转为 LOADING（`fiber.ts:318`）。
+	    - `_reload` 等一个微任务后执行 `new Loader(ctx)`（`fiber.ts:253`）。构造函数依次：
+	        - `provide('loader')`（loader/index.ts:102）；
+	        - 注册 `internal/config`、两个 `internal/update`、`internal/plugin` 钩子（:104-166）；
+	        - `ctx.plugin(isolate)`，生成 isolate#2（:168）。
+	    - 这里的 `await` 实际等的是 `fiber.await()`（`registry.ts:332-334`），也就是等 Loader#1 自己进入 ACTIVE。之后 `ctx.loader` 就能用了。
+	- **`await prepare?.(ctx)`**（:1227）→ `profile-boot.ts:323-339`  
+	    回调拿到的就是根 ctx，此时 Loader 已经就位。按顺序做三件事：
+	    
+	    - provide `profileContext` 和启动环境快照（`DSH_LAUNCH_ENVIRONMENT_KEY`）（:325、:328）；
+	    - `await plugin(PluginPackages, { resolution })`（:329）：提供 `pluginPackages` 服务，并按 profile 的包表接管 Node 的 ESM/CJS 解析；
+	    - `provideCmdline`（:334）：提供 `cmdlineArgs`、`appExit`、`appReady`。
+	    
+	    之后 `stage` 切换为 `plugin tree failed to load`（:1228）。在这之前的失败都标为 `host preparation failed`。
+    
+	- **`await mountRootInclude(…)`**（:1229 → :738）
+	    
+	    - 登记两个 builtin：`include`（:745）和 `group`（:763）。
+	    - `prepareProfilePatches`（:769）：在空列表上套完全部 patch 层，做兼容性预检，再包成一个 `{ insert: [...] }`（`compatibility-preflight.ts:180-187`）。
+	    - 执行 `ctx.loader.create({ id: 'include', name: 'cordis:include', config })`（:774-779），展开见第二、三节。
+	    
+	    `create` 在 Include 的 Fiber 建好后就返回，这时它还在 LOADING。随后把这一行记为 bootstrap include，供审计使用（:780-783）。
+	    
+	- **`await ctx.get('loader')?.await()`**（:1235）→ `tree.ts:44`
+	    - 反复收集整棵树（含 Include 子树）每一行的 `_initTask`（正在 import）和 `fiber.inertia`（正在加载或卸载），直到两者都为空。
+	    - 需要这一步，是因为前面的 await 都不覆盖整棵树：
+	        - `ctx.plugin()` 只等这个 Fiber 自己的状态转换，停在 PENDING 的 Fiber 会立即返回；
+	        - `loader.create()` 只等 import 完成和 Fiber 创建。
+	    - :1236 再检查一次 loader：如果启动途中已有界面把整棵树 dispose 了，就直接返回。
+	- **`await auditStartupEntries(ctx, binName)`**（:1237 → :1150）
+	    - `inactiveEntries`（:1039）遍历 `ctx.loader.entries()`，跳过 disabled 的行，收集 import 失败、FAILED、PENDING 等没有进入 ACTIVE 的行。
+	    - 如果其中有 bootstrap include 或必需行（`requiredStartupEntryIds`，:946），就抛 `StartupError`；其余只发警告。
+	    - 失败路径：`catch` 先 dispose 根 Fiber。如果是 `StartupError`，附上启动日志后抛出；其他错误用 `stage` 标签包装后抛出（:1239-1259）。
+- `boot()` 返回后，`runProfile` 调用 `appReady.commit()`（`profile-boot.ts:344`），通知各个 app：启动成功，可以开始工作了。
+
+#### Loader 怎么把 `include` 这一行变成运行中的插件
+
+Fiber 在构造时会同步发出 `internal/plugin` 事件。我在这个事件上抓调用栈，就能看到是谁创建了这个 Fiber：
+```
+[internal/plugin] new Fiber for Include#3, created from:
+    at new Fiber (vendor/cordis/src/fiber.ts:302:22)
+    at Proxy.plugin (vendor/cordis/src/registry.ts:330:19)
+    at Entry._init (vendor/loader/src/config/entry.ts:236:36)
+    at async Entry.init (vendor/loader/src/config/entry.ts:212:7)
+    at async Entry.update (vendor/loader/src/config/entry.ts:155:7)
+    at async EntryGroup.create (vendor/loader/src/config/group.ts:27:5)
+```
+
+再往上几层没有出现在异步调用栈里，因为 `EntryTree.create` 是直接 `return group.create(...)`，没有 await。从源码补全是：`mountRootInclude` → `EntryTree.create`（`tree.ts:82`）→ `EntryGroup.create`。
+
+每一层做的事：
+
+- **`EntryTree.create`**：把这一行加进 Loader 的清单，然后交给 `EntryGroup.create`。
+- **`EntryGroup.create`**（`group.ts:20`）：执行 `new Entry(loader)`。Entry 的 ctx 是 `loader.ctx.extend(...)` 得到的视图，上面多挂了一个"我是哪一行"的标记（`entry.ts:58`）。
+- **`Entry.update` → `init` → `_init`**（`entry.ts:223-238`）：
+    - `tree.import('cordis:include')`：名字以 `cordis:` 开头，所以去内置表里取出 Include 类（`tree.ts:113`）；
+    - `_patchContext`：把 Entry 的 ctx 的原型接到它所在组的 ctx 上，这样 `ctx.fiber` 就指向 Loader#1；
+    - `ctx.registry.plugin(Include, config)`：从这里回到 Cordis 核心。
+- **`new Fiber`**（`fiber.ts:222`）：Include#3 诞生，它的父 Fiber 是 Loader#1。
+    - 构造过程中发出 `internal/plugin`，Loader 的钩子据此把 `fiber.entry` 设为这一行。
+    - Include 声明了 `inject = ['loader']`，而 loader 已经就绪，所以它马上进入 LOADING。
+
+#### Include 怎么把 `cordis.yml` 里的每一行挂起来
+
+Include#3 进入 LOADING 后，Fiber 状态机先执行 `new Include(ctx, config)`，再调用它的 `async* [Service.init]()`（`include/src/index.ts:245`）。这个方法按顺序做三件事：
+
+1. 读 `cordis.yml`；
+2. `yield () => this.stop()`，把清理函数登记上；
+3. `await this.root.update(套完 patch 的行)`。
+
+每一行都会再走一遍第四节的流程。抓到的栈完整显示了这条链：
+
+```
+[internal/plugin] new Fiber for probe#4, created from:
+    at new Fiber (vendor/cordis/src/fiber.ts:302:22)
+    at Proxy.plugin (vendor/cordis/src/registry.ts:330:19)
+    at Entry._init (vendor/loader/src/config/entry.ts:236:36)
+    at async Entry.init (vendor/loader/src/config/entry.ts:212:7)
+    at async Entry.update (vendor/loader/src/config/entry.ts:155:7)
+    at async EntryGroup.create (vendor/loader/src/config/group.ts:27:5)
+    at async <anonymous> (vendor/loader/src/config/group.ts:58:9)
+    at async EntryGroup.update (vendor/loader/src/config/group.ts:56:5)
+    at async Include.[cordis.init] (vendor/include/src/index.ts:262:5)
+    at async <anonymous> (vendor/cordis/src/fiber.ts:391:28)
+    at async Fiber._reload (vendor/cordis/src/fiber.ts:656:9)
+```
+
+从下往上读：
+
+1. Include#3 的 `Fiber._reload` 执行它的 async generator；
+2. generator 里调用 `root.update`；
+3. `EntryGroup.update` 对每一行调用 `create`；
+4. 又回到 `Entry`，经 `registry.plugin` 创建出新的 Fiber。
+
+和 `include` 那一行相比，唯一的区别在 `tree.import(name)`：
+
+- 名字不再以 `cordis:` 开头，所以改用 Node 内部的 ESM 加载器来 import（`tree.ts:122`）。
+- 解析的基准是 `ctx.baseUrl`，Include 已经把它设成 `cordis.yml` 所在的目录。
+- 结果是，插件包名从 profile 目录开始解析，而不是从 Loader 代码所在的位置。
+
+#### 插件函数体真正执行的时刻
+
+一行的 Fiber 创建好以后，插件函数并不会在 `create` 的调用栈里同步执行，而是交给状态机处理：
+
+- 依赖还没齐，就停在 PENDING；
+- 依赖齐了，`_reload` 先等一个微任务，再执行插件（`fiber.ts:646-673`）。
+
+所以在插件函数体里抓到的栈，最上面只能到 `Fiber._reload`：
+
+```
+[probe] stack:
+    at Object.apply [as callback] (…/probe.mjs:11:36)
+    at Fiber.execute (vendor/cordis/src/fiber.ts:259:28)
+    at <anonymous> (vendor/cordis/src/fiber.ts:366:45)
+    at composeError (vendor/cordis/src/utils.ts:272:25)
+    at Fiber._execute (vendor/cordis/src/fiber.ts:358:12)
+    at Fiber._reload (vendor/cordis/src/fiber.ts:656:20)
+```
+
+测试配置里有两行：
+
+- `probe` 排第一，依赖 `greeting`；
+- `greeting-provider` 排第二，负责提供 `greeting`。
+
+probe#4 创建后一直停在 PENDING，所以它创建时没有输出状态变化。下面是实际的状态输出，略去了穿插在中间的调用栈：
+
+```
+  [status] Include#3: PENDING -> LOADING
+  [status] greeting-provider#5: PENDING -> LOADING
+[greeting-provider] body runs, provide("greeting")
+  [status] greeting-provider#5: LOADING -> ACTIVE
+  [status] probe#4: PENDING -> LOADING
+[probe] body runs; ctx.greeting.text = "hello from a sibling row"
+  [status] probe#4: LOADING -> ACTIVE
+  [status] Include#3: LOADING -> ACTIVE
+```
+
+也就是说，yml 里的顺序只决定谁先被创建，谁先执行要看依赖。
+
+#### 启动完成时的 Fiber 树（实测）
+
+```
+root#0 ACTIVE  provides/sees=[dshHomePath,demoHostService]
+    Loader#1 ACTIVE  provides/sees=[loader]
+        isolate#2 ACTIVE  provides/sees=[]
+        Include#3 ACTIVE  row="include"  inject=[loader]  provides/sees=[loader]
+            probe#4 ACTIVE  row="include:probe"  inject=[greeting]  provides/sees=[greeting]
+            greeting-provider#5 ACTIVE  row="include:greeting-provider"  provides/sees=[greeting]
+
+loader entries (full ids): include, include:probe, include:greeting-provider
+```
+
+几点说明：
+
+- `provides/sees` 是 `fiber.store` 的内容，包括它自己 provide 的服务，以及它 inject 进来的服务快照。
+- `demoHostService` 是我在 `prepare` 里 provide 的，用来模拟启动器挂在根上的那些服务。
+- probe 打印的祖先链与这棵树一致：`probe#4(row "include:probe") -> Include#3(row "include") -> Loader#1 -> root#0`。
+
+真实的 `dsh` 启动只是把这棵树放大了：
+
+- 根上多了启动器 provide 的那些服务，以及 `PluginPackages` 这个子插件；
+- Include 下面挂着所有 bundle 和 patch 带来的行。
+
+机制完全相同。
+
+
 
 
 ### 第 1 层：根 Context
@@ -601,6 +810,7 @@ await ctx.loader.create({
 > [!tip] DeepSeek Harness 的 Loader 和 Include
 > DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
 
+
 ##### Loader
 
 > [!quote] Cordis 核心只提供 `ctx.plugin(plugin, config)`，这种使用方式的前提是从代码里引入了插件对象。
@@ -627,7 +837,9 @@ Loader 的**核心能力**，是让运行中的插件始终和插件清单保持
 
 ##### Include
 
-Cordis 引入了 Include（`vendor/include`）包来为基于 entry 条目的插件清单提供文件支持，使用这个 Include 包可以将文件中的 entry 清单，加载为实际运行的 entry 清单（`vendor/include/src/index.ts`）
+Cordis 引入了 Include（`vendor/include`）包来为基于 entry 条目的插件清单提供文件支持，使用这个 Include 包可以将文件中的 entry 清单，加载为实际运行的 entry 清单（`vendor/include/src/index.ts`）。
+
+Include 的**配置对象**共有四个字段（`vendor/include/src/index.ts:146-155`）：`path`、`initial`、`patches`、`enableLogs`。在 **Cordis 的原始设计**中 Include 自己只会去读 `path` 指向的那个文件，**从来不会从任何文件或命令行里读 `patches`**。
 
 Include 的**核心能力**包括：
 
@@ -637,7 +849,13 @@ Include 的**核心能力**包括：
 2. 文件不存在时，用 `initial` 写一份初始内容；
 3. 读完文件后可以叠加 `patches`：插入新 entry，或按 `id`;
 > [!hint] Include 的 patches 机制就是 `cordis.patch.yml` 的核心
+> 在 Cordis Include 原本的设计中，`patches` 是直接写在配置对象的 `config.patches` 里，后面加载的配置不能修改前面已经插入的 entry。
 > 
+> 在 DeepSeek Harness 中，将 `patches` 的来源修改为来自文件，定义的**加载顺序**（`packages/boot/app-boot/src/profile-context.ts:74`）是：每个 bundle 的 `cordis.patch.yml` → profile 的 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → `--patch` 文件 → 遥测开关，**后面的覆盖前面的**，并且**后面的可以修改前面已经插入的 entry**。
+> 
+> 在 DeepSeek Harness 中，为了实现上述目标，添加了一些定制机制：
+> - **文件校验**：顶层必须是数组，每一项必须是映射；可选的 patch 文件不存在，就当没有这一层；`--patch` 指定的文件不存在则直接报错（`packages/boot/app-boot/src/index.ts:515-588`）
+> - **启动前检查**：DeepSeek Harness 在启动前先在空列表 `[]` 上把所有层应用一遍，顺带做兼容性检查，再把结果作为一个 `insert` 交给 Include（`packages/boot/app-boot/src/compatibility-preflight.ts:180`）。
 4. 运行中 entry 有变化（改配置、插件自我禁用、增删 entry），防抖之后写回文件；
 5. 文件被外部修改后，由 HMR 调用 `refresh()` 重读，只调整有差异的 entry。
 
@@ -645,216 +863,27 @@ Include 的**核心能力**包括：
 > 
 > 就是它自带的 `bin.js`：先挂上 Loader，再放一行 Include 指向 `./cordis.yml`。换句话说，**一个 Cordis 应用就是一份 `cordis.yml`**：用户直接编辑这个文件，程序运行中的改动也写回这个文件。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 > [!info] 从敲下 `dsh` 到第一次调用 Cordis
 > ```
-> apps/cli/src/bin.ts:77                 await runCli()
-> apps/cli/src/bin.ts:29                   parseDshArgs()      只解析 --profile、--patch 等启动器参数
-> apps/cli/src/bin.ts:35                   runProfile()
-> apps/cli/src/profile-boot.ts:292           composeProfile()  读 profile，把 cordis.yml 重写成 []，收集各层 patch
-> apps/cli/src/profile-boot.ts:323           boot(NAME, cordis.yml 路径, patches, prepare)
-> packages/boot/app-boot/src/index.ts:1207     new Context()   ← 第一次调用 Cordis
+> await runCli()              // apps/cli/src/bin.ts:77 
+> ├── parseDshArgs()          // apps/cli/src/bin.ts:29 
+> │					        //   ← 解析 --profile、--patch 等启动器参数
+> └── runProfile()            // apps/cli/src/bin.ts:35
+>     ├── composeProfile()    // apps/cli/src/profile-boot.ts:292
+>     │	                    //   ← 读取 profile，置空 cordis.yml，收集 patch
+>     └── boot(NAME, cordis.yml, patches, prepare) 
+>     	│			        // apps/cli/src/profile-boot.ts:323 
+>         └── new Context()   // packages/boot/app-boot/src/index.ts:1207
+>                             //   ← 第一次调用 Cordis
 > ```
-
-注意"加载 Cordis 模块"比"调用 Cordis"早得多：
-
-- `bin.ts` 一开头就静态导入了 `@deepseek-ai/dsh-app-boot`（`bin.ts:9`），app-boot 顶部又导入了 Cordis、Loader、Include、Group（`index.ts:14-17`）。所以进程一启动，Cordis 的代码就已经被求值了。
-- 但在 `new Context()` 之前，没有创建任何 Cordis 对象。
-
-`runProfile` 在调用 `boot()` 之前做的几件事也都和 Cordis 无关：
-
-- 安装网络代理（`profile-boot.ts:276`）；
-- 注册 SIGINT/SIGTERM 和未捕获异常的处理（`:307-311`）；
-- 拼出 `profileContext` 对象（`:314-322`）。
-
-#### `boot()` 逐行：每一步触发了 Cordis 的什么
-
-`boot()` 的主体只有十来行，每一行背后都对应 Cordis 的一段机制。
-
-1. **`new Context()`**（`:1207`）→ 进入 `context.ts:71`：
-    
-    - 用 Proxy 把自己包起来；
-    - 创建根 Fiber#0，它一创建就是 ACTIVE；
-    - 装上 `reflect`、`registry`、`events`、`logger` 四个内置服务。
-    
-    紧接着还有一个 `diagnostics = new Context()`（`:1210`）。这是第二个独立的根，只用来收集启动期间的警告和错误日志，在 `finally` 里销毁（`:1264`）。
-    
-2. **`ctx.baseUrl = 配置目录`**（`:1222`）。这是根 context 上的普通属性赋值，之后的相对路径都从这里解析。
-3. **`ctx.provide('dshHomePath', …)`**（`:1223`）→ `reflect.ts:277`。服务登记在根 Fiber 名下，所以之后所有插件不用 inject 也能读到。
-4. **`ctx.on('internal/update', …)`**（`:1226`）。一个全局钩子，把插件重启时的失败记进日志。
-5. **`await ctx.plugin(Loader)`**（`:1229`）→ `registry.plugin` 创建 Loader#1。Loader 没有依赖，所以会立刻执行 `new Loader(ctx)`。构造函数里依次做三件事：
-    
-    - `provide('loader')`（`loader/src/index.ts:102`）；
-    - 挂上 `internal/config`、`internal/update`、`internal/plugin` 三个钩子；
-    - `ctx.plugin(isolate)`（`:168`），生成子插件 isolate#2。
-    
-    这一步完成后，`ctx.loader` 就能用了。
-    
-6. **`await prepare(ctx)`**（`:1230`）→ 回到启动器传进来的回调（`profile-boot.ts:324-338`）：
-    
-    - 在根上 provide `profileContext`、环境快照、`cmdlineArgs` / `appExit` / `appReady`；
-    - 执行 `plugin(PluginPackages)`。
-    
-    实测确认，回调拿到的就是根 context，而且此时 Loader 已经就位。
-    
-7. **`mountRootInclude()`**（`:1232`）：
-    
-    - 登记 `cordis:include` 和 `cordis:group` 两个内置模块；
-    - 预先合并所有 patch；
-    - 执行 `ctx.loader.create({ id: 'include', name: 'cordis:include', … })`（`:784`）。
-    
-    这一步的展开见第四、五节。
-    
-8. **`await ctx.loader.await()`**（`:1238`）→ `tree.ts:43`。它反复检查所有行，直到既没有正在 import 的模块，也没有正在加载或卸载的 Fiber。之所以需要这一步，是因为 `await ctx.plugin()` 本身不会等依赖就绪。
-9. **`auditStartupEntries()`**（`:1240`）。逐行检查哪些插件没有进入 ACTIVE；必需的行失败了，就报启动错误。
-
-`boot()` 返回后，`runProfile` 调用 `appReady.commit()`（`profile-boot.ts:344`），通知各个 app：启动成功，可以开始工作了。
-
-#### Loader 怎么把 `include` 这一行变成运行中的插件
-
-Fiber 在构造时会同步发出 `internal/plugin` 事件。我在这个事件上抓调用栈，就能看到是谁创建了这个 Fiber：
-```
-[internal/plugin] new Fiber for Include#3, created from:
-    at new Fiber (vendor/cordis/src/fiber.ts:302:22)
-    at Proxy.plugin (vendor/cordis/src/registry.ts:330:19)
-    at Entry._init (vendor/loader/src/config/entry.ts:236:36)
-    at async Entry.init (vendor/loader/src/config/entry.ts:212:7)
-    at async Entry.update (vendor/loader/src/config/entry.ts:155:7)
-    at async EntryGroup.create (vendor/loader/src/config/group.ts:27:5)
-```
-
-再往上几层没有出现在异步调用栈里，因为 `EntryTree.create` 是直接 `return group.create(...)`，没有 await。从源码补全是：`mountRootInclude` → `EntryTree.create`（`tree.ts:82`）→ `EntryGroup.create`。
-
-每一层做的事：
-
-- **`EntryTree.create`**：把这一行加进 Loader 的清单，然后交给 `EntryGroup.create`。
-- **`EntryGroup.create`**（`group.ts:20`）：执行 `new Entry(loader)`。Entry 的 ctx 是 `loader.ctx.extend(...)` 得到的视图，上面多挂了一个"我是哪一行"的标记（`entry.ts:58`）。
-- **`Entry.update` → `init` → `_init`**（`entry.ts:223-238`）：
-    - `tree.import('cordis:include')`：名字以 `cordis:` 开头，所以去内置表里取出 Include 类（`tree.ts:113`）；
-    - `_patchContext`：把 Entry 的 ctx 的原型接到它所在组的 ctx 上，这样 `ctx.fiber` 就指向 Loader#1；
-    - `ctx.registry.plugin(Include, config)`：从这里回到 Cordis 核心。
-- **`new Fiber`**（`fiber.ts:222`）：Include#3 诞生，它的父 Fiber 是 Loader#1。
-    - 构造过程中发出 `internal/plugin`，Loader 的钩子据此把 `fiber.entry` 设为这一行。
-    - Include 声明了 `inject = ['loader']`，而 loader 已经就绪，所以它马上进入 LOADING。
-
-#### Include 怎么把 `cordis.yml` 里的每一行挂起来
-
-Include#3 进入 LOADING 后，Fiber 状态机先执行 `new Include(ctx, config)`，再调用它的 `async* [Service.init]()`（`include/src/index.ts:245`）。这个方法按顺序做三件事：
-
-1. 读 `cordis.yml`；
-2. `yield () => this.stop()`，把清理函数登记上；
-3. `await this.root.update(套完 patch 的行)`。
-
-每一行都会再走一遍第四节的流程。抓到的栈完整显示了这条链：
-
-```
-[internal/plugin] new Fiber for probe#4, created from:
-    at new Fiber (vendor/cordis/src/fiber.ts:302:22)
-    at Proxy.plugin (vendor/cordis/src/registry.ts:330:19)
-    at Entry._init (vendor/loader/src/config/entry.ts:236:36)
-    at async Entry.init (vendor/loader/src/config/entry.ts:212:7)
-    at async Entry.update (vendor/loader/src/config/entry.ts:155:7)
-    at async EntryGroup.create (vendor/loader/src/config/group.ts:27:5)
-    at async <anonymous> (vendor/loader/src/config/group.ts:58:9)
-    at async EntryGroup.update (vendor/loader/src/config/group.ts:56:5)
-    at async Include.[cordis.init] (vendor/include/src/index.ts:262:5)
-    at async <anonymous> (vendor/cordis/src/fiber.ts:391:28)
-    at async Fiber._reload (vendor/cordis/src/fiber.ts:656:9)
-```
-
-从下往上读：
-
-1. Include#3 的 `Fiber._reload` 执行它的 async generator；
-2. generator 里调用 `root.update`；
-3. `EntryGroup.update` 对每一行调用 `create`；
-4. 又回到 `Entry`，经 `registry.plugin` 创建出新的 Fiber。
-
-和 `include` 那一行相比，唯一的区别在 `tree.import(name)`：
-
-- 名字不再以 `cordis:` 开头，所以改用 Node 内部的 ESM 加载器来 import（`tree.ts:122`）。
-- 解析的基准是 `ctx.baseUrl`，Include 已经把它设成 `cordis.yml` 所在的目录。
-- 结果是，插件包名从 profile 目录开始解析，而不是从 Loader 代码所在的位置。
-
-#### 插件函数体真正执行的时刻
-
-一行的 Fiber 创建好以后，插件函数并不会在 `create` 的调用栈里同步执行，而是交给状态机处理：
-
-- 依赖还没齐，就停在 PENDING；
-- 依赖齐了，`_reload` 先等一个微任务，再执行插件（`fiber.ts:646-673`）。
-
-所以在插件函数体里抓到的栈，最上面只能到 `Fiber._reload`：
-
-```
-[probe] stack:
-    at Object.apply [as callback] (…/probe.mjs:11:36)
-    at Fiber.execute (vendor/cordis/src/fiber.ts:259:28)
-    at <anonymous> (vendor/cordis/src/fiber.ts:366:45)
-    at composeError (vendor/cordis/src/utils.ts:272:25)
-    at Fiber._execute (vendor/cordis/src/fiber.ts:358:12)
-    at Fiber._reload (vendor/cordis/src/fiber.ts:656:20)
-```
-
-测试配置里有两行：
-
-- `probe` 排第一，依赖 `greeting`；
-- `greeting-provider` 排第二，负责提供 `greeting`。
-
-probe#4 创建后一直停在 PENDING，所以它创建时没有输出状态变化。下面是实际的状态输出，略去了穿插在中间的调用栈：
-
-```
-  [status] Include#3: PENDING -> LOADING
-  [status] greeting-provider#5: PENDING -> LOADING
-[greeting-provider] body runs, provide("greeting")
-  [status] greeting-provider#5: LOADING -> ACTIVE
-  [status] probe#4: PENDING -> LOADING
-[probe] body runs; ctx.greeting.text = "hello from a sibling row"
-  [status] probe#4: LOADING -> ACTIVE
-  [status] Include#3: LOADING -> ACTIVE
-```
-
-也就是说，yml 里的顺序只决定谁先被创建，谁先执行要看依赖。
-
-#### 启动完成时的 Fiber 树（实测）
-
-```
-root#0 ACTIVE  provides/sees=[dshHomePath,demoHostService]
-    Loader#1 ACTIVE  provides/sees=[loader]
-        isolate#2 ACTIVE  provides/sees=[]
-        Include#3 ACTIVE  row="include"  inject=[loader]  provides/sees=[loader]
-            probe#4 ACTIVE  row="include:probe"  inject=[greeting]  provides/sees=[greeting]
-            greeting-provider#5 ACTIVE  row="include:greeting-provider"  provides/sees=[greeting]
-
-loader entries (full ids): include, include:probe, include:greeting-provider
-```
-
-几点说明：
-
-- `provides/sees` 是 `fiber.store` 的内容，包括它自己 provide 的服务，以及它 inject 进来的服务快照。
-- `demoHostService` 是我在 `prepare` 里 provide 的，用来模拟启动器挂在根上的那些服务。
-- probe 打印的祖先链与这棵树一致：`probe#4(row "include:probe") -> Include#3(row "include") -> Loader#1 -> root#0`。
-
-真实的 `dsh` 启动只是把这棵树放大了：
-
-- 根上多了启动器 provide 的那些服务，以及 `PluginPackages` 这个子插件；
-- Include 下面挂着所有 bundle 和 patch 带来的行。
-
-机制完全相同。
-
-
+> 注意"加载 Cordis 模块"比"调用 Cordis"早得多：
+> - `bin.ts` 一开头就静态导入了 `@deepseek-ai/dsh-app-boot`（`apps/cli/src/bin.ts:9`），app-boot 顶部又导入了 Cordis、Loader、Include、Group（`index.ts:14-17`）。所以进程一启动，Cordis 的代码就已经被求值了。
+> - 但在 `new Context()` 之前，没有创建任何 Cordis 对象。
+> 
+> `runProfile` 在调用 `boot()` 之前做的几件事也都和 Cordis 无关：
+> - 安装网络代理（`profile-boot.ts:276`）；
+> - 注册 SIGINT/SIGTERM 和未捕获异常的处理（`:307-311`）；
+> - 拼出 `profileContext` 对象（`:314-322`）。
 
 
 
@@ -945,7 +974,7 @@ export function apply(ctx: Context) {
 ```
 
 
-4. **生命周期与副作用**（**Effect**）：这是 Cordis 最核心的机制。Cordis 插件可能因修改配置、热重载、显式资源释放或所需服务消失而卸载。插件通过 `ctx.effect()` 注册的副作用和通过 `ctx.on()` 注册的事件监听器等，都会在插件卸载时**自动且逆向地撤销**。这种设计让热插拔和热重载变得安全可靠。
+4. **生命周期与副作用**（**Effect**）：这是 Cordis **最核心的机制**。Cordis 插件可能因修改配置、热重载、显式资源释放或所需服务消失而卸载。插件通过 `ctx.effect()` 注册的副作用和通过 `ctx.on()` 注册的事件监听器等，都会在插件卸载时**自动且逆向地撤销**。这种设计让热插拔和热重载变得安全可靠。
 	- **Fiber 状态机**：
 		- Fiber 可以理解为“这个插件的运行实例”，它保存了：
 			- 插件本身及其配置
