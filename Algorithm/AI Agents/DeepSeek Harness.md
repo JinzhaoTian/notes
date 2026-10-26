@@ -543,13 +543,34 @@ UI 落点选择原则：优先**已分配空间**的 slot（如 `conversation.c
 	- **依赖开发者可靠性**：框架提供规范，但无法自动验证插件作者写的逆操作（cleanup）是否正确。
 	- **未来方向**：需结合静态分析或编程语言/操作系统协同设计，来约束 Agent 自我生成的插件。
 
+### 核心 API
+
+| API                                       | 所属模块      | 说明                                                                      |
+| ----------------------------------------- | --------- | ----------------------------------------------------------------------- |
+| **`apply(ctx: Context)`**                 | 插件自身      | 插件的入口函数，Cordis 加载插件时会调用此函数，并传入 `Context` 对象。                            |
+| **`ctx.plugin(plugin)`**                  | `Context` | **挂载子插件**。将一个插件挂载为当前插件的子插件，返回一个 `Fiber` 实例。父插件卸载时，所有子插件也会被递归卸载。         |
+| **`ctx.effect()`**                        | `Context` | **注册可逆副作用**。接收一个函数，该函数应返回一个 `disposer`（资源释放函数）。插件卸载时，`disposer` 会被自动调用。 |
+| **`ctx.on(event, listener)`**             | `Context` | **注册事件监听器**。监听指定事件。监听器本身是一个 effect，会在插件卸载时自动移除。                         |
+| **`ctx.emit(event, ...args)`**            | `Context` | **触发事件**。同步广播事件，不等待监听器返回。                                               |
+| **`ctx.parallel(event, ...args)`**        | `Context` | **触发事件**。所有监听器并发执行，并一同等待。                                               |
+| **`ctx.serial(event, ...args)`**          | `Context` | **触发事件**。监听器按顺序执行并等待，第一个非空返回值胜出。                                        |
+| **`ctx.bail(event, ...args)`**            | `Context` | **触发事件**。`serial` 的同步版本。                                                |
+| **`ctx.waterfall(event, ...args, next)`** | `Context` | **触发事件**。实现拦截模式，监听器可转换 `next()` 的返回值或短路。                                |
+| **`ctx.get(key)`**                        | `Context` | **获取服务实例**。用于获取可选依赖的服务，若服务不存在则返回 `undefined`。                           |
+| **`inject: string[]`**                    | 插件导出      | **声明硬性依赖**。插件通过导出 `inject` 数组来声明它依赖的服务名称。                               |
+| **`Config`**                              | 插件导出      | **声明配置结构**。插件通过导出 `Config` 对象（使用 Schema 定义）来声明其可接收的配置。                  |
+| **`fiber.dispose()`**                     | `Fiber`   | **手动卸载插件**。手动触发一个插件的卸载流程，会等待所有清理工作完成。                                   |
+
+
+
+
+
+
 ### 源码逻辑
 
 #### 入口
 
 在 DeepSeek Harness 下，Cordis 源码在 `vendor/cordis/src/` 下，Cordis 包本身的源码入口 `vendor/cordis/src/index.ts` 不含逻辑，只是把 `context`、`fiber`、`registry`、`events`、`service`、`logger`、`utils` 这几个文件的导出汇总到一起。
-
-此外，DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
 
 #### 启动
 
@@ -576,6 +597,68 @@ await ctx.loader.create({
 
 > [!tip] DeepSeek Harness 的启动器实现
 > DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：造根，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
+
+> [!tip] DeepSeek Harness 的 Loader 和 Include
+> DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
+
+##### Loader
+
+> [!quote] Cordis 核心只提供 `ctx.plugin(plugin, config)`，这种使用方式的前提是从代码里引入了插件对象。
+
+Cordis 引入了 Loader（`vendor/loader`）包，将插件的加载模式改为用 entry 条目来加载插件，描述插件的方式为：`{ id, name, config, … }` 的意思是"按 `name` 去 import 这个模块，再用 `config` 启动它"。
+
+Loader 的**核心能力**，是让运行中的插件始终和插件清单保持一致：
+
+1. 通过 `ctx.loader.create / update / remove` 增删改 entry 条目（`vendor/loader/src/config/tree.ts`）；
+2. 某一 entry 的配置改了，只重启那一个插件；行被标成 `disabled` 就卸载；行被删掉就销毁（见 `vendor/loader/src/config/entry.ts` 的 `update`）。
+
+围绕这张插件清单，Loader 还提供了这些功能：
+
+3. **分组**：`group: true` 的 entry 条目，它的 config 是一组子 entry（`vendor/loader/src/config/group.ts`）。
+	- 单独的 `@cordisjs/plugin-group` 包只是把它重新导出了一下（`vendor/group/src/index.ts`）。
+4. **每个 entry 独立的服务作用域**：`isolate` 让某一行里的插件使用独立的服务实例；`intercept` 给某一行附加针对某个服务的配置（`isolate.ts`）。
+5. **`!!js` 表达式**：配置里可以写 JS 表达式，求值时以 context 作为作用域（`vendor/loader/src/config/utils.ts`）。
+6. **把运行中的变化记回清单**：
+    - 插件通过 `fiber.update()` 改了配置，新配置会写回对应的那一个 entry（`vendor/loader/src/index.ts:115-121`）；
+    - 插件自己 dispose 了，那一个 entry 会被标成 `disabled`（`vendor/loader/src/index.ts:129-166`）。
+7. **模块加载**：以 `cordis:` 开头的名字从内置表里取；其他名字交给 Node 内部的 ESM 加载器，按配置所在的位置解析，这同时也给 HMR 替换模块缓存留了入口（`vendor/loader/src/internal.ts`）。
+8. **等待全部加载完**：依赖 `loader` 的插件可以声明 `await: true`，等所有 entry 都加载完再启动（`index.ts:175-179`）。
+
+
+##### Include
+
+Cordis 引入了 Include（`vendor/include`）包来为基于 entry 条目的插件清单提供文件支持，使用这个 Include 包可以将文件中的 entry 清单，加载为实际运行的 entry 清单（`vendor/include/src/index.ts`）
+
+Include 的**核心能力**包括：
+
+1. 启动时读 YAML 或 JSON（支持 `!!js` 标签），把内容变成 entry，挂成 Include 的子 entry；
+> [!hint] Loader 的清单里始终只有 `include` 这一个 entry
+> 通过 Include 在文件中加载的 entry 始终存在 Include 自己的 entry 树里，不在 Loader 的清单里。Loader 的清单里始终只有 `include` 这一个 entry。
+2. 文件不存在时，用 `initial` 写一份初始内容；
+3. 读完文件后可以叠加 `patches`：插入新 entry，或按 `id`;
+> [!hint] Include 的 patches 机制就是 `cordis.patch.yml` 的核心
+> 
+4. 运行中 entry 有变化（改配置、插件自我禁用、增删 entry），防抖之后写回文件；
+5. 文件被外部修改后，由 HMR 调用 `refresh()` 重读，只调整有差异的 entry。
+
+> [!caution] Cordis 设想的应用形态
+> 
+> 就是它自带的 `bin.js`：先挂上 Loader，再放一行 Include 指向 `./cordis.yml`。换句话说，**一个 Cordis 应用就是一份 `cordis.yml`**：用户直接编辑这个文件，程序运行中的改动也写回这个文件。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 > [!info] 从敲下 `dsh` 到第一次调用 Cordis
 > ```
@@ -938,23 +1021,5 @@ export function apply(ctx: Context) {
 	- **`waterfall`**（瀑布式事件）
 		- 环绕中间件，转换或短路，每个监听器都会收到参数和一个 `next()` continuation；它可以转换 `next()` 的返回值，也可以不调用 `next()` 就直接返回，从而短路链条的其余部分。
 		- 调用：`ctx.waterfall(name, ...args, next)`
-
-### 核心 API
-
-| API                                       | 所属模块      | 说明                                                                      |
-| ----------------------------------------- | --------- | ----------------------------------------------------------------------- |
-| **`apply(ctx: Context)`**                 | 插件自身      | 插件的入口函数，Cordis 加载插件时会调用此函数，并传入 `Context` 对象。                            |
-| **`ctx.plugin(plugin)`**                  | `Context` | **挂载子插件**。将一个插件挂载为当前插件的子插件，返回一个 `Fiber` 实例。父插件卸载时，所有子插件也会被递归卸载。         |
-| **`ctx.effect()`**                        | `Context` | **注册可逆副作用**。接收一个函数，该函数应返回一个 `disposer`（资源释放函数）。插件卸载时，`disposer` 会被自动调用。 |
-| **`ctx.on(event, listener)`**             | `Context` | **注册事件监听器**。监听指定事件。监听器本身是一个 effect，会在插件卸载时自动移除。                         |
-| **`ctx.emit(event, ...args)`**            | `Context` | **触发事件**。同步广播事件，不等待监听器返回。                                               |
-| **`ctx.parallel(event, ...args)`**        | `Context` | **触发事件**。所有监听器并发执行，并一同等待。                                               |
-| **`ctx.serial(event, ...args)`**          | `Context` | **触发事件**。监听器按顺序执行并等待，第一个非空返回值胜出。                                        |
-| **`ctx.bail(event, ...args)`**            | `Context` | **触发事件**。`serial` 的同步版本。                                                |
-| **`ctx.waterfall(event, ...args, next)`** | `Context` | **触发事件**。实现拦截模式，监听器可转换 `next()` 的返回值或短路。                                |
-| **`ctx.get(key)`**                        | `Context` | **获取服务实例**。用于获取可选依赖的服务，若服务不存在则返回 `undefined`。                           |
-| **`inject: string[]`**                    | 插件导出      | **声明硬性依赖**。插件通过导出 `inject` 数组来声明它依赖的服务名称。                               |
-| **`Config`**                              | 插件导出      | **声明配置结构**。插件通过导出 `Config` 对象（使用 Schema 定义）来声明其可接收的配置。                  |
-| **`fiber.dispose()`**                     | `Fiber`   | **手动卸载插件**。手动触发一个插件的卸载流程，会等待所有清理工作完成。                                   |
 
 
