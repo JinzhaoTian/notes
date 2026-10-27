@@ -1,6 +1,26 @@
 ## npm
 
-npm（Node Package Manager）是 Node.js 的默认包管理器，会随 Node.js 一起自动安装。
+npm（Node Package Manager）是 Node 的默认包管理器，会随 Node 一起自动安装。**npm 是独立项目，是用 JavaScript 写的 CLI，运行在 Node 上**。
+
+> [!question] 已经有了 node 了，为什么还要有 npm ?
+> node 只提供运行环境和核心 API，通过 Node 只代表你能执行 JavaScript、能调用 `fs`/`http`/`path` 等核心模块；
+> 
+> npm 负责帮你找到、下载、安装、升级、发布第三方包，处理复杂的依赖关系。
+> - 从 registry 查询可用版本
+> - 按 SemVer 解析版本范围
+> - 递归解析依赖的依赖
+> - 处理版本冲突
+> - 扁平化安装到 `node_modules`
+> - 用 `package-lock.json` 锁定精确版本
+> - 校验完整性哈希
+> - 使用缓存加速安装
+> 
+> npm 集成了命令：
+> - `npm publish`：把包发布到注册表
+> - `npm run`：运行项目脚本，并自动把 `node_modules/.bin` 注入 `PATH`
+> - `npm exec` / `npx`：执行包提供的 CLI
+> - 生命周期脚本：`preinstall`、`postinstall`、`prepare` 等
+> - 访问控制、团队包、私有 registry 等生态能力
 
 ### 主要功能
 
@@ -8,6 +28,93 @@ npm（Node Package Manager）是 Node.js 的默认包管理器，会随 Node.js 
 2. **管理依赖**：通过项目中的 `package.json` 文件，`npm` 可以清晰地记录和管理项目所依赖的所有包及其版本。
 3. **发布和共享**：开发者也可以将自己编写的代码包打包，通过 `npm` 发布到官方仓库，供全球的开发者使用。
 4. **运行脚本**：可以在 `package.json` 中定义脚本命令（如 `npm start`），方便地启动项目、运行测试等。
+
+### npm 运行机制
+
+npm 是一个精巧的 JS 应用（并非独立的原生二进制程序），本质上其命令的运行是 **Node 解释器执行一套 JavaScript 脚本**的过程。
+
+#### 启动链路
+
+当你在终端输入 `npm install` 时，背后发生的第一件事是**操作系统的 PATH 查找与进程替换**。
+
+- **跨平台启动**：在 macOS/Linux 上，`npm` 是一个带 `#!/usr/bin/env node` 声明的 shell 脚本；在 Windows 上则是 `npm.cmd` 批处理文件。它们的作用都是**找到并调用 `node.exe`**，并将真正的 npm 逻辑脚本 `npm-cli.js` 的路径传给它。
+- **真正的入口**：最终执行的命令类似于 `node.exe ".../npm/bin/npm-cli.js" install`。因此，任务管理器中看到的进程是 `node.exe`，**npm 的所有功能都源于 `npm-cli.js` 这个 JavaScript 脚本**。
+
+#### 命令解析与配置加载
+
+`npm-cli.js` 被 Node 启动后，会立即进行以下工作：
+
+1. **解析命令行参数**：识别出子命令（如 `install`、`run`）以及附加的标志（如 `--save-dev`）。
+2. **加载配置**：按优先级读取配置。优先级从高到低通常为：**命令行标志** > 环境变量（如 `NPM_CONFIG_*`）> 项目级 `.npmrc` 文件 > 用户级 `.npmrc` 文件 > 全局配置 > npm 内置默认值。注册表地址（`registry`）、缓存路径等都在此阶段确定。
+
+
+#### 核心机制
+
+依赖解析与安装（以 `npm install` 为例）
+这是 npm 最核心也最复杂的过程，大致分为四步：**构建依赖树 → 下载 → 缓存 → 解压到 `node_modules`**[](https://developer.aliyun.com/article/1126996#slide-1#1)。
+
+##### 1. 构建依赖树：从语义化版本到精确版本
+
+npm 首先读取 `package.json`，根据 **语义化版本（Semver）** 规则（如 `^1.2.3`），将版本范围解析为注册表中可用的**具体版本号**。然后**递归解析传递依赖**（依赖的依赖），最终构建出一棵完整的依赖树[](https://cloud.tencent.cn/developer/techpedia/2701#1)。
+
+##### 2. 依赖树在 `node_modules` 中的结构：扁平化与嵌套
+
+npm 的目录结构经历过重要演变：
+
+- **早期（npm v2）**：严格嵌套。每个依赖都有自己的 `node_modules`，导致**路径极深**（可能超出 Windows 限制）和**大量重复安装**。
+    
+- **现代（npm v3+）**：**扁平化（hoisting）**。npm 会尽可能将所有依赖**提升到项目根 `node_modules` 下**，以解决重复和路径过深的问题[](https://developer.aliyun.com/article/1126996#slide-1#1)。
+    
+- **冲突处理**：扁平化并非万能。当两个依赖需要**同一个包的不兼容版本**时，npm 会将其中一个版本留在根目录，另一个**嵌套安装在需要它的包的 `node_modules` 下**，以实现版本隔离[](https://cloud.tencent.cn/developer/techpedia/2701#1)。
+    
+
+##### 3. 锁定确定性：`package-lock.json` 的作用
+
+纯粹基于 Semver 的扁平化算法，可能因解析顺序不同而产生**结构不确定性**（即“幽灵依赖”问题）。`package-lock.json` 正是为了解决这个问题而诞生。它**精确锁定了依赖树中每一个包的确切版本、下载地址和完整性哈希值**，确保任何人在任何时间执行 `npm install`，都会得到**完全一致**的 `node_modules` 结构[](https://cloud.tencent.cn/developer/techpedia/2701#1)[](https://developer.huawei.com/consumer/cn/forum/topic/0204860264272430235)。
+
+#### 缓存机制
+
+`_cacache` 内容寻址缓存
+
+下载的包并不会直接丢弃。npm 使用一个名为 **`_cacache`** 的目录来缓存所有下载的 tarball 和 HTTP 请求数据。
+
+- **内容寻址**：缓存以文件**内容的哈希值**作为键来存储。这意味着**相同内容永远只存一份**，天然避免了重复缓存，并能通过哈希校验确保数据完整性。
+    
+
+#### 脚本执行机制
+
+`npm run` 是如何工作的？
+
+`npm run <script>` 的机制与安装命令不同，其核心在于**环境隔离与路径注入**。
+
+1. **创建子 Shell**：npm 会为脚本命令**新建一个子 Shell 环境**来执行，避免污染当前终端会话。
+    
+2. **注入 `node_modules/.bin` 到 PATH**：这是关键一步。npm 会**临时将项目本地的 `node_modules/.bin` 目录添加到 `PATH` 环境变量的最前端**。这使得你可以直接运行本地安装的 CLI 工具（如 `eslint`），而无需全局安装或输入完整路径[](https://raw.githubusercontent.com/Alessandro-Pang/fe-interview/refs/heads/main/content/docs/engineering/npm/npm-09.md)。
+    
+3. **注入环境变量**：npm 还会注入一系列以 `npm_` 为前缀的环境变量（如 `npm_package_version`），方便脚本内部读取项目信息[](https://raw.githubusercontent.com/Alessandro-Pang/fe-interview/refs/heads/main/content/docs/engineering/npm/npm-09.md)。
+    
+4. **执行命令**：最后，Shell 在修改后的 `PATH` 中查找并执行对应的可执行文件（通常是 `.bin` 目录下的软链接，指向包内 `bin` 字段声明的真实脚本）[](https://raw.githubusercontent.com/Alessandro-Pang/fe-interview/refs/heads/main/content/docs/engineering/npm/npm-09.md)。
+    
+
+#### 生命周期脚本
+
+npm 在特定操作前后会自动触发“生命周期脚本”，最常见于安装过程：
+
+- **`preinstall`**：在包开始安装**之前**运行。
+- **`install`** / **`postinstall`**：在包**安装完成后**运行。许多需要编译原生模块或下载额外二进制的包（如 `node-sass`、`puppeteer`）都依赖 `postinstall` 来完成最终配置。
+
+#### 全局命令与本地命令的差异
+
+npm 命令的执行位置决定了其作用域：
+
+- **本地（Local）**：在项目目录内执行，操作的是**项目专属**的 `node_modules` 和 `package.json`。
+- **全局（Global）**：使用 `-g` 标志或 `npm link`，包被安装到系统级的全局目录（如 `/usr/local/lib/node_modules`），其 `bin` 命令会被链接到全局 `PATH` 中，可在任意位置调用。现代最佳实践倾向于**将 CLI 工具作为本地开发依赖安装**，通过 `npx` 或 `npm run` 调用，以获得版本确定性。
+
+
+
+
+
+
 
 ### npm 包组成
 

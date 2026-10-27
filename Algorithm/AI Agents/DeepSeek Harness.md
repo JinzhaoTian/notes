@@ -386,15 +386,17 @@ await runCli()                                // bin.ts:77
 
 1. **`boot(NAME, cordis.yml, patches, prepare)`**
 	- **`const ctx = new Context()`**（`packages/boot/app-boot/src/index.ts:1204`）→ 进入 `vendor/cordis/src/context.ts:71`：
-	    - 创建一个 **Cordis 框架依赖注入系统的核心代理对象**，将 `Context` 实例的所有属性访问操作（读取、设置等）拦截下来，转交给 `ReflectService.handler` 处理。
-	    - 创建根 `Fiber`，它没有 runtime，构造时直接就是 ACTIVE（`vendor/cordis/src/fiber.ts:320-324`）。
-	    - 装载 `reflect`、`registry`、`events`、`logger` 四个内置服务。
-	    - 清空根 `Fiber` 的 `_disposables`（`vendor/cordis/src/context.ts:82`），这些内置能力就不会随根 dispose 被卸载。
+	    - 创建一个 **Cordis 框架依赖注入系统的核心代理对象 `Context`**。
+	    - 在 `Context` 实例内部：
+		    - 所有属性访问操作（读取、设置等）拦截下来，转交给 `ReflectService.handler` 处理。
+		    - 创建根 `Fiber`，它没有 runtime，构造时直接就是 ACTIVE（`vendor/cordis/src/fiber.ts:320-324`）。
+		    - 装载 `reflect`、`registry`、`events`、`logger` 四个内置服务。
+		    - 清空根 `Fiber` 的 `_disposables`（`vendor/cordis/src/context.ts:82`），这些内置能力就不会随根 dispose 被卸载。
     - **`const diagnostics = new Context()`** 第二个独立的，只用来收集启动期间的警告和错误日志，在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1264`）。
-	    - 它和主 Context 共用一个 `logger`，但收集器挂在它自己的 `Fiber` 上（`packages/boot/app-boot/src/index.ts:1208-1214`）。
-	    - 这样主 Context 在 `catch` 里被销毁时，清理过程中的报错仍然收得进来。
-	    - 它在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1261`）。
-	- **`ctx.baseUrl = <配置目录>`**（:1219）
+	    - `diagnostics` 也是一个代理对象 `Context`，并且和 `ctx: Context` 共用一个 `logger`，但收集器挂在它自己的 `Fiber` 上（`packages/boot/app-boot/src/index.ts:1208-1214`）。
+	    - 当 `ctx: Context` 在 `catch` 里被销毁时，清理过程中的报错仍然收得进来。
+	    - `diagnostics` 在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1261`）。
+	- **`ctx.baseUrl = <config path>`**（:1219）
 	    - 这是根 ctx 上未声明的属性，set 陷阱直接放行（`reflect.ts:180-181`）。在插件 ctx 上做同样的赋值会抛错。
 	    - Loader 构造时会把它复制进自己的行树（`tree.ts:17`），所以必须在 `plugin(Loader)` 之前设好。
 	- **`ctx.provide('dshHomePath', …)`**（:1220）→ `reflect.ts:277`
