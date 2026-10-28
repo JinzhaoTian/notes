@@ -373,9 +373,9 @@ await runCli()                                // bin.ts:77
     ├── readProfilePatches()                  // profile-boot.ts:323  ← 按层收集 patch，作为 boot 的参数
     ├── boot(NAME, cordis.yml, patches, prepare)    // profile-boot.ts:323
     │   ├── new Context()                     // index.ts:1204  ← 根 ctx + Fiber#0
-    │   ├── ctx.plugin(Loader)                // index.ts:1226  ← Loader#1（+ isolate#2）
+    │   ├── ctx.plugin(Loader)                // index.ts:1226  ← Loader
     │   ├── prepare(ctx)                      // index.ts:1227  ← 启动器往根上挂服务
-    │   ├── mountRootInclude()                // index.ts:1229  ← Loader 的 include 行 → Include
+    │   ├── mountRootInclude()                // index.ts:1229  ← Include
     │   │   └── Include.init → root.update    // include/index.ts:262  ← cordis.yml 的每一行 → 一个 Fiber
     │   ├── loader.await()                    // index.ts:1235  ← 等整棵树稳定
     │   └── auditStartupEntries()             // index.ts:1237  ← 必需行失败 → StartupError
@@ -773,10 +773,6 @@ UI 落点选择原则：优先**已分配空间**的 slot（如 `conversation.c
 | **`fiber.dispose()`**                     | `Fiber`   | **手动卸载插件**。手动触发一个插件的卸载流程，会等待所有清理工作完成。                                   |
 
 
-
-
-
-
 ### 源码逻辑
 
 #### 入口
@@ -806,8 +802,13 @@ await ctx.loader.create({
 
 ```
 
+`Context` 
+
+
+
+
 > [!tip] DeepSeek Harness 的启动器实现
-> DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：造根，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
+> DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：创建 `Context`，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
 
 > [!tip] DeepSeek Harness 的 Loader 和 Include
 > DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
