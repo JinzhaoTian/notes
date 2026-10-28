@@ -802,19 +802,110 @@ await ctx.loader.create({
 
 ```
 
-`Context` 
-
-
-
-
 > [!tip] DeepSeek Harness 的启动器实现
 > DeepSeek Harness 没有使用这个启动器，在 `packages\boot\app-boot\src\index.ts` 的 `boot()` 中实现了一样的逻辑骨架：创建 `Context`，挂 Loader，再往 Loader 里放一行 Include，并且 **DeepSeek Harness 在这几步之间插入了自己的逻辑**。
+
+> [!info] Cordis 用到的 JavaScript 底层机制
+> | 机制 | Cordis  | 了解程度 |
+> | --- | --- | --- |
+> | 原型链 + 属性描述符 | `extend` / `isolate` / `intercept` | 能手写 `Object.create` 链，说清 `in`、`Object.keys`、赋值三者的差别 |
+> | Proxy + 内部方法 + receiver | `ReflectService.handler` | 能解释 trap 和默认算法的关系，知道 receiver 是谁 |
+> | `Reflect` | trap 内部的 `Reflect.get/has/ownKeys` | 知道它是内部方法的函数形式，不是"另一个 API" |
+> | `this` / 调用 / 构造 | `return self`、`mixin` 的 bind、`createCallable` | 能预测"方法被取出后 this 是谁" |
+> | Symbol（含 well-known） | `symbols` 表、`toPrimitive`、`hasInstance` | 知道 symbol 也是属性键，`Symbol.for` 是全局注册表 |
+> | 迭代协议 + 生成器 | `_execute` 的四种 effect 形态 | 能写 generator 逐个 yield disposer |
+> | Promise / 微任务   | `_reload` 的 `await Promise.resolve()`、`inertia` | 能排出微任务顺序，理解 thenable |
+
+##### `Context`
+
+`Context` 是 Cordis 框架依赖注入系统的核心代理对象，基于 [Proxy](../../Language/JavaScript/JavaScript%20Proxy.md) 语法实现，源码如下：
+```javascript
+/**
+ * Root and child dependency containers for Cordis plugins.
+ */
+export class Context {
+  // ...
+  
+  /** Create the root context and install the built-in services. */
+  constructor() {
+    this[symbols.isolate] = Object.create(null)
+    this[symbols.intercept] = Object.create(null)
+    const self = new Proxy<this>(this, ReflectService.handler)
+    this.root = self
+    this.baseUrl = undefined
+    this.fiber = new Fiber(self, {}, Object.create(null), null, () => [])
+    this.reflect = new ReflectService(self)
+    this.registry = new RegistryService(self)
+    this.events = new EventsService(self)
+    this.logger = new LoggerService(self)
+    this.fiber._disposables.clear()
+    return self
+  }
+  
+  // ...
+}
+```
+
+在构造函数最后 `return self` —— 构造函数返回对象会覆盖 `this`，所以 `new Context()` 拿到的是 `Proxy` 。`Context` 上没有 `services` 字典字段，只有四个常驻服务：`events / logger / reflect / registry`，加 `fiber / root / baseUrl`。
+
+真正的东西全在 `Proxy` 的 `get` / `set` / `has` 三个 trap 里。
+
+```typescript
+// vendor/cordis/src/reflect.ts
+
+// ...
+
+/**
+ * Reflection and service-resolution layer installed as `ctx.reflect`.
+ *
+ * This service powers the context proxy, service registration, accessors, and
+ * the mixins that expose core service methods directly on `ctx`.
+ */
+export class ReflectService {
+  /** Proxy traps implementing service resolution for every context object. */
+  static handler: ProxyHandler<Context> = {
+    get: (target, prop, ctx: Context) => { ... },   // 拦截 [[Get]]
+    set: (target, prop, value, ctx: Context) => { ... }, // 拦截 [[Set]]
+    has: (target, prop) => { ... },        // 拦截 [[HasProperty]]
+  }
+
+  // ...
+  
+  constructor(public ctx: Context) {
+    defineProperty(this, symbols.tracker, {
+      property: 'ctx',
+      noShadow: true,
+    })
+    this.mixin('reflect', ['get', 'set', 'provide', 'accessor', 'mixin'])
+    this.mixin('fiber', ['runtime', 'effect'])
+    this.mixin('registry', ['inject', 'plugin'])
+    this.mixin('events', ['on', 'once', 'parallel', 'emit', 'serial', 'bail', 'waterfall'])
+  }
+  
+  /**
+   * Register a service implementation owned by the current fiber.
+   *
+   * See the `ctx.provide()` overload above for the full contract.
+   *
+   * @param name — the service name.
+   * @param value — the service value.
+   * @param check — optional availability predicate for dependents.
+   * @returns a disposer that unregisters the service.
+   */
+  provide(name: string, value?: any, check?: () => boolean) {
+    return this.ctx.fiber.effect(() => {
+      // ...
+    }, `ctx.provide(${JSON.stringify(name)})`)
+  }
+}
+```
+
 
 > [!tip] DeepSeek Harness 的 Loader 和 Include
 > DeepSeek Harness 还用到另外两个 Cordis 包：Loader（`vendor/loader`）和 Include（`vendor/include`）。
 
 
-##### Loader
+##### `Loader`
 
 > [!quote] Cordis 核心只提供 `ctx.plugin(plugin, config)`，这种使用方式的前提是从代码里引入了插件对象。
 
@@ -838,7 +929,7 @@ Loader 的**核心能力**，是让运行中的插件始终和插件清单保持
 8. **等待全部加载完**：依赖 `loader` 的插件可以声明 `await: true`，等所有 entry 都加载完再启动（`index.ts:175-179`）。
 
 
-##### Include
+##### `Include`
 
 Cordis 引入了 Include（`vendor/include`）包来为基于 entry 条目的插件清单提供文件支持，使用这个 Include 包可以将文件中的 entry 清单，加载为实际运行的 entry 清单（`vendor/include/src/index.ts`）。
 

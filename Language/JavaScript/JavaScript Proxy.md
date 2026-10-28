@@ -5,7 +5,7 @@
 
 ## 用法
 
-```javascript
+```typescript
 const proxy = new Proxy(target, handler)
 ```
 
@@ -13,14 +13,16 @@ const proxy = new Proxy(target, handler)
 - `target` 是被代理的对象
 - `handler` 是拦截器对象，比如 `ReflectService.handler`
 
-
+`handler` 是一张回调表，表上的每个方法就是一个 trap，即规范/MDN 的正式术语：**内部方法的分派点**。ECMAScript 规范里，对对象的一切操作（读、写、判断存在、枚举、取原型……）都定义为**内部方法**（internal method），如 `[[Get]]`、`[[Set]]`、`[[HasProperty]]`。
+- 普通对象走默认算法；
+- 代理的对应内部方法则会先看 handler 上有没有同名函数，有就调用它，用返回值作为本次操作的结果。
 
 
 
 ## 实例
 
 在 Cordis 框架中，其核心的依赖注入系统就是用 `Proxy` 实现的：
-```javascript
+```typescript
 // cordis/src/context.ts
 
 // ...
