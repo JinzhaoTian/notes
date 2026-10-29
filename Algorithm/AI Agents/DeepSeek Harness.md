@@ -819,7 +819,9 @@ await ctx.loader.create({
 ##### `Context`
 
 `Context` 是 Cordis 框架依赖注入系统的核心代理对象，基于 [Proxy](../../Language/JavaScript/JavaScript%20Proxy.md) 语法实现，源码如下：
-```javascript
+```typescript
+// vendor/cordis/src/context.ts
+
 /**
  * Root and child dependency containers for Cordis plugins.
  */
