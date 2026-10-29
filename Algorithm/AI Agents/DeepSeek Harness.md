@@ -808,7 +808,7 @@ await ctx.loader.create({
 > [!info] Cordis 用到的 JavaScript 底层机制
 > | 机制 | Cordis  | 了解程度 |
 > | --- | --- | --- |
-> | 原型链 + 属性描述符 | `extend` / `isolate` / `intercept` | 能手写 `Object.create` 链，说清 `in`、`Object.keys`、赋值三者的差别 |
+> | [原型链](../../Language/JavaScript/JavaScript%20原型链.md) + 属性描述符 | `extend` / `isolate` / `intercept` | 能手写 `Object.create` 链，说清 `in`、`Object.keys`、赋值三者的差别 |
 > | Proxy + 内部方法 + receiver | `ReflectService.handler` | 能解释 trap 和默认算法的关系，知道 receiver 是谁 |
 > | `Reflect` | trap 内部的 `Reflect.get/has/ownKeys` | 知道它是内部方法的函数形式，不是"另一个 API" |
 > | `this` / 调用 / 构造 | `return self`、`mixin` 的 bind、`createCallable` | 能预测"方法被取出后 this 是谁" |
