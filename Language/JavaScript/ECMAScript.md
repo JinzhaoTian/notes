@@ -21,3 +21,6 @@ TypeScript 是 JavaScript 的一个“超集”（Superset）。这意味着，*
 | **ES2022 (ES13)** | 2022 | **类字段（公共/私有 `#`）**、**顶层 `await`**、`.at()` 方法、`Object.hasOwn()`                                                                                                                                                                                                                                                                                                            |
 | **ES2023 (ES14)** | 2023 | **非破坏性（不可变）数组方法**：`toSorted()`、`toReversed()`、`toSpliced()`、`with()`；`findLast()`/`findLastIndex()`                                                                                                                                                                                                                                                                       |
 | **ES2024 (ES15)** | 2024 | `Object.groupBy()`/`Map.groupBy()`、`Promise.withResolvers()`、正则表达式 `v` 标志                                                                                                                                                                                                                                                                                                 |
+
+## 全局对象（Global Object）
+

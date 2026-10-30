@@ -52,35 +52,27 @@
 
 `Object` 构造函数本身提供了一系列静态方法，用于执行对象的通用操作。现代 JavaScript 中与对象相关的实用工具基本都是静态的。以下按功能分类列举其中的核心方法：
 
-**对象创建与原型操作**
+1. **对象创建与原型操作**
+	- **`Object.create(proto, [propertiesObject])`**：创建一个新对象，并使用指定的原型对象和属性描述符。
+	- **`Object.getPrototypeOf(obj)`**：返回指定对象的原型。
+	- **`Object.setPrototypeOf(obj, proto)`**：设置指定对象的原型（由于性能影响，通常建议使用 `Object.create()`）。
 
-- **`Object.create(proto, [propertiesObject])`**：创建一个新对象，并使用指定的原型对象和属性描述符。
-- **`Object.getPrototypeOf(obj)`**：返回指定对象的原型。
-- **`Object.setPrototypeOf(obj, proto)`**：设置指定对象的原型（由于性能影响，通常建议使用 `Object.create()`）。
-
-
-**属性描述符与元编程**
-
-- **`Object.defineProperty(obj, prop, descriptor)`**：在对象上定义或修改一个属性，并精确控制其行为（如 `writable`、`enumerable`、`configurable`、`get`/`set`）。
-- **`Object.defineProperties(obj, props)`**：批量定义或修改多个属性。
-- **`Object.getOwnPropertyDescriptor(obj, prop)`**：获取指定对象自有属性的描述符。
-- **`Object.getOwnPropertyDescriptors(obj)`**：获取对象所有自有属性的描述符。
+2. **属性描述符与元编程**
+	- **`Object.defineProperty(obj, prop, descriptor)`**：在对象上定义或修改一个属性，并精确控制其行为（如 `writable`、`enumerable`、`configurable`、`get`/`set`）。
+	- **`Object.defineProperties(obj, props)`**：批量定义或修改多个属性。
+	- **`Object.getOwnPropertyDescriptor(obj, prop)`**：获取指定对象自有属性的描述符。
+	- **`Object.getOwnPropertyDescriptors(obj)`**：获取对象所有自有属性的描述符。
 
 
-**属性枚举与检查**
+3. **属性枚举与检查**
+	- **`Object.keys(obj)` / `Object.values(obj)` / `Object.entries(obj)`**：分别返回对象**自有可枚举属性**的键、值或键值对数组。
+	- **`Object.getOwnPropertyNames(obj)`**：返回对象所有自有属性（包括不可枚举属性）的名称数组。
+	- **`Object.hasOwn(obj, prop)`**：判断属性是否为对象的**自有属性**（替代 `Object.prototype.hasOwnProperty.call()`）。
 
-- **`Object.keys(obj)` / `Object.values(obj)` / `Object.entries(obj)`**：分别返回对象**自有可枚举属性**的键、值或键值对数组。
-- **`Object.getOwnPropertyNames(obj)`**：返回对象所有自有属性（包括不可枚举属性）的名称数组。
-- **`Object.hasOwn(obj, prop)`**：判断属性是否为对象的**自有属性**（替代 `Object.prototype.hasOwnProperty.call()`）。
+4. **对象状态控制**
+	- **`Object.freeze(obj)` / `Object.isFrozen(obj)`**：冻结对象（禁止添加、删除、修改属性）及判断冻结状态。
+	- **`Object.seal(obj)` / `Object.isSealed(obj)`**：密封对象（禁止添加、删除属性，但可修改现有属性值）及判断密封状态。
+	- **`Object.preventExtensions(obj)` / `Object.isExtensible(obj)`**：禁止对象扩展（禁止添加新属性）及判断可扩展性。
 
-
-**对象状态控制**
-
-- **`Object.freeze(obj)` / `Object.isFrozen(obj)`**：冻结对象（禁止添加、删除、修改属性）及判断冻结状态。
-- **`Object.seal(obj)` / `Object.isSealed(obj)`**：密封对象（禁止添加、删除属性，但可修改现有属性值）及判断密封状态。
-- **`Object.preventExtensions(obj)` / `Object.isExtensible(obj)`**：禁止对象扩展（禁止添加新属性）及判断可扩展性。
-
-
-**对象合并与复制**
-
-- **`Object.assign(target, ...sources)`**：将所有**可枚举的自有属性**的值从一个或多个源对象复制到目标对象，返回目标对象。注意这是**浅复制**。
+5. **对象合并与复制**
+	- **`Object.assign(target, ...sources)`**：将所有**可枚举的自有属性**的值从一个或多个源对象复制到目标对象，返回目标对象。注意这是**浅复制**。
