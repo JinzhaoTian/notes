@@ -3,7 +3,7 @@ Anthropic Client SDKs 是 Anthropic 官方提供的编程工具包，旨在帮�
 | SDK                     | 主要语言/平台                 | 特点                                                                                                                       |
 | ----------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **`@anthropic-ai/sdk`** | TypeScript / JavaScript | 官方 TypeScript 库，支持 Node.js，提供完整的类型定义和流式响应。                                                                               |
-| **`anthropic`**         | Python                  | 官方 [Python](../../Language/Python/AI%20Agents/Anthropic%20Python%20SDK.md) 库，同时提供同步和异步客户端，与 Pydantic v1/v2 兼容，并集成了自动重试逻辑 |
+| **`anthropic`**         | Python                  | 官方 [Python](../../../Language/Python/AI%20Agents/Anthropic%20Python%20SDK.md) 库，同时提供同步和异步客户端，与 Pydantic v1/v2 兼容，并集成了自动重试逻辑 |
 ## 核心功能
 
 1. **完整的 API 覆盖**：全面支持 Anthropic 最新的 API 功能，如 **Messages API**（多轮对话）、**工具调用**（让 Claude 使用外部工具）和**流式响应**（实现打字机效果）。

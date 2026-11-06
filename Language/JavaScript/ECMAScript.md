@@ -24,3 +24,4 @@ TypeScript 是 JavaScript 的一个“超集”（Superset）。这意味着，*
 
 ## 全局对象（Global Object）
 
+根据 ECMAScript 规范，**全局对象在控制权进入任何执行上下文之前，就已经被创建了**。它是唯一的，承载着脚本运行所需的最基础环境。

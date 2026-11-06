@@ -2,7 +2,7 @@ QuickJS 是由 Fabrice Bellard 开发的一个小巧、可嵌入的 JavaScript �
 
 > [!tip] Fabrice Bellard
 > Fabrice Bellard 是一位著名的程序员，创造了许多令人惊叹的项目，例如：
-> - **[FFmpeg](../../Algorithm/Video/FFmpeg.md)**：强大的音视频处理库和工具。
+> - **[FFmpeg](../../AI/01-Fundamentals/Video/FFmpeg.md)**：强大的音视频处理库和工具。
 > - **QEMU**：著名的硬件虚拟化和仿真平台，支持多架构 CPU 及硬件模拟。
 > - **TinyCC**：一个非常小巧且快速的 C 编译器。
 > 

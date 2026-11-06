@@ -18,7 +18,7 @@ LangGraph 主要围绕三个核心概念构建，并借此实现了一些关键�
 
 ## 使用示例
 
-### [Python](../../Language/Python/AI%20Agents/LangGraph.md)
+### [Python](../../../Language/Python/AI%20Agents/LangGraph.md)
 
 ```python
 # 1. 安装：pip install -U langgraph
@@ -48,5 +48,5 @@ result = graph.invoke({"text": "world"})
 print(result)  # 输出: {'text': 'world hello'}
 ```
 
-### [TypeScript](../../Language/Node/AI%20Agents/LangGraph.md)
+### [TypeScript](../../../Language/Node/AI%20Agents/LangGraph.md)
 
