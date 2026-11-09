@@ -5,23 +5,45 @@
 TypeScript 是 JavaScript 的一个“超集”（Superset）。这意味着，**任何合法的 JavaScript 代码，同时也是合法的 TypeScript 代码**。JavaScript 是动态类型语言，很多错误只有在代码运行时才会暴露（比如你把一个数字当成函数来调用）。TypeScript 则让你在写代码时就声明类型（如 `let name: string`），并在代码运行前（编译阶段）就检查出类型错误，这能帮你避免大量潜在的 Bug，尤其在大型项目中。
 
 
-| 版本                | 发布年份 | 核心新增特性                                                                                                                                                                                                                                                                                                                                                                    |
-| ----------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ES1               | 1997 | 基本语法                                                                                                                                                                                                                                                                                                                                                                      |
-| ES3               | 1999 | 正则表达式和异常处理                                                                                                                                                                                                                                                                                                                                                                |
-| ES4               |      | 遗弃                                                                                                                                                                                                                                                                                                                                                                        |
-| ES5               | 2009 | 严格模式（`"use strict"`）、JSON支持以及`map`、`filter`等高阶数组方法                                                                                                                                                                                                                                                                                                                        |
-| ES6               | 2015 | 历史上最大规模的一次更新，从根本上改变了编写复杂应用的方式。它一次性引入了海量核心特性，包括`let`/`const`、箭头函数、类（`class`）、模块（`import`/`export`）、`Promise`、解构赋值等，至今仍是现代开发的基石。                                                                                                                                                                                                                                            |
-| **ES2016 (ES7)**  | 2016 | 指数运算符（`**`）、`Array.prototype.includes()`                                                                                                                                                                                                                                                                                                                                  |
-| **ES2017 (ES8)**  | 2017 | **`async/await`**（异步编程的终极方案）、`Object.values()`/`entries()`、字符串填充（`padStart`/`padEnd`）[](https://ecma-international.org/wp-content/uploads/ECMA-262_16th_edition_june_2025.pdf#2#138#2)                                                                                                                                                                                    |
-| **ES2018 (ES9)**  | 2018 | 对象 Rest/Spread 属性（`{...obj}`）、异步迭代（`for await...of`）、正则表达式改进（命名捕获组、`s`标志、后行断言等）[](https://ecma-international.org/wp-content/uploads/ECMA-262_16th_edition_june_2025.pdf#2#138#2)                                                                                                                                                                                          |
-| **ES2019 (ES10)** | 2019 | `Array.prototype.flat()`/`flatMap()`、`Object.fromEntries()`、可选捕获绑定（`catch {}`省略参数）[](https://ecma-international.org/wp-content/uploads/ECMA-262_16th_edition_june_2025.pdf#2#138#2)[](http://toolbarqueries.google.co.jp/url?q=https://alinex.gitlab.io/alinex-book.pdf&sa=U&ved=2ahUKEwiij_KB8OOQAxXvUGwGHVTuC1g4HhAWegQIBxAC&usg=AOvVaw0pAd7PGF6UCUQuaKmC8na2#26#47#26) |
-| **ES2020 (ES11)** | 2020 | **可选链（`?.`）**、**空值合并运算符（`??`）**、`BigInt`、`Promise.allSettled()`                                                                                                                                                                                                                                                                                                           |
-| **ES2021 (ES12)** | 2021 | 逻辑赋值运算符（`\|=`、`&&=`、`??=`）、`String.prototype.replaceAll()`、`Promise.any()`                                                                                                                                                                                                                                                                                                |
-| **ES2022 (ES13)** | 2022 | **类字段（公共/私有 `#`）**、**顶层 `await`**、`.at()` 方法、`Object.hasOwn()`                                                                                                                                                                                                                                                                                                            |
-| **ES2023 (ES14)** | 2023 | **非破坏性（不可变）数组方法**：`toSorted()`、`toReversed()`、`toSpliced()`、`with()`；`findLast()`/`findLastIndex()`                                                                                                                                                                                                                                                                       |
-| **ES2024 (ES15)** | 2024 | `Object.groupBy()`/`Map.groupBy()`、`Promise.withResolvers()`、正则表达式 `v` 标志                                                                                                                                                                                                                                                                                                 |
+| 版本                | 发布年份 | 核心新增特性                                                                                                                         |
+| ----------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------ |
+| ES1               | 1997 | 基本语法                                                                                                                           |
+| ES3               | 1999 | 正则表达式和异常处理                                                                                                                     |
+| ES4               |      | 遗弃                                                                                                                             |
+| ES5               | 2009 | 严格模式（`"use strict"`）、JSON支持以及`map`、`filter`等高阶数组方法                                                                             |
+| ES6               | 2015 | 历史上最大规模的一次更新，从根本上改变了编写复杂应用的方式。它一次性引入了海量核心特性，包括`let`/`const`、箭头函数、类（`class`）、模块（`import`/`export`）、`Promise`、解构赋值等，至今仍是现代开发的基石。 |
+| **ES2016 (ES7)**  | 2016 | 指数运算符（`**`）、`Array.prototype.includes()`                                                                                       |
+| **ES2017 (ES8)**  | 2017 | **`async/await`**（异步编程的终极方案）、`Object.values()`/`entries()`、字符串填充（`padStart`/`padEnd`）                                          |
+| **ES2018 (ES9)**  | 2018 | 对象 Rest/Spread 属性（`{...obj}`）、异步迭代（`for await...of`）、正则表达式改进（命名捕获组、`s`标志、后行断言等）                                                |
+| **ES2019 (ES10)** | 2019 | `Array.prototype.flat()`/`flatMap()`、`Object.fromEntries()`、可选捕获绑定（`catch {}`省略参数）                                             |
+| **ES2020 (ES11)** | 2020 | **可选链（`?.`）**、**空值合并运算符（`??`）**、`BigInt`、`Promise.allSettled()`                                                                |
+| **ES2021 (ES12)** | 2021 | 逻辑赋值运算符（`\|=`、`&&=`、`??=`）、`String.prototype.replaceAll()`、`Promise.any()`                                                     |
+| **ES2022 (ES13)** | 2022 | **类字段（公共/私有 `#`）**、**顶层 `await`**、`.at()` 方法、`Object.hasOwn()`                                                                 |
+| **ES2023 (ES14)** | 2023 | **非破坏性（不可变）数组方法**：`toSorted()`、`toReversed()`、`toSpliced()`、`with()`；`findLast()`/`findLastIndex()`                            |
+| **ES2024 (ES15)** | 2024 | `Object.groupBy()`/`Map.groupBy()`、`Promise.withResolvers()`、正则表达式 `v` 标志                                                      |
 
 ## 全局对象（Global Object）
 
-根据 ECMAScript 规范，**全局对象在控制权进入任何执行上下文之前，就已经被创建了**。它是唯一的，承载着脚本运行所需的最基础环境。
+在 ECMAScript 规范中规定，**全局对象在控制权进入任何执行上下文之前，就已经被创建了**。它是唯一的，承载着脚本运行所需的最基础环境。
+
+从 ECMAScript 规范角度，它有几个决定性特征：
+- **它不是一个函数**：全局对象没有 `[[Call]]` 和 `[[Construct]]` 内部方法，这意味着你不能把它当作函数调用，也不能用 `new` 来构造它。
+- **它的属性有两类来源**：
+    - **规范定义的内置属性**：例如 `NaN`、`Infinity`、`undefined`，以及 `Object`、`Function`、`Array`等构造函数，它们都是全局对象的属性。
+    - **宿主定义的属性**：宿主环境（如浏览器、Node.js）可以向全局对象添加额外属性。规范甚至允许宿主添加一个**值指向全局对象自身**的属性。
+
+
+在 ECMAScript 规范中的全局对象是一个抽象概念，是一种对执行环境的封装。在不同的 JavaScript 运行时中，它通过不同的具体对象暴露给你。
+
+- **浏览器**：你接触到的全局对象通常是 `window`。但更精确地说，由于 HTML 标准的安全和导航机制，`window` 实际上是一个 **`WindowProxy`（代理）**。它代理了真正的全局对象 `Window`，并在页面导航时保持身份不变，而背后的 `Window` 可能已被替换。真正的全局对象 `Window`，在 JavaScript 中是无法被直接访问到的。
+- **Node.js**：全局对象通常通过名为 `global` 的对象来访问。
+- **Web Workers**：全局对象通常通过 `self` 来访问。
+
+
+### `globalThis`
+
+正因为历史上不同环境的全局对象名称各异，ES2020 引入了 **`globalThis`**。它提供了一种标准方式，让你在任何环境下都能访问到全局 `this` 值，从而访问全局对象本身。[](https://mdn.org.cn/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis)
+
+在绝大多数场景下，`globalThis` 就是那个实际的全局对象。你向 `globalThis` 添加属性，就相当于创建了全局变量。不过，规范也允许宿主为 `globalThis` 提供一个**与全局对象不同**的值，这是规范保留的灵活性。[](https://mdn.org.cn/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis)
+
+所以，“执行环境中有一个全局对象”描述的是一个**底层的、基础的运行时事实**：在所有代码运行之前，有一个唯一的、非函数的对象被创建，作为整个脚本环境的内置属性和宿主扩展的最终容器。你在代码中通过 `window`、`global` 或 `globalThis` 触及的，是这个抽象容器的具体表现形式或访问代理。

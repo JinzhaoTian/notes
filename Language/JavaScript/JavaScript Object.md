@@ -5,7 +5,7 @@
 `Object` 构造函数是全局对象（Global Object）的 "Object" 属性的初始值。
 
 > [!caution] ECMAScript 执行环境中有一个全局对象（Global Object）
-> 全局对象是 ECMAScript 执行环境中的顶层对象（在浏览器中 window/globalThis，在 Node 中 global 等），它拥有许多内置属性，如 Object、Function、Array、String 等。
+> [全局对象（Global Object）](ECMAScript.md#全局对象（Global%20Object）)是 ECMAScript 执行环境中的顶层对象（在浏览器中 window/globalThis，在 Node 中 global 等），它拥有许多内置属性，如 Object、Function、Array、String 等。
 > 
 > > [!quote] The Object constructor is the initial value of the "Object" property of the global object.
 > 

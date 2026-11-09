@@ -388,7 +388,7 @@ await runCli()                                // bin.ts:77
 	- **`const ctx = new Context()`**（`packages/boot/app-boot/src/index.ts:1204`）→ 进入 `vendor/cordis/src/context.ts:71`：
 	    - 创建一个 **Cordis 框架依赖注入系统的核心代理对象 `Context`**。
 	    - 在 `Context` 实例内部：
-		    - 所有属性访问操作（读取、设置等）拦截下来，转交给 `ReflectService.handler` 处理。
+		    - 所有属性访问操作（ `get`、`set` 等）拦截下来，转交给 `ReflectService.handler` 处理。
 		    - 创建根 `Fiber`，它没有 runtime，构造时直接就是 ACTIVE（`vendor/cordis/src/fiber.ts:320-324`）。
 		    - 装载 `reflect`、`registry`、`events`、`logger` 四个内置服务。
 		    - 清空根 `Fiber` 的 `_disposables`（`vendor/cordis/src/context.ts:82`），这些内置能力就不会随根 dispose 被卸载。
