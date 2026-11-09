@@ -1,4 +1,4 @@
-1995 年 5 月，Brendan Eich 在 Netscape 内部完成的一个可运行引擎原型（当时叫 Mocha），而不是今天我们所知的 JavaScript 1.0 的全部。据 Eich 本人回忆，这个原型是在 1995年5月6日至15日之间完成的，他本人说过过：“引擎原型花了5月的十天”。
+1995 年 5 月，Brendan Eich 在 Netscape 内部完成的一个可运行引擎原型（Mocha），而不是今天我们所知的 JavaScript 1.0 的全部。据 Eich 本人回忆，这个原型是在 1995 年 5 月 6 日至 15 日之间完成的，他本人说过过：“引擎原型花了 5 月的十天”。
 
 > [!quote] 被强加的“像 Java”约束
 > Eich 最初被 Netscape 招募时的兴趣和计划，是将 Scheme 这样的函数式语言嵌入浏览器。然而，Netscape 与 Sun 的联盟改变了方向。
