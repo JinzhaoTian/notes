@@ -19,7 +19,7 @@ john.greet(); // Hello, I'm John
 ```
 
 > [!tip] 原型（Prototype）
-> [原型](JavaScript%20原型链.md)（Prototype）是 JavaScript 面向对象编程的核心机制，每个 JavaScript 对象都有一个内置的 `[[Prototype]]` 属性（可通过 `__proto__` 访问），指向它的原型对象。
+> [原型](JavaScript%20Prototype%20Chain.md)（Prototype）是 JavaScript 面向对象编程的核心机制，每个 JavaScript 对象都有一个内置的 `[[Prototype]]` 属性（可通过 `__proto__` 访问），指向它的原型对象。
 
 2. **对象创建的本质**：在 JavaScript 中，对象是属性的集合，每个对象都有一个指向原型对象的内部链接。
 

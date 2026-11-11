@@ -20,6 +20,201 @@ JavaScript 是一个动态的、弱类型的类型系统，变量只需要用 `v
 	- **`array`**：特殊对象，如 `[1, 2, 3]`。
 	- **`function`**：可调用对象。
 
+## 包装对象
+
+原始类型的值本身没有方法，但访问属性或方法时，JavaScript 会临时创建一个包装对象，执行完后销毁，这叫**自动装箱**。
+
+```javascript
+"abc".toUpperCase(); // "ABC"
+```
+大致过程：
+1. 临时创建 `new String("abc")`；
+2. 调用 `toUpperCase()`；
+3. 返回结果；
+4. 临时对象被丢弃。
+
+但给原始值添加属性不会保留：
+```javascript
+let s = "abc";
+s.foo = 1;
+console.log(s.foo); // undefined
+```
+
+因为赋值时**临时包装对象被创建后立即丢弃**，原始字符串本身没变。
+
+### 构造函数调用与 `new` 调用
+
+```javascript
+String(123);      // "123"，返回原始字符串
+new String(123);  // String 包装对象
+
+Number("123");    // 123，返回原始数字
+new Number("123"); // Number 包装对象
+
+Boolean(0);       // false，返回原始布尔值
+new Boolean(0);   // Boolean 包装对象
+
+new Symbol();     // TypeError
+new BigInt();     // TypeError
+
+const symObj = Object(Symbol("id"));
+typeof symObj; // "object"
+
+const bigObj = Object(1n);
+typeof bigObj; // "object"
+```
+注意：
+1. `String()`、`Number()`、`Boolean()` 作为普通函数调用，通常返回原始值。
+2. 加 `new` 才创建包装对象。
+3. `Symbol()` 和 `BigInt()` 不能和 `new` 一起用：
+
+
+
+
+
+### 内置包装对象
+
+1. **`Number`**：数字包装对象
+```javascript
+// 数字表示方式
+const decimal = 42;
+const binary = 0b101010;   // 二进制
+const octal = 0o52;        // 八进制
+const hex = 0x2A;          // 十六进制
+const scientific = 4.2e1;  // 科学计数法
+
+// 特殊数值
+console.log(Number.MAX_VALUE);      // 1.7976931348623157e+308
+console.log(Number.MIN_VALUE);      // 5e-324
+console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
+console.log(Number.MIN_SAFE_INTEGER); // -9007199254740991
+console.log(Number.POSITIVE_INFINITY); // Infinity
+console.log(Number.NEGATIVE_INFINITY); // -Infinity
+console.log(Number.EPSILON);        // 2.220446049250313e-16
+
+// NaN (Not a Number)
+console.log(NaN === NaN);          // false (唯一不等于自身的值)
+console.log(Number.isNaN(NaN));    // true
+console.log(isNaN("hello"));       // true (全局函数会进行类型转换)
+console.log(Number.isNaN("hello")); // false
+```
+
+2. **`String`**：字符串包装对象
+```javascript
+// 字符串创建
+const str1 = "hello";
+const str2 = 'world';
+const str3 = `template ${str1}`; // 模板字符串
+
+// 字符串不可变性
+let str = "hello";
+str[0] = "H"; // 无效，字符串不可变
+str = "H" + str.slice(1); // 正确方式
+
+// UTF-16编码
+console.log("😀".length);          // 2 (表情符号占2个码元)
+console.log("𝄞".length);          // 2 (某些字符也占2个码元)
+console.log(Array.from("😀").length); // 1 (正确方式)
+```
+
+3. **`Boolean`**：布尔包装对象
+```javascript
+// 假值（falsy values）
+const falsyValues = [
+    false,      // false
+    0, -0,      // 零
+    0n,         // BigInt的0
+    "", '', ``  // 空字符串
+    null,       // null
+    undefined,  // undefined
+    NaN         // NaN
+];
+
+// 所有其他值都是真值（truthy）
+const truthyValues = [
+    true,
+    "false",    // 非空字符串
+    "0",        // 非空字符串
+    [],         // 数组(真值)
+    {},         // 对象(真值)
+    function(){},
+    Infinity,
+    -Infinity
+];
+```
+
+4. **null 与 undefined**
+
+> [!caution] `null` 和 `undefined` 没有包装对象，访问它们的属性会报错。
+
+```javascript
+// undefined
+let x;
+console.log(x);               // undefined
+console.log(typeof x);        // "undefined"
+console.log(void 0);          // undefined (void运算符)
+
+// null
+let y = null;
+console.log(typeof y);        // "object" (历史bug)
+
+// 区别
+console.log(null == undefined);   // true (宽松相等)
+console.log(null === undefined);  // false (严格相等)
+console.log(!null);               // true
+console.log(!undefined);          // true
+
+// 使用场景
+function foo(param) {
+    // param可能为undefined
+    return param ?? 'default'; // nullish coalescing
+}
+```
+
+5. **`Symbol`**（ES6+）：`symbol` 包装对象
+```javascript
+// 创建Symbol
+const sym1 = Symbol();
+const sym2 = Symbol("description");
+const sym3 = Symbol("description");
+
+console.log(sym2 === sym3); // false (每个Symbol都是唯一的)
+console.log(sym2.toString()); // "Symbol(description)"
+
+// 全局Symbol注册表
+const globalSym1 = Symbol.for("key"); // 创建或获取
+const globalSym2 = Symbol.for("key");
+console.log(globalSym1 === globalSym2); // true
+
+// Symbol.keyFor获取描述
+console.log(Symbol.keyFor(globalSym1)); // "key"
+
+// 内置Symbol
+const obj = {
+    [Symbol.iterator]() { /* 迭代器 */ },
+    [Symbol.toStringTag]: "MyObject",
+    [Symbol.toPrimitive](hint) { /* 类型转换 */ }
+};
+```
+
+6. **`BigInt`**（ES2020+）：`bigInt` 包装对象
+```javascript
+// 创建BigInt
+const big1 = 9007199254740991n;   // 字面量
+const big2 = BigInt("9007199254740991");
+const big3 = BigInt(Number.MAX_SAFE_INTEGER);
+
+// 运算
+console.log(big1 + 1n);           // 9007199254740992n
+console.log(big1 * 2n);           // 18014398509481982n
+
+// 注意事项
+console.log(typeof 1n);           // "bigint"
+console.log(1n == 1);             // true (宽松相等)
+console.log(1n === 1);            // false (严格相等)
+console.log(1n + 2n);             // 3n
+// console.log(1n + 2);           // TypeError: 不能混合类型
+```
 
 
 ## 类型判断
@@ -27,14 +222,14 @@ JavaScript 是一个动态的、弱类型的类型系统，变量只需要用 `v
 1. **`typeof` 运算符**：
 ```javascript
 typeof undefined;   // "undefined"
-typeof null;        // "object"（注意，这是历史遗留问题）
+typeof null;        // "object" （历史遗留）
 typeof true;        // "boolean"
 typeof 42;          // "number"
 typeof "hello";     // "string"
 typeof Symbol();    // "symbol"
 typeof 123n;        // "bigint"
 typeof {};          // "object"
-typeof [];          // "object"（数组也是对象）
+typeof [];          // "object" （数组也是对象）
 typeof function(){};// "function"
 ```
 
@@ -126,146 +321,6 @@ console.log(obj + 10);         // 52 (hint为default)
 ```
 
 
-## 原始类型
-
-1. **Number 类型**
-```javascript
-// 数字表示方式
-const decimal = 42;
-const binary = 0b101010;   // 二进制
-const octal = 0o52;        // 八进制
-const hex = 0x2A;          // 十六进制
-const scientific = 4.2e1;  // 科学计数法
-
-// 特殊数值
-console.log(Number.MAX_VALUE);      // 1.7976931348623157e+308
-console.log(Number.MIN_VALUE);      // 5e-324
-console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
-console.log(Number.MIN_SAFE_INTEGER); // -9007199254740991
-console.log(Number.POSITIVE_INFINITY); // Infinity
-console.log(Number.NEGATIVE_INFINITY); // -Infinity
-console.log(Number.EPSILON);        // 2.220446049250313e-16
-
-// NaN (Not a Number)
-console.log(NaN === NaN);          // false (唯一不等于自身的值)
-console.log(Number.isNaN(NaN));    // true
-console.log(isNaN("hello"));       // true (全局函数会进行类型转换)
-console.log(Number.isNaN("hello")); // false
-```
-
-2. **String 类型**
-```javascript
-// 字符串创建
-const str1 = "hello";
-const str2 = 'world';
-const str3 = `template ${str1}`; // 模板字符串
-
-// 字符串不可变性
-let str = "hello";
-str[0] = "H"; // 无效，字符串不可变
-str = "H" + str.slice(1); // 正确方式
-
-// UTF-16编码
-console.log("😀".length);          // 2 (表情符号占2个码元)
-console.log("𝄞".length);          // 2 (某些字符也占2个码元)
-console.log(Array.from("😀").length); // 1 (正确方式)
-```
-
-3. **Boolean 类型**
-```javascript
-// 假值（falsy values）
-const falsyValues = [
-    false,      // false
-    0, -0,      // 零
-    0n,         // BigInt的0
-    "", '', ``  // 空字符串
-    null,       // null
-    undefined,  // undefined
-    NaN         // NaN
-];
-
-// 所有其他值都是真值（truthy）
-const truthyValues = [
-    true,
-    "false",    // 非空字符串
-    "0",        // 非空字符串
-    [],         // 数组(真值)
-    {},         // 对象(真值)
-    function(){},
-    Infinity,
-    -Infinity
-];
-```
-
-4. **null 与 undefined**
-```javascript
-// undefined
-let x;
-console.log(x);               // undefined
-console.log(typeof x);        // "undefined"
-console.log(void 0);          // undefined (void运算符)
-
-// null
-let y = null;
-console.log(typeof y);        // "object" (历史bug)
-
-// 区别
-console.log(null == undefined);   // true (宽松相等)
-console.log(null === undefined);  // false (严格相等)
-console.log(!null);               // true
-console.log(!undefined);          // true
-
-// 使用场景
-function foo(param) {
-    // param可能为undefined
-    return param ?? 'default'; // nullish coalescing
-}
-```
-
-5. **Symbol 类型（ES6+）**
-```javascript
-// 创建Symbol
-const sym1 = Symbol();
-const sym2 = Symbol("description");
-const sym3 = Symbol("description");
-
-console.log(sym2 === sym3); // false (每个Symbol都是唯一的)
-console.log(sym2.toString()); // "Symbol(description)"
-
-// 全局Symbol注册表
-const globalSym1 = Symbol.for("key"); // 创建或获取
-const globalSym2 = Symbol.for("key");
-console.log(globalSym1 === globalSym2); // true
-
-// Symbol.keyFor获取描述
-console.log(Symbol.keyFor(globalSym1)); // "key"
-
-// 内置Symbol
-const obj = {
-    [Symbol.iterator]() { /* 迭代器 */ },
-    [Symbol.toStringTag]: "MyObject",
-    [Symbol.toPrimitive](hint) { /* 类型转换 */ }
-};
-```
-
-6. **BigInt 类型（ES2020+）**
-```javascript
-// 创建BigInt
-const big1 = 9007199254740991n;   // 字面量
-const big2 = BigInt("9007199254740991");
-const big3 = BigInt(Number.MAX_SAFE_INTEGER);
-
-// 运算
-console.log(big1 + 1n);           // 9007199254740992n
-console.log(big1 * 2n);           // 18014398509481982n
-
-// 注意事项
-console.log(typeof 1n);           // "bigint"
-console.log(1n == 1);             // true (宽松相等)
-console.log(1n === 1);            // false (严格相等)
-console.log(1n + 2n);             // 3n
-// console.log(1n + 2);           // TypeError: 不能混合类型
-```
 
 ## 引用类型
 

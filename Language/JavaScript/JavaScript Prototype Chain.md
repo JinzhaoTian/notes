@@ -1,6 +1,4 @@
-JavaScript 原型（Prototype）是一个让对象能够从其他对象继承属性和方法的机制，理解原型对于掌握 JavaScript 至关重要，因为它是语言面向对象特性的基础。
-
-原型链（Prototype Chain）使得对象可以共享方法，减少内存使用，并提供了灵活的继承机制，虽然 ES6 引入了类的概念，但底层仍然是基于原型的实现。
+JavaScript 原型链（Prototype Chain）使得对象可以共享方法，减少内存使用，并提供了灵活的继承机制，虽然 ES6 引入了类的概念，但底层仍然是基于原型的实现。
 
 ```
 实例对象 → 构造函数.prototype → Object.prototype → null

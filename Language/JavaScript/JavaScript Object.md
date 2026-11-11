@@ -1,4 +1,4 @@
-`Object` 是 ECMAScript 中最基础的标准内置对象，它既是 JavaScript 的一种数据类型，也是所有普通对象的**构造函数**，其核心作用是**存储键值对集合**以及**构建更复杂的实体**。
+`Object` 是 ECMAScript 规范中**最基础的标准内置对象**，它既是 JavaScript 的一种数据类型，也是所有普通对象的**构造函数**，其核心作用是**存储键值对集合**以及**构建更复杂的实体**。
 
 在 JavaScript 中，**几乎所有对象都是 `Object` 的实例**。一个典型对象会通过原型链继承 `Object.prototype` 上的属性和方法（这些属性可能被对象自身的同名属性覆盖）。唯一不继承自 `Object.prototype` 的对象，是那些以 `null` 为原型或派生自其他 `null` 原型对象的对象。
 
@@ -21,7 +21,20 @@
 > 
 > ECMAScript 的语言类型包括 `Undefined`、`Null`、`Boolean`、`String`、`Symbol`、`BigInt`、`Number`和 `Object`，而函数属于 `Object` 类型。更精确地说，函数对象是**可调用对象（callable object）**：它首先是一个对象，然后额外具有 `[[Call]]` 内部方法，因而可以被调用；如果还具有 `[[Construct]]`，还可以被 `new` 调用。
 
-## `[[Prototype]]`
+## Prototype（原型）
+
+在 JavaScript 中，原型（Prototype）是另一个对象，是一个让对象能够从其他对象继承属性和方法的机制。**每个对象在创建时，都会隐式地关联到另一个对象，这个被关联的对象就是它的“原型”**。
+
+> [!quote] 设计 Prototype 的目的为了实现属性和方法的共享
+> 例如，当你创建一个数组 `[1, 2, 3]` 时，这个数组对象自身并没有定义 `push`、`pop` 等方法。当你调用 `array.push()` 时，JavaScript 会先在这个数组对象上查找，找不到，就去它的原型对象（即 `Array.prototype`）上找，并在那里找到 `push` 方法。所有数组实例共享同一个原型，因此 `push` 方法只需要在原型上定义一次。
+
+| 概念                  | 归属       | 说明                                                                                                                                                                    |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`[[Prototype]]`** | **所有对象** | 这是每个对象都有的**内部隐式属性**，指向该对象的原型。它是规范的正式名称，但你无法在代码中直接访问它。                                                                                                                 |
+| **`__proto__`**     | **所有对象** | 这是访问 `[[Prototype]]` 的一种**事实标准（非官方但普遍支持）的访问器**。你可以通过 `obj.__proto__` 来读取或修改对象的原型。但它并非正式标准，**在生产代码中应避免使用**，推荐使用 `Object.getPrototypeOf()` 和 `Object.setPrototypeOf()`。 |
+| **`prototype`**     | **仅限函数** | 这是**函数对象才有的一个普通属性**。它的特殊之处在于：当这个函数被用作**构造函数**（通过 `new` 调用）时，新创建的实例对象的 `[[Prototype]]` 会指向该函数的 `prototype` 属性所指向的对象。                                                   |
+
+### `[[Prototype]]`
 
 `Object` 的 `[[Prototype]]` 内部槽（Internal Slot）指向 `Function.prototype`，并且自身具有一个 `length` 属性，值为 `1`。
 
@@ -31,17 +44,19 @@
 > [!caution] 所有普通对象（Ordinary Object）都拥有一个名为 `[[Prototype]]` 的内部槽
 > 普通对象（Ordinary Object）的 `[[Prototype]]` 内部槽的值只有两种可能：**`null`** 或 **另一个对象**。
 
-`[[Prototype]]` 被用来实现 JavaScript 的继承机制：当你尝试读取对象 `obj` 上的一个属性时，引擎首先检查 `obj` 自身是否拥有该属性；如果没有，则沿着 `obj.[[Prototype]]` 指向的对象继续查找，再沿着那个对象的 `[[Prototype]]` 查找，依此类推。这条由 `[[Prototype]]` 链接构成的链条就是[原型链](JavaScript%20原型链.md)。当一个对象的 `[[Prototype]]` 为 `null` 时，意味着该对象不继承任何其他对象的属性，这通常是原型链的终点（`Object.prototype` 自身的 `[[Prototype]]` 就是 `null`）。
+`[[Prototype]]` 被用来实现 JavaScript 的继承机制：当你尝试读取对象 `obj` 上的一个属性时，引擎首先检查 `obj` 自身是否拥有该属性；如果没有，则沿着 `obj.[[Prototype]]` 指向的对象继续查找，再沿着那个对象的 `[[Prototype]]` 查找，依此类推。这条由 `[[Prototype]]` 链接构成的链条就是[原型链](JavaScript%20Prototype%20Chain.md)。当一个对象的 `[[Prototype]]` 为 `null` 时，意味着该对象不继承任何其他对象的属性，这通常是原型链的终点（`Object.prototype` 自身的 `[[Prototype]]` 就是 `null`）。
 
-### 与 `__proto__`、`prototype` 的区别
+### `__proto__`
 
-这三个概念容易混淆，但含义截然不同：
 
-1. **`[[Prototype]]`**：这是**规范层面的内部槽**，是所有对象实际拥有的原型引用。
-2. **`__proto__`**：这是一个**历史遗留的访问器属性**（定义在 `Object.prototype` 上）。通过 `obj.__proto__` 读写，实际上会间接调用 `Object.getPrototypeOf(obj)` 和 `Object.setPrototypeOf(obj, ...)`。它并非标准早期就有的机制，但被广泛实现，如今在规范中作为 Annex B 的遗留特性存在。直接操作 `__proto__` 已被认为是不推荐的实践。
-3. **`prototype`**：这是**函数对象才拥有的普通属性**。当你使用 `new Fn()` 创建实例时，新实例的 `[[Prototype]]` 会被设置为 `Fn.prototype` 所指向的对象。`prototype` 是函数的一个可写属性，而 `[[Prototype]]` 是每个对象都有的内部槽，二者不在同一个层面上。
+`__proto__` 是一个**历史遗留的访问器属性**（定义在 `Object.prototype` 上）。通过 `obj.__proto__` 读写，实际上会间接调用 `Object.getPrototypeOf(obj)` 和 `Object.setPrototypeOf(obj, ...)`。它并非标准早期就有的机制，但被广泛实现，如今在规范中作为 Annex B 的遗留特性存在。直接操作 `__proto__` 已被认为是不推荐的实践。
 
-## `Object.prototype`
+### `prototype`
+
+`prototype` 是**函数对象才拥有的普通属性**。当你使用 `new Fn()` 创建实例时，新实例的 `[[Prototype]]` 会被设置为 `Fn.prototype` 所指向的对象。`prototype` 是函数的一个可写属性，而 `[[Prototype]]` 是每个对象都有的内部槽，二者不在同一个层面上。
+
+
+### `Object.prototype`
 
 `Object.prototype` 是原型链的顶端（其自身的原型始终为 `null`，且不可更改），这意味着对它的修改会影响所有继承自它的对象，因此存在“原型污染”的风险。现代 JavaScript 开发中，**操作对象应优先使用静态方法**，而非直接调用 `Object.prototype` 上的实例方法。
 

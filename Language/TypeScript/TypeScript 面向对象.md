@@ -1,4 +1,4 @@
-TypeScript 在 [JavaScript 原型链](../JavaScript/JavaScript%20原型链.md)基础上，添加了静态类型检查和完整的面向对象特性：
+TypeScript 在 [JavaScript Prototype Chain](../JavaScript/JavaScript%20Prototype%20Chain.md)基础上，添加了静态类型检查和完整的面向对象特性：
 1. **类型检查**：编译时类型检查，减少运行时错误
 2. **完整 OOP 特性**：类、接口、抽象类、访问修饰符
 3. **强类型泛型**：类型安全的通用编程
