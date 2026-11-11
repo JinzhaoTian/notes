@@ -86,7 +86,7 @@ import { myGlobalConfig } from './config.js';
 
 全局对象在内存管理中的核心角色是**作为垃圾回收（GC）的“根”（Root）**。在 V8 等引擎的可达性分析算法中，GC 会从一组根对象出发，递归遍历所有可达的对象。**任何从全局对象出发能够访问到的对象，都会被标记为“存活”，不会被回收**。因此，全局对象是内存生命周期的绝对起点，这也解释了为什么“全局变量”常常与内存泄漏联系在一起。
 
-#### 从全局对象派生的内存泄漏模式
+#### 内存泄漏
 
 理解了全局对象是 GC 的根，就能明白任何无意间建立的、从**全局对象**到某个数据的**强引用**，都会强制该数据活到进程结束。
 - **意外的全局变量**：在非严格模式下，给未声明的变量赋值（`bar = []`）或函数内 `this` 指向全局时，变量会**隐式挂载到全局对象**上，永久存活。修复方式是**始终使用 `'use strict'` 或 ES 模块**，并用 ESLint 拦截。
@@ -94,9 +94,60 @@ import { myGlobalConfig } from './config.js';
 - **脱离 DOM 的引用**：用全局变量或模块级变量缓存了 DOM 节点，即使节点已从文档树移除，该引用依然能通过全局对象可达，导致整个节点及关联数据无法回收。
 - **无界的全局缓存**：用 `Map` 或普通对象做缓存且没有上限。由于 `Map` 的键是**强引用**，缓存会无限增长，所有键值对都永久存活。修复是使用**有容量上限和淘汰策略（如 TTL）的 LRU 缓存**。
 
-#### 精细化管理：使用“弱引用”切断非必要链接
+#### 精细化管理
 
 对于必须建立、但又不应阻止对象回收的关联，需要使用弱引用机制。
 
 - **`WeakMap` / `WeakSet`**：它们的键是**弱引用**。如果某个对象仅被 `WeakMap` 的键引用，GC 就可以回收它，对应条目也会自动消失，无需手动清理。这非常适合**为对象关联元数据**或**缓存与对象生命周期绑定的计算结果**。
 - **`WeakRef` 与 `FinalizationRegistry`**：提供更底层的控制。`WeakRef` 允许你**持有对象的弱引用**而不阻止其回收，通过 `deref()` 访问（可能返回 `undefined`）。`FinalizationRegistry` 允许你在对象被回收后**注册清理回调**。**注意**：`FinalizationRegistry` 的回调**不保证执行时机，甚至不保证执行**，因此**绝不能**将关键的业务逻辑（如释放文件句柄）放在其中。
+
+
+### 主要用途
+
+1. **提供直接访问语言和环境提供的内置函数和值的能力**：
+	- **调用内置函数**：在浏览器中，你可以直接写 `alert('Hello')`，这等同于调用 `window.alert('Hello')`。同样，`setTimeout`、`Math`、`JSON`、`Date` 等也都是全局对象提供的。
+	- **获取环境特定信息**：全局对象是获取当前运行环境信息的主要入口。
+	    - 在**浏览器**中，`window.innerHeight` 可以获取窗口高度；`window.location.href` 可以读取或修改当前页面的URL。
+	    - 在 **Node.js** 中，`global` 对象（相当于浏览器的 `window`）上挂载了如 `process`（进程信息）、`Buffer`（二进制数据处理）等环境特有的全局工具。
+2. **用于特性检测与Polyfill**：在需要兼容旧环境时，全局对象常被用来检测某个现代特性是否存在。
+```javascript
+// 检测浏览器是否支持 Promise
+if (!window.Promise) {
+  // 如果不支持，可以在这里加载一个 Promise 的 polyfill 实现
+  window.Promise = function() { /* 简易实现 */ };
+  console.log('您的浏览器较旧，已加载 Promise 的 polyfill。');
+}
+```
+3. **用于传递全局状态**：在早期或简单的项目中，全局对象曾被用作在不同脚本间共享数据的“公告板”。
+```javascript
+// 在一个脚本中，将关键用户信息挂载到全局
+window.currentUser = { name: "Alice", role: "admin" };
+
+// 在另一个完全独立的脚本中，可以直接访问
+console.log(currentUser.name); // 输出: Alice
+
+// 或者，在函数内部访问同名的局部变量和全局变量
+var user = "Global";
+function showUser() {
+  var user = "Local";
+  console.log(window.user); // 输出 "Global"，通过全局对象访问被遮蔽的外部变量
+}
+```
+
+> [!warning] 在现代 JavaScript 开发中，应极力避免全局污染
+> 直接向全局对象添加变量会造成“全局污染”，导致：
+> - **命名冲突**：不同模块或库可能意外地覆盖同名全局变量。
+> - **依赖关系隐式化**：代码之间的依赖变得不清晰，难以追踪和维护。
+> 
+> 因此，对于跨模块共享状态，**优先使用模块导出（`export`/`import`）** 是更安全、更清晰的方式。
+
+
+> [!tip] 优先使用 `globalThis`
+> 由于全局对象在浏览器（`window`）、Node.js（`global`）和 Web Worker（`self`）中名称不一，ES2020 引入了标准的 `globalThis`。它在任何环境下都指向当前的全局对象，是编写跨环境代码的首选。
+> ```javascript
+> // 无论在浏览器还是 Node.js 中，这段代码都能正确访问全局对象
+> globalThis.myGlobalConfig = { apiUrl: 'https://api.example.com' };
+>
+> console.log(globalThis.myGlobalConfig.apiUrl); // 在所有环境输出相同
+> ```
+

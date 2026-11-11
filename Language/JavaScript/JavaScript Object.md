@@ -19,7 +19,7 @@
 > [!questionj] 如何理解 "值" 是 "构造函数" ?
 > 在 ECMAScript 里，构造函数首先是一个**函数对象**，而**函数对象是对象的一种**，因此它可以作为属性值保存。
 > 
-> ECMAScript 的语言类型包括 `Undefined`、`Null`、`Boolean`、`String`、`Symbol`、`BigInt`、`Number`和 `Object`，而函数属于 `Object` 类型。更精确地说，函数对象是**可调用对象（callable object）**：它首先是一个对象，然后额外具有 `[[Call]]` 内部方法，因而可以被调用；如果还具有 `[[Construct]]`，还可以被 `new` 调用。
+> ECMAScript 的语言类型包括 `undefined`、`null`、`Boolean`、`String`、`Symbol`、`BigInt`、`Number`和 `Object`，而函数属于 `Object` 类型。更精确地说，函数对象是**可调用对象（callable object）**：它首先是一个对象，然后额外具有 `[[Call]]` 内部方法，因而可以被调用；如果还具有 `[[Construct]]`，还可以被 `new` 调用。
 
 ## Prototype（原型）
 
@@ -61,6 +61,53 @@
 `Object.prototype` 是原型链的顶端（其自身的原型始终为 `null`，且不可更改），这意味着对它的修改会影响所有继承自它的对象，因此存在“原型污染”的风险。现代 JavaScript 开发中，**操作对象应优先使用静态方法**，而非直接调用 `Object.prototype` 上的实例方法。
 
 `Object.prototype` 上定义了一些基础实例方法，其中 `valueOf()`、`toString()` 和 `toLocaleString()` 被设计为可多态的，对象通常会提供自己的实现；而 `__defineGetter__` 等遗留方法已被弃用，应改用对应的静态方法。
+
+
+> [!tip] 内置数据类型的原型链关系
+> ```
+> null
+> └── Object.prototype
+>     ├── 普通对象实例 obj
+>     ├── Array.prototype
+>     │   └── 数组实例 arr
+>     ├── Function.prototype
+>     │   ├── 函数实例 func
+>     │   ├── Object 构造函数
+>     │   ├── Function 构造函数
+>     │   ├── Array 构造函数
+>     │   ├── String 构造函数
+>     │   ├── Number 构造函数
+>     │   ├── Boolean 构造函数
+>     │   ├── Date 构造函数
+>     │   ├── RegExp 构造函数
+>     │   ├── Error 构造函数
+>     │   ├── Map 构造函数
+>     │   ├── Set 构造函数
+>     │   └── Promise 构造函数
+>     ├── String.prototype
+>     │   └── 临时 String 包装对象
+>     ├── Number.prototype
+>     │   └── 临时 Number 包装对象
+>     ├── Boolean.prototype
+>     │   └── 临时 Boolean 包装对象
+>     ├── Symbol.prototype
+>     │   └── 临时 Symbol 包装对象
+>     ├── BigInt.prototype
+>     │   └── 临时 BigInt 包装对象
+>     ├── Date.prototype
+>     │   └── 日期实例 date
+>     ├── RegExp.prototype
+>     │   └── 正则实例 re
+>     ├── Error.prototype
+>     │   └── 错误实例 err
+>     ├── Map.prototype
+>     │   └── Map 实例 map
+>     ├── Set.prototype
+>     │   └── Set 实例 set
+>     └── Promise.prototype
+>         └── Promise 实例 promise
+> ```
+
 
 
 ## 静态方法

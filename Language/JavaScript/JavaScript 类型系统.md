@@ -63,13 +63,12 @@ typeof symObj; // "object"
 const bigObj = Object(1n);
 typeof bigObj; // "object"
 ```
-注意：
+**注意**：
 1. `String()`、`Number()`、`Boolean()` 作为普通函数调用，通常返回原始值。
-2. 加 `new` 才创建包装对象。
-3. `Symbol()` 和 `BigInt()` 不能和 `new` 一起用：
+2. `Symbol()` 和 `BigInt()` 不能和 `new` 一起用，但可以用 `Object()` 创建它们的包装对象
+3. **加 `new` 才创建包装对象**。
 
-
-
+> [!tip] 日常开发应使用原始值，避免显式创建包装对象。
 
 
 ### 内置包装对象
