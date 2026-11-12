@@ -127,8 +127,8 @@ interface Cat { name: string; }
 let pet: Cat = { name: "Whiskers", age: 2 }; // 兼容，因为包含 name
 ```
 
-> [!鸭子系统]
-> **鸭子系统**（**Duck Typing**）源自**鸭子测试**（**Duck Test**）的哲学思想：
+> [!鸭子类型]
+> **鸭子类型**（**Duck Typing**）源自**鸭子测试**（**Duck Test**）的哲学思想：
 > 
 > "If it walks like a duck and it quacks like a duck, then it must be a duck. 如果它走起路来像鸭子，叫起来像鸭子，那么它就是鸭子。"
 > 

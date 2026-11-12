@@ -1,27 +1,46 @@
+JavaScript 是基于 [Prototype（原型）](JavaScript%20Object.md#Prototype（原型）)的面向对象语言，不同于基于类的语言（如 Java、C++）。在 JavaScript 中，对象是属性的集合，每个对象都有一个指向原型对象的内部链接。
 
-## 核心原理
+> [!caution] 与 C++、Java 的面向对象核心区别
+> C++ / Java 的继承发生在类与类之间，类定义了实例的内存布局和方法，C++ / Java 的对象布局和类继承关系在编译/类加载后基本固定；JavaScript 的继承发生在对象与对象之间，对象通过内部 [Prototype Chain（原型链）](JavaScript%20Prototype%20Chain.md)委托查找属性和方法，让继承关系不再是编译期固定的类层级，而是运行时可建立、可改变、可绕过的对象委托关系。
+> 
+> **关键具体差异**：
+> 1. **继承不是复制父类成员**：
+> 	- JavaScript 中 `b.m()` 的查找路径是：`b` 自身 → `b.__proto__` → `B.prototype` → `A.prototype` → `Object.prototype` → `null`。
+> 	- C++ / Java 的继承会体现在对象布局/类层级中，方法在类元数据或虚表中分派。
+> 2. **ES6 `class` 不是传统类，只是一个语法糖**：JavaScript 底层仍是 `B.prototype.__proto__ === A.prototype`。`class` 只是让写法更像 C++ / Java，并附带严格模式、必须使用 `new`、方法不可枚举等语义。
+> ```javascript
+> class B extends A { m(){ super.m() } }
+> ```
+> 3. **多继承能力不同**：
+>    - C++ 支持类多继承和虚继承；
+>    - Java 是单类继承+多接口继承；
+>    - JavaScript 原型链只能单链继承，多继承要靠 `mixin` 复制属性或组合，不是语言级多继承。
+> 4. **封装强度不同**：
+> 	- C++ / Java 的 `private/protected` 是编译期访问控制；
+> 	- JavaScript 普通属性运行时都能访问，`#field` 才是硬私有。JavaScript 还可通过[属性描述符](JavaScript%20属性描述符.md)控制可枚举、可写、可配置。
+> 5. **多态机制不同**：
+> 	- C++ 有虚函数、模板；
+> 	- Java 有重写、接口、重载；
+> 	- JavaScript 主要靠“对象有没有这个属性/方法”的**鸭子类型**和原型链动态查找。JavaScript 没有 Java/C++ 那种按参数签名的方法重载，后定义同名方法会覆盖。
+> 6. **`this` 和函数模型不同**：
+> 	- C++ / Java 的方法调用和 `this` 基本绑定明确；
+> 	- JavaScript 函数可独立传递，`this` 取决于调用方式，所以常需 `bind` 或箭头函数。
+> 
+> 对比如下：
+> 
+> |维度|C++|Java|JavaScript|
+> |---|---|---|---|
+> |对象模型|类/结构体模板生成对象，有值语义、栈/堆对象|类模板生成堆对象，变量是引用|对象是动态属性包，每个对象有原型链接；`class` 底层仍是函数+原型|
+> |继承载体|类之间继承，支持多继承、虚继承|类单继承 + 接口多实现|对象到对象的原型链委托；单原型链，`extends`单继承，可用 mixin/组合模拟多继承|
+> |成员复制/布局|子类对象包含基类子对象，字段布局编译期确定|对象包含父类字段布局，类元数据存方法|实例不“复制”原型成员；方法通常在 `prototype` 上共享，查找沿原型链直到 `null`|
+> |方法分派|非虚函数静态绑定；虚函数经虚表运行期分派；模板编译期多态|重载编译期解析；可重写方法运行期动态分派；接口多态|属性动态查找；函数是一等值，可随时替换；鸭子类型，无真正方法重载|
+> |多态/类型|静态强类型，名义类型为主，模板支持结构化|静态强类型，名义类型，接口|动态弱类型，结构化/鸭子类型；`instanceof`查原型链，不是编译期类型|
+> |封装|`public/protected/private/friend`，编译期访问控制|`public/protected/private/包私有`，编译期控制|传统属性默认公开，靠约定 `_`；ES2022 `#private` 才有语言级硬私有；可用闭包模拟|
+> |对象创建|栈/堆、构造/拷贝/移动、RAII、确定性析构|`new` 堆对象、GC、构造器|字面量、`new`、`Object.create`、`class`；GC；可随时增删属性，无析构|
+> |`this`|成员函数隐式绑定当前对象|方法中绑定当前实例|由调用方式决定：默认/隐式/显式/`new`/箭头；可 `call/apply/bind`，最动态|
+> |运行时可变性|类结构编译后基本固定|类加载后结构基本固定，反射有限|可改实例、改原型、猴子补丁；原型上属性修改会影响未遮蔽的实例|
+> |构造/初始化|初始化列表、析构、拷贝/移动语义|构造器、GC|`new` 做：建对象、设原型、执行构造、返回对象；`class` 必须 `new`，`super` 前不能用 `this`|
 
-1. **原型链机制**（Prototype Chain）：JavaScript 是基于原型（Prototype）的面向对象语言，不同于基于类的语言（如 Java、C++）。
-```javascript
-// 原型链示例
-function Person(name) {
-    this.name = name;
-}
-
-Person.prototype.greet = function() {
-    console.log(`Hello, I'm ${this.name}`);
-};
-
-const john = new Person('John');
-john.greet(); // Hello, I'm John
-
-// 查找顺序：john -> Person.prototype -> Object.prototype -> null
-```
-
-> [!tip] 原型（Prototype）
-> [原型](JavaScript%20Prototype%20Chain.md)（Prototype）是 JavaScript 面向对象编程的核心机制，每个 JavaScript 对象都有一个内置的 `[[Prototype]]` 属性（可通过 `__proto__` 访问），指向它的原型对象。
-
-2. **对象创建的本质**：在 JavaScript 中，对象是属性的集合，每个对象都有一个指向原型对象的内部链接。
 
 
 ## 核心机制
