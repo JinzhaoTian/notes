@@ -119,7 +119,7 @@
 	- **`Object.getPrototypeOf(obj)`**：返回指定对象的原型。
 	- **`Object.setPrototypeOf(obj, proto)`**：设置指定对象的原型（由于性能影响，通常建议使用 `Object.create()`）。
 
-2. **属性描述符与元编程**
+2. **[属性描述符](JavaScript%20属性描述符.md)与元编程**
 	- **`Object.defineProperty(obj, prop, descriptor)`**：在对象上定义或修改一个属性，并精确控制其行为（如 `writable`、`enumerable`、`configurable`、`get`/`set`）。
 	- **`Object.defineProperties(obj, props)`**：批量定义或修改多个属性。
 	- **`Object.getOwnPropertyDescriptor(obj, prop)`**：获取指定对象自有属性的描述符。

@@ -1,9 +1,10 @@
-**JavaScript 属性描述符（Property Descriptor）** 是描述一个对象属性“行为特征”的普通对象。它决定这个属性：
+JavaScript 属性描述符（Property Descriptor）是描述一个对象属性行为特征的普通对象。它决定这个属性：
 - 值是什么，或者通过 `getter` / `setter` 读写；
 - 是否可写；
 - 是否可枚举（`for...in`、`Object.keys` 等是否能看到）；
 - 是否可配置（能否删除、修改描述符、改成访问器属性等）。
 
+## 分类
 
 属性描述符分两类：
 
@@ -36,9 +37,9 @@
 - `set`：设置属性时调用的函数，默认 `undefined`
 - `enumerable`、`configurable` 同上
 
-注意：**数据描述符不能同时包含 `value/writable` 和 `get/set`**。
+注意：**数据描述符不能同时包含 `value` / `writable` 和 `get` / `set`**。
 
-### 示例
+## 示例
 
 ```javascript
 const obj = {};
@@ -87,7 +88,7 @@ console.log(user.age); // 20
 ```
 
 
-### 常见注意点
+## 常见注意点
 
 1. 用对象字面量或普通赋值创建的属性，默认通常是：
 ```javascript

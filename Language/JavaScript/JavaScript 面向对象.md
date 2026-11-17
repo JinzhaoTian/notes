@@ -13,7 +13,7 @@ JavaScript 是基于 [Prototype（原型）](JavaScript%20Object.md#Prototype（
 > ```
 > 3. **多继承能力不同**：
 >    - C++ 支持类多继承和虚继承；
->    - Java 是单类继承+多接口继承；
+>    - Java 支持单类继承和多接口继承；
 >    - JavaScript 原型链只能单链继承，多继承要靠 `mixin` 复制属性或组合，不是语言级多继承。
 > 4. **封装强度不同**：
 > 	- C++ / Java 的 `private/protected` 是编译期访问控制；
