@@ -393,7 +393,7 @@ await runCli()                                // bin.ts:77
 	    - **功能**：建立第二个独立的代理对象 `Context`，并且和 `ctx: Context` 共用一个 `logger`，只用来收集启动期间的警告和错误日志，当 `ctx: Context` 在 `catch` 里被销毁时，清理过程中的报错仍然收得进来，会在 `finally` 里销毁（`packages/boot/app-boot/src/index.ts:1264`）。
 	- **`ctx.baseUrl = <config path>`**（`packages/boot/app-boot/src/index.ts:1219`）：
 	    - **功能**：设置 `ctx` 上的 `baseUrl`，通过 `set` trap 直接放行（`reflect.ts:180-181`），后续在插件 `ctx` 上做同样的赋值会抛错。Loader 构造时会把它复制进自己的行树（`tree.ts:17`），所以必须在 `plugin(Loader)` 之前设好。
-	- **`ctx.provide('dshHomePath', …)`**（:1220）→ `reflect.ts:277`
+	- **`ctx.provide('dshHomePath', …)`**（`packages/boot/app-boot/src/index.ts:1220`）→ `reflect.ts:277`
 	    - 功能：作为根 Fiber 的 effect 登记，服务实现写进全局 store 和根 Fiber 的 `store`（:292-293）。
 	    - 读一个没有 inject 的服务时，会沿 Fiber 链逐级查 `store`，一直查到根（`reflect.ts:153-166`）。所以根上的服务所有插件都读得到。
 	- **`ctx.on('internal/update', …, { global, prepend })`**（:1223）
